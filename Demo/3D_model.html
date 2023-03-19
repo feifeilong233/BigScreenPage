@@ -1,0 +1,969 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>My first three.js app</title>
+    <style>
+        body { margin: 0; }
+
+        #label {
+            position: absolute;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.6);
+            line-height: 1;
+            border-radius: 5px;
+            color:blue;
+        }
+        #content{
+            color: aliceblue;
+        }
+    </style>
+</head>
+<script src="js/jquery.js"></script>
+
+
+<!-- <script language="JavaScript" src="js/showroad.js"></script>  -->
+<!-- <script language="JavaScript" src="js/show3D.js"></script>  -->
+
+
+
+
+<body>
+
+<script src="js/three.js"></script>
+<script src="js/GLTFLoader.js"></script>
+<script src="js/OrbitControls.js"></script>
+
+<script src="js/TrackballControls.js"></script>
+<script src="js/dat.gui.min.js"></script>
+<script src="js/stats.min.js"></script>
+<script type="text/javascript" src="js/echarts.min.js"></script>
+
+<!-- <div class="head"><h1>路面数据可视化</h1></div> -->
+<!-- <div style="background-color:#20be62;height:50%;width:40%;float:right;"> -->
+<!-- <div id="test" style="background-color:#b3ac54;height:100%;width:70%;float:left;">
+  <div id="WebGL-output"></div>
+  <div id="Stats-output"></div>
+      <div id="label"></div>
+    </div> -->
+<div id="test1" style="background-color:#54b38f;height:100%;width:70%;float:left;">
+
+    <div id="test" style="background-color:#b3ac54;height:50%;width:100%;">
+        <div id="label"></div>
+    </div>
+
+    <div class="map" id="map" style="background-color:#90d866;color: #b54102;height:50%;width:100%;">
+        <!--                <img src="imgs/Desert1.jpg">-->
+        <!-- <li>1</li>
+        <li>1</li>
+        <li>1</li>
+        <li>1</li>
+        <li>1</li>
+        <li>1</li> -->
+    </div>
+</div>
+<div id="content" style="background-color:#061949;height:100%;width:30%;float:left;">
+    <table border="1" style="color: aliceblue;">
+        <tr>
+            <th>层次结构</th>
+            <th>材料</th>
+            <th>厚度</th>
+        </tr>
+        <tr>
+            <td >上面层</td>
+            <td id="m1">沥青</td>
+            <td id="t1">4cm</td>
+        </tr>
+
+        <tr>
+            <td>中面层</td>
+            <td id="m2">水泥</td>
+            <td id="t2">8cm</td>
+        </tr>
+        <tr>
+            <td>下面层</td>
+            <td id="m3">水泥稳定土</td>
+            <td id="t3">12cm</td>
+        </tr>
+        <tr>
+            <td>基层</td>
+            <td id="m4">碎石</td>
+            <td id="t4">24cm</td>
+        </tr>
+        <tr>
+            <td>底基层</td>
+            <td id="m5">土壤</td>
+            <td id="t5">40cm</td>
+        </tr>
+        <tr>
+            <td>xx</td>
+            <td id="m6"></td>
+            <td id="t6"></td>
+        </tr>
+        <tr>
+            <td>xx</td>
+            <td id="m6"></td>
+            <td id="t6"></td>
+        </tr>
+        <tr>
+            <td>xx</td>
+            <td id="m6"></td>
+            <td id="t6"></td>
+        </tr>
+        <tr>
+            <td>xx</td>
+            <td id="m6"></td>
+            <td id="t6"></td>
+        </tr>
+        <tr>
+            <td>xx</td>
+            <td id="m6"></td>
+            <td id="t6"></td>
+        </tr>
+    </table>
+
+    road_0<input type="range" id="1" min="0" max="50" value="25" step="1"onchange="schange(this)">
+    <input type="text" style="width: 50px;" value="0.04"  id ="text1" onchange="change()">
+    <select name="text1" id ="tx1" onchange="change()">
+        <option value="1">沥青</option>
+        <option value="2">水泥</option>
+        <option value="3">碎石</option>
+        <option value="4">土壤</option>
+        <option value="5">水泥稳定土</option>
+        <option value="6">级配碎石</option>
+    </select>
+    </br>
+    <!-- <button onclick="change()">确定</button>  -->
+    road_1<input type="range" id="2" min="0" max="50" value="25" step="1"onchange="schange(this)">
+    <input type="text" style="width: 50px;"value="0.08"  id ="text2" onchange="change()">
+    <select name="text2"id ="tx2"onchange="change()">
+        <option value="1">沥青</option>
+        <option value="2"selected>水泥</option>
+        <option value="3">碎石</option>
+        <option value="4">土壤</option>
+        <option value="5">水泥稳定土</option>
+        <option value="6">级配碎石</option>
+    </select>
+    </br>
+    road_2<input type="range" id="3" min="0" max="50" value="25" step="1"onchange="schange(this)">
+    <input type="text" style="width: 50px;"value="0.12"  id ="text3" onchange="change()">
+    <select name="text3"id ="tx3"onchange="change()">
+        <option value="1">沥青</option>
+        <option value="2">水泥</option>
+        <option value="3"selected>碎石</option>
+        <option value="4">土壤</option>
+        <option value="5">水泥稳定土</option>
+        <option value="6">级配碎石</option>
+    </select>
+    </br>
+    road_3<input type="range" id="4" min="0" max="50" value="25" step="1"onchange="schange(this)">
+    <input type="text" style="width: 50px;"value="0.24"  id ="text4" onchange="change()">
+    <select name="text4"id ="tx4"onchange="change()">
+        <option value="1">沥青</option>
+        <option value="2">水泥</option>
+        <option value="3">碎石</option>
+        <option value="4"selected>土壤</option>
+        <option value="5">水泥稳定土</option>
+        <option value="6">级配碎石</option>
+    </select>
+    </br>
+    road_4<input type="range" id="5" min="0" max="50" value="25" step="1"onchange="schange(this)">
+    <input type="text" style="width: 50px;"value="0.4"  id ="text5" onchange="change()">
+    <select name="text5"id ="tx5"onchange="change()">
+        <option value="1">沥青</option>
+        <option value="2">水泥</option>
+        <option value="3">碎石</option>
+        <option value="4">土壤</option>
+        <option value="5"selected>水泥稳定土</option>
+        <option value="6">级配碎石</option>
+    </select>
+    </br>
+    road_5<input type="range" id="6" min="0" max="50" value="25" step="1"onchange="schange(this)">
+    <input type="text" style="width: 50px;"value="0"  id ="text6" onchange="change()">
+    <select name="text6"id ="tx6"onchange="change()">
+        <option value="1">沥青</option>
+        <option value="2">水泥</option>
+        <option value="3">碎石</option>
+        <option value="4">土壤</option>
+        <option value="5">水泥稳定土</option>
+        <option value="6"selected>级配碎石</option>
+    </select>
+    </br>
+    选择环境
+    <select name="select"id ="sel"onchange="changeEnvironment(this)">
+        <option value="1">1</option>
+        <option value="2"selected>2</option>
+        <option value="3">3</option>
+    </select>
+    </br>
+    </br>
+    </br>
+    <div id="container" style="background-color:#6697d8;height: 40%;width:50%;float:left;"></div>
+    <div id="container3D" style="background-color:#6697d8;height: 40%;width:50%;float:right" ></div>
+    <!-- <div><button onClick="window.location.href='maindata.html'" style="height: 50px;width: 150px;color:cornsilk;background-color:rgb(1, 51, 145);font-size: large;">详细数据展示</button></div> -->
+</div>
+
+
+<script>
+    //  document.getElementById("text1").value=document.getElementById("myRange").value;
+    let group = new THREE.Group();
+    var selectObject,OBJ;
+
+    //创建场景
+    scene = new THREE.Scene();
+    // scene.background = new THREE.Color(0xffffff);
+
+
+    var width = window.innerWidth*0.7;//窗口宽度
+    // var height = window.innerHeight;//窗口高度
+    // var width = 910;//窗口宽度
+    var height = window.innerHeight*0.5;//窗口高度
+    console.log(width);
+    console.log(height);
+    //   console.log(document.getElementById("content"));
+    // document.getElementById("content").style.height=height;
+    // document.getElementById("content").style.width=window.innerWidth-width-17;
+    var k = width/height;//窗口宽高比
+    var s =2000;//三维场景缩放系数
+
+    //创建相机，设置相机的位置
+    camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000000);
+    camera.position.set(0, 20, 80);
+    // camera.position.set(1,1,1);
+    // console.log(scene.position);
+    camera.lookAt(scene.position);
+
+
+
+    //灯光效果
+    var point=new THREE.PointLight(0xffffff);
+    // point.position.set(400,200,300);
+    point.position.set(400,200,300);
+    scene.add(point);
+
+    var ambient = new THREE.AmbientLight(0xffffff);
+    scene.add(ambient);
+    //创建场景渲染
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize(width, height);
+    // renderer.setClearColor(0xb9d3ff,1);
+
+    let cubeTextureLoader = new THREE.CubeTextureLoader();
+    cubeTextureLoader.setPath( "images/sky_2/" );
+    var skybox=new Array("negx.jpg","posx.jpg","posy.jpg","negy.jpg","negz.jpg","posz.jpg");
+    let cubeTexture = cubeTextureLoader.load( skybox);
+
+    // let cubeTexture = cubeTextureLoader.load( [
+    //      "right.jpg","left.jpg",
+    //     "top.jpg", "bottom.jpg",
+    //     "front.jpg", "back.jpg"
+    // ]);
+    //需要把色彩空间编码改一下
+    cubeTexture.encoding = THREE.sRGBEncoding
+    scene.background = cubeTexture;
+    function changeEnvironment(env)
+    {
+
+        let cubeTextureLoader = new THREE.CubeTextureLoader();
+        cubeTextureLoader.setPath( "images/sky_"+env.value+"/" );
+        var skybox=new Array("negx.jpg","posx.jpg","posy.jpg","negy.jpg","negz.jpg","posz.jpg");
+        let cubeTexture = cubeTextureLoader.load( skybox);
+        cubeTexture.encoding = THREE.sRGBEncoding
+        scene.background = cubeTexture;
+        scene2.background = cubeTexture;
+    }
+
+    // scene.background=new THREE.TextureLoader().load( "road_gltf_6/New_road_6_img_005.png" );
+    // document.body.appendChild(renderer.domElement);
+    document.getElementById("test").appendChild(renderer.domElement);
+
+
+
+
+
+    //找到目标模型
+    function FindTarget(obj,target)
+    {
+        obj=obj.scene;
+        var i=0;
+        var j=0;
+        var mycars = new Array();
+        while(i<16)
+        {
+            // if(gltf.scene.children[0].children[i].name==target)
+            // console.log(i);
+            // console.log(gltf.scene.children[0].children[i].name.search(target));
+            if(obj.children[0].children[i].name.search(target)!=-1)
+            {
+                mycars[j]=i;
+                j=j+1;
+                // console.log(i);
+            }
+
+            i=i+1;
+        }
+        // console.log(mycars);
+        return mycars;
+    }
+    // 修改材质
+    function ChangeTexture(obj,target,img_path)
+    {
+        obj=obj.scene;
+        var texture = new THREE.TextureLoader().load( img_path );
+        texture.encoding = THREE.sRGBEncoding;
+        texture.flipY = false;
+        texture.needsUpdate = true;
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 1, 1 );
+
+        //新建材质
+        var tmaterial = new THREE.MeshStandardMaterial({ map: texture });
+        obj.children[0].children[target].material=tmaterial;
+        obj.children[0].children[target].material.needsUpdate  = true;
+    }
+    // 修改路面厚度
+    function ChangDepth(obj,target,h)
+    {
+        // var h=3.379265069961548;
+        obj=obj.scene;
+        // console.log(h);
+        // console.log(obj.children[0].children[target].geometry.attributes.position.data.array[2])
+        obj.children[0].children[target].geometry.attributes.position.data.array[2]=h;
+        obj.children[0].children[target].geometry.attributes.position.data.array[10]=h;
+
+        obj.children[0].children[target].geometry.attributes.position.data.array[34]=h;
+        obj.children[0].children[target].geometry.attributes.position.data.array[58]=h;
+
+        obj.children[0].children[target].geometry.attributes.position.data.array[66]=h;
+        obj.children[0].children[target].geometry.attributes.position.data.array[74]=h;
+
+        obj.children[0].children[target].geometry.attributes.position.data.array[82]=h;
+        obj.children[0].children[target].geometry.attributes.position.data.array[90]=h;
+
+        obj.children[0].children[target].geometry.attributes.position.data.array[106]=h;
+        obj.children[0].children[target].geometry.attributes.position.data.array[114]=h;
+
+        obj.children[0].children[target].geometry.attributes.position.data.array[162]=h;
+        obj.children[0].children[target].geometry.attributes.position.data.array[186]=h;
+
+        // gltf.scene.children[0].children[i].geometry.attributes.position.data.array[3]=-0;
+        // gltf.scene.children[0].children[i].geometry.attributes.position.data.array[4]=-1;
+        // gltf.scene.children[0].children[i].geometry.attributes.position.data.array[5]=-1.382799582304306e-14;
+        // gltf.scene.children[0].children[i].geometry.attributes.position.data.array[6]=0.4921259880065918;
+        obj.children[0].children[target].geometry.attributes.position.data.array[7]=-1.0137795209884644;
+
+        obj.children[0].children[target].geometry.attributes.position.data.array[15]=-1.0137795209884644;
+        // console.log(gltf.scene.children[0].children[i[n]].geometry.attributes.position.data.array);
+
+    }
+    // 改变模型位置
+    function ChangPosition(obj,target,z)
+    {
+        obj=obj.scene;
+        obj.children[0].children[target].position.z=z;
+    }
+
+
+    // 修改模型时再次加载
+    var loader = new THREE.GLTFLoader();
+    function model_load(H,te){
+        var obj;
+        loader.load( 'road_gltf_7/New_road_7.gltf', function ( gltf ) {
+            // console.log(gltf);
+
+            obj=gltf;
+            // "底基层_337571" "基层_337681" "下面层_338019" "中面层_338579" "上面层_338612" "绿化带_344027"
+            // var ary=new Array("底基","基层","下面层","中面层","上面层","绿化带");
+            var ary=new Array("road_5","road_4","road_3","road_2","road_1","road_0","绿化带");
+            var texture=new Array("New_road_7_img_007.png","New_road_7_img_000.jpg","New_road_7_img_005.jpg","New_road_7_img_002.jpg","New_road_7_img_003.jpg","New_road_7_img_001.jpg");
+            var j=5;
+            var z=3.28084;
+            var roadfive=FindTarget(obj,ary[0]);
+            while(-1<j)
+            {
+                var i=FindTarget(obj,ary[5-j]);
+                console.log("*********"+i);
+
+                var n=0;
+
+                while(n<i.length)
+                {
+                    // "road_gltf_6/"+texture[te[j]-1]
+                    ChangeTexture(obj,i[n],"road_gltf_7/"+texture[te[j]-1]);
+                    // console.log(gltf.scene.children[0].children[i[n]].geometry.attributes.position.data.array);
+
+                    // gltf.scene.children[0].children[i[n]].position.z=100;
+                    ChangPosition(obj,i[n],z);
+
+                    ChangDepth(obj,i[n],H[j]);
+                    n=n+1;
+                }
+                z=z+H[j];
+
+                j--;
+            }
+            var car=FindTarget(obj,"Caterpillar");
+            console.log(car);
+            var m=0;
+            while(m<5)
+            {
+                obj.scene.children[0].children[car[0]].children[m].position.z=z;
+                m++;
+            }
+            ChangDepth(obj,FindTarget(obj,ary[5-j])[0],z-3.28084+0.3);
+
+
+            scene.add(gltf.scene );
+            // group.add(gltf.scene)
+            // 		scene.add(group)
+            render();
+            animate();
+            console.log(scene);
+
+        }, undefined, function ( error ) {
+
+            console.error( error );
+        } );
+    }
+
+
+    // 初始化加载模型
+    loader.load( 'road_gltf_7/New_road_7.gltf', function ( gltf ) {
+        console.log("gltf");
+        console.log( gltf);
+
+        // gltf.scene.traverse( function ( child ) {
+        // 		  //放射光颜色与放射光贴图 不设置可能导致黑模
+        // 		  if ( child.isMesh ) {
+        // 		    child.material.emissive =  child.material.color;
+        // 		    child.material.emissiveMap = child.material.map ;
+        // 		  }
+
+        // 		} );
+
+        scene.add( gltf.scene);
+        // group.add(gltf.scene)
+        // 			scene.add(group)
+        render();
+        animate();
+    }, undefined, function ( error ) {
+
+        console.error( error );
+
+    } );
+    console.log("scene");
+    console.log(scene.children);
+
+
+    // 压路机动画
+    var dir=1;
+    function animate() {
+        if (selectObject != undefined && selectObject != null) {
+            renderDiv(selectObject);
+        }
+        renderer.render(scene, camera);
+
+        var car=scene.children[2].children[0].children[0].children;
+        // console.log(car[0].position.y);
+        var i=new Array(car[0].position.y,car[1].position.y,car[2].position.y,car[3].position.y,car[4].position.y) ;
+
+        if(i[0]<100 & dir==1){
+            car[0].position.y=i[0]+1;
+            car[1].position.y=i[1]+1;
+            car[2].position.y=i[2]+1;
+            car[3].position.y=i[3]+1;
+            car[4].position.y=i[4]+1;
+        }
+        else{
+
+            dir=-1;
+        }
+        if(i[0]>-180 & dir==-1)
+        {
+            car[0].position.y=i[0]-1;
+            car[1].position.y=i[1]-1;
+            car[2].position.y=i[2]-1;
+            car[3].position.y=i[3]-1;
+            car[4].position.y=i[4]-1;
+        }
+        else
+        {
+            dir=1;
+        }
+        requestAnimationFrame(animate);
+    }
+
+
+    function onWindowResize() {
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize( width, height );
+
+        render();
+    }
+
+    function render(){
+        renderer.render( scene, camera );
+    }
+    var controls1=new THREE.OrbitControls(camera,document.getElementById("test"));
+    controls1.addEventListener('change',render);
+    window.addEventListener( 'resize', onWindowResize );
+
+    // ****************************************************************************************************
+    // 修改模型数据
+    function change(){
+
+        // var evt = event || window.event;
+        // console.log(evt.path[0].id);
+        // console.log(scene.children[2]);
+        console.log(scene.children[2]);
+        // scene.remove(scene.children[2]);
+        scene.remove(scene.children[2]);
+        console.log(scene);
+
+        var H = new Array();
+        var te = new Array();
+        var i=0;
+        while(i<6)
+        {
+            var s="text"+(i+1);
+            var txt="tx"+(i+1);
+            // console.log(s);
+            H[i]=parseFloat(document.getElementById(s).value)*3;
+
+            // console.log(document.getElementById(txt).value);
+            te[i]=(document.getElementById(txt).value);
+
+
+            i=i+1;
+        }
+        // console.log(H);
+        // console.log(te);
+        model_load(H,te)
+        // console.log(scene);
+        // console.log(document.getElementById(evt.path[0].id).value);
+
+        // model_load(document.getElementById(evt.path[0].id).value);
+        // console.log(scene);
+    }
+    function schange(e)
+    {
+        console.log(e.id);
+        // document.getElementById("text"+e.id).value=document.getElementById(e.id).value*0.01;
+        document.getElementById("text"+e.id).value=e.value*0.01;
+        change();
+    }
+    // ************************************************************************************************************************************
+    // 鼠标点触获取模型信息
+    // 更新div的位置
+    function renderDiv(object) {
+        // 获取窗口的一半高度和宽度
+        var halfWidth = window.innerWidth*0.7 / 2;
+        var halfHeight = window.innerHeight*0.5 / 2;
+
+        // 逆转相机求出二维坐标
+        var vector = object.position.clone().project(camera);
+
+        // 修改 div 的位置
+        $("#label").css({
+            left: vector.x * halfWidth + halfWidth,
+            top: -vector.y * halfHeight + halfHeight - object.position.y
+        });
+        // 显示模型信息
+        $("#label").text("name:" + object.name+" "+"厚度："+(object.geometry.attributes.position.data.array[2]/3).toFixed(2));
+    }
+
+    // 鼠标双击触发的方法
+    function onMouseDblclick(event) {
+
+// 获取 raycaster 和所有模型相交的数组，其中的元素按照距离排序，越近的越靠前
+        var intersects = getIntersects(event);
+
+// 获取选中最近的 Mesh 对象
+        if (intersects.length != 0 && intersects[0].object instanceof THREE.Mesh) {
+            selectObject = intersects[0].object;
+
+            changeMaterial(selectObject);
+            if(OBJ!=selectObject&OBJ!=null)
+            {
+                changeColor(OBJ);
+                OBJ=selectObject;
+            }
+            OBJ=selectObject;
+        }
+        else {
+            // if(OBJ!=null)
+            // {
+            // 	changeColor(OBJ);
+            // }
+            // alert("未选中 Mesh!");
+        }
+    }
+
+    // 获取与射线相交的对象数组
+    function getIntersects(event) {
+        event.preventDefault();
+        console.log("event.clientX:"+event.clientX)
+        console.log("event.clientY:"+event.clientY)
+
+        // 声明 raycaster 和 mouse 变量
+        var raycaster = new THREE.Raycaster();
+        var mouse = new THREE.Vector2();
+
+        // 通过鼠标点击位置,计算出 raycaster 所需点的位置,以屏幕为中心点,范围 -1 到 1
+        mouse.x = (event.clientX / window.innerWidth) * 2/0.7 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2/0.5 + 1;
+
+        //通过鼠标点击的位置(二维坐标)和当前相机的矩阵计算出射线位置
+        raycaster.setFromCamera(mouse, camera);
+
+        // 获取与raycaster射线相交的数组集合，其中的元素按照距离排序，越近的越靠前
+
+        var intersects = raycaster.intersectObjects(scene.children,true);
+
+        //返回选中的对象数组
+
+        console.log(intersects);
+        return intersects;
+    }
+    // 改变对象材质属性
+    function changeColor(object)
+    {
+        console.log(object);
+        object.material.color.r=1;
+        console.log(object.material.color.r);
+    }
+    function changeMaterial(object) {
+        object.material.color.r=0;
+// var material = new THREE.MeshLambertMaterial({
+// 	color: 0xffffff * Math.random(),
+// 	transparent: object.material.transparent ? false : true,
+// 	opacity: 0.8
+// });
+// object.material = material;
+        console.log(object.material.color.r);
+    }
+    addEventListener('click', onMouseDblclick, false);
+
+
+
+
+    //创建场景
+    scene2 = new THREE.Scene();
+    // scene.background = new THREE.Color(0xffffff);
+    //创建相机，设置相机的位置
+
+    var width = window.innerWidth*0.7;//窗口宽度
+    // var height = window.innerHeight;//窗口高度
+    // var width = 910;//窗口宽度
+    var height = window.innerHeight*0.5;//窗口高度
+    console.log(width);
+    console.log(height);
+    var k = width/height;//窗口宽高比
+    var s =2000;//三维场景缩放系数
+    //       //创建相机对象
+    //        var camera=new THREE.OrthographicCamera(-s*k,s*k, s,-s,1,1000);
+    //        camera.position.set(20000,20000,20000);//设置相机位置
+    //        camera.lookAt(scene.position);//设置相机方向(指向的场景对象)
+
+    camera2 = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000000);
+    camera2.position.set(0,20,80);
+    // camera.position.set(1,1,1);
+    // console.log(scene.position);
+    camera2.lookAt(scene2.position);
+
+
+    // camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 0.1, 11000 );
+
+    // camera = new THREE.OrthographicCamera( -s*k, s*k, -s ,s, 0.1, 11000 );
+    // camera.position.set(1500, 1500, 1500);
+    // camera.lookAt(scene.position);
+    //灯光效果
+    var point2=new THREE.PointLight(0xffffff);
+    // point.position.set(400,200,300);
+    point2.position.set(0,40,0);
+    scene2.add(point2);
+
+    var ambient2 = new THREE.AmbientLight(0xffffff);
+    scene2.add(ambient2);
+    //创建场景渲染
+    var renderer2 = new THREE.WebGLRenderer();
+    renderer2.setSize(width, height);
+    renderer2.setClearColor(0x5588ff,1);
+    document.getElementById("map").appendChild(renderer2.domElement);
+
+    //添加gltf
+    var loader2 = new THREE.GLTFLoader();
+    // road_gltf/New_road.gltf
+    loader2.load('road_gltf_5/New_road_5.gltf', function ( gltf ) {
+        console.log(gltf);
+
+        scene2.add( gltf.scene );
+        animate2();
+
+    }, undefined, function ( error ) {
+
+        console.error( error );
+
+    } );
+
+    // function animate2() {
+    // requestAnimationFrame( animate2 );
+    // renderer2.render( scene2, camera2 );
+    // }
+    // animate2();
+
+    // 压路机动画
+    //  ################################################################
+    var dir2=1;
+    var jud=1;
+    var num=0;
+    function animate2() {
+        renderer2.render(scene2, camera2);
+        var car2=scene2.children[2].children[0].children[1].children;
+        car2[0].position.x=0;
+        car2[1].position.x=0;
+        car2[2].position.x=0;
+        car2[3].position.x=-10;
+        car2[4].position.x=0;
+        if(dir2==1)
+        {
+            if(jud==1)
+            {
+                scene2.children[2].children[0].children[1].position.x+=2;
+                if(scene2.children[2].children[0].children[1].position.x>=160 )
+                {
+                    scene2.children[2].children[0].children[1].position.x=160;
+                    scene2.children[2].children[0].children[1].position.y=0;
+                    jud=-1;
+                }
+            }
+            else
+            {
+                num+=1;
+
+                if(num<157)
+                {
+                    scene2.children[2].children[0].children[1].rotation.z+=0.02;
+                }
+                else
+                {
+                    scene2.children[2].children[0].children[1].rotation.z=Math.PI;
+                    num=0;
+                    dir2=2;
+                    jud=1;
+                }
+            }
+
+        }
+        else
+        {
+            if(jud==1)
+            {
+                scene2.children[2].children[0].children[1].position.x-=2;
+                if(scene2.children[2].children[0].children[1].position.x<-160)
+                {
+                    scene2.children[2].children[0].children[1].position.x=-160;
+                    scene2.children[2].children[0].children[1].position.y=0;
+                    jud=-1;
+                }
+            }
+            else
+            {
+                num+=1;
+
+                if(num<157)
+                {
+                    scene2.children[2].children[0].children[1].rotation.z+=0.02;
+                }
+                else
+                {
+                    scene2.children[2].children[0].children[1].rotation.z=0;
+                    num=0;
+                    dir2=1;
+                    jud=1;
+                }
+            }
+
+        }
+        requestAnimationFrame(animate2);
+    }
+
+
+    function onWindowResize2() {
+
+        camera2.aspect = width / height;
+        camera2.updateProjectionMatrix();
+
+        renderer2.setSize( width, height );
+
+        render2();
+
+    }
+
+    function render2(){
+        renderer2.render( scene2, camera2 );
+
+    }
+    render2();
+    var controls2=new THREE.OrbitControls(camera2,document.getElementById("map"));
+    controls2.addEventListener('change',render2);
+    window.addEventListener( 'resize', onWindowResize2 );
+
+</script>
+
+
+
+<script type="text/javascript" src="js/echarts.min.js"></script>
+<script type="text/javascript">
+    var dom = document.getElementById("container");
+    var myChart = echarts.init(dom);
+    var app = {};
+
+    app.title = '环形图';
+
+    var option = {
+        tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b}: {c} ({d}%)"
+        },
+        color:['#0000CD','#4B0082','#008080','#006400','#808000'],
+        legend: {
+            orient: 'horizontal',
+            x: 'left',
+            data: ['上面层', '中面层', '下面层', '基层', '底基层']
+        },
+        series: [{
+            name: '访问来源',
+            type: 'pie',
+            radius: ['30%', '70%'],
+            avoidLabelOverlap: false,
+            label: {
+                normal: {
+                    show: false,
+                    position: 'center'
+                },
+                emphasis: {
+                    show: true,
+                    textStyle: {
+                        fontSize: '30',
+                        fontWeight: 'bold'
+                    }
+                }
+            },
+            labelLine: {
+                normal: {
+                    show: false
+                }
+            },
+            data: [{
+                value: 50,
+                name: '上面层'
+            },
+                {
+                    value: 100,
+                    name: '中面层'
+                },
+                {
+                    value: 200,
+                    name: '下面层'
+                },
+                {
+                    value: 360,
+                    name: '基层'
+                },
+                {
+                    value: 400,
+                    name: '底基层'
+                }
+            ]
+        }]
+    };
+    if(option && typeof option === "object") {
+        myChart.setOption(option, true);
+    }
+</script>
+<!-- <script type="text/javascript" src="echarts-master/dist/echarts.min.js"></script> -->
+<!-- <script type="text/javascript" src="js/container.js"></script> -->
+
+<script src="js/jquery.min.js"></script>
+
+<!-- <script type="text/javascript" src="echarts-master/dist/echarts.min.js"></script> -->
+<!-- Uncomment this line if you want to dataTool extension -->
+<script type="text/javascript" src="js/dataTool.min.js"></script>
+
+<!-- Uncomment this line if you want to use gl extension -->
+<script type="text/javascript" src="js/echarts-gl.min.js"></script>
+<!-- <script type="text/javascript" src="js/container3D.js"></script> -->
+
+<script type="text/javascript">
+    var dom = document.getElementById("container3D");
+    var myChart = echarts.init(dom);
+    var app = {};
+
+    var option;
+
+    $.getScript(
+        'simplex-noise.js'
+    ).done(function () {
+
+
+        var dataset=[[0.5,0.5,50],[0.5,0.5,100],[0.5,0.5,200],[0.5,0.5,360],[0.5,0.5,400]];
+// var dataset=[2,2,2];
+        var days = [1.0];
+        var series = [];
+        for (var i = 0; i < 5; i++) {
+            series.push({
+                type: 'bar3D',
+// data: generateData(),
+                data: dataset[i],
+                stack: 'stack',
+                shading: 'lambert',
+                emphasis: {
+                    label: {
+                        show: false
+                    }
+                }
+            });
+        }
+        console.log(series);
+        myChart.setOption({
+            xAxis3D: {
+                type: 'category',
+                data:days
+            },
+            yAxis3D: {
+                type: 'category',
+                data:days
+            },
+            zAxis3D: {
+                type: 'value'
+            },
+            grid3D: {
+                boxWidth: 140,
+                boxDepth: 140,
+
+                viewControl: {
+// autoRotate: true
+                },
+                light: {
+                    main: {
+                        shadow: true,
+                        quality: 'ultra',
+                        intensity: 1.5
+                    }
+                }
+            },
+            series: series
+        });
+    });
+
+    if (option && typeof option === 'object') {
+        myChart.setOption(option);
+    }
+
+</script>
+
+
+</body>
+</html>

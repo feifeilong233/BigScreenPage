@@ -1,0 +1,12 @@
+.enter-active{
+    transform: translateX(0)
+}
+.enter-xr{
+      transform: translateX(50px);
+}
+.enter-xl{
+      transform: translateX(-50px); 
+}
+.enter-xl,.enter-xr{
+     transform: all  0.4s ease-in-out 0.3s;
+}
