@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vite",
+    "serve": "vite --port 23333",
     "build": "vite build",
     "pre": "husky install",
     "lint-staged": "lint-staged",
