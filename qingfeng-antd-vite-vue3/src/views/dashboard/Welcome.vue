@@ -1,240 +1,79 @@
 <template>
-  <page-header-wrapper>
-    <template #content>
-      <div class="page-header-content">
-        <div class="avatar">
-          <a-avatar size="large" :src="currentUser.avatar" />
-        </div>
-        <div class="content">
-          <div class="content-title">
-            {{ tf }}，{{ user.name }}
-          </div>
-          <div>前端工程师 | 蚂蚁金服 - 某某某事业群 - VUE平台</div>
-        </div>
-      </div>
-    </template>
-    <template #extraContent>
-      <div class="extra-content">
-        <div class="stat-item">
-          <a-statistic title="项目数" :value="56" />
-        </div>
-        <div class="stat-item">
-          <a-statistic title="团队内排名" :value="8" suffix="/ 24" />
-        </div>
-        <div class="stat-item">
-          <a-statistic title="项目访问" :value="2223" />
-        </div>
-      </div>
-    </template>
-    <div :style="{ minHeight: '400px' }">
-
+  <div>
+    <div id="three-frame"></div>
+    <div class="threedom">
+      <div class="mountNode" id="mountNode"></div>
+      <!--  -->
     </div>
-  </page-header-wrapper>
+    <div class="echartshow" v-if="showechart">
+      <Comps></Comps>
+    </div>
+    <div class="echarts">
+      <button @click="clickhandle">asdasd</button>
+    </div>
+  </div>
 </template>
 
-<script lang="ts">
-import {defineComponent, computed, reactive, ref, onMounted} from 'vue'
-import DataSet from '@antv/data-set'
-import store from '@/store';
-import { timeFix } from '@/utils/util'
-
-import { getRoleList, getServiceList } from '@/api/manage'
-import {requestGet} from '@/api/service';
-
-interface Project {
-  id: Number,
-  cover: String,
-  title: String,
-  description: String,
-  status: Number,
-  updatedAt: String
-}
-interface Activity {
-  id: Number,
-  user: {
-    nickname: String,
-    avatar: String
-},
-  project: {
-    name: String,
-    action: String,
-    event: String
-  },
-  time: String
-}
-
-interface team {
-  id: Number,
-  name: String,
-  avatar: String
-}
-
-export default defineComponent({
-  name: 'Workplace',
-  components: {
-  },
-  setup(){
-  const tf = timeFix()
-  const userInfo = computed(() => {
-    return store.getters.userInfo
-  })
-
-  const avatar = store.state.user.info.avatar
-  const user = store.state.user.info
-
-  const projects = reactive<Project[]>([])
-  const loading = ref(true)
-  const activities = reactive<Activity[]>([])
-  const teams = ref(<team[]>[])
-
-  const nickname = computed(() => store.state.user.nickname)
-
-  const currentUser = () => {
-    return {
-      name: nickname,
-      avatar: '/avatar.jpg'
-    }
-  }
-
-
-  onMounted(
-    () =>{
-    },
-  )
-
-  return{
-    tf,
-    avatar,
-    user,
-    projects,
-    loading,
-    activities,
-    nickname,
-    currentUser,
-    userInfo
-  }
-}
-})
-
-
+<script lang="ts" setup>
+// 圆盘地盘 地盘动画
+import Comps from './comps/comps.vue';
+import Render3DMode from './lib/usethree2';
+import { onMounted, ref } from '@vue/runtime-core';
+import { getGeoJsonall } from '@/lib/getGeoJson';
+let { initMaps, intoCloud, setMapDom, setmapborder } =
+    Render3DMode('three-frame');
+let showechart = ref(false);
+const clickhandle = () => {
+  intoCloud();
+  setTimeout(() => {
+    showechart.value = true;
+  }, 5000);
+};
+onMounted(() => {
+  initMaps();
+  getGeoJsonall('100000_full').then((e) => {
+    setMapDom(e.data.features);
+  });
+  getGeoJsonall('100000').then((e) => {
+    // console.log()
+    setmapborder(e.data.features);
+  });
+});
 </script>
 
-<style lang="less" scoped>
-@import './Welcome.less';
-
-.project-list {
-  .card-title {
-    font-size: 0;
-
-    a {
-      color: rgba(0, 0, 0, 0.85);
-      margin-left: 12px;
-      line-height: 24px;
-      height: 24px;
-      display: inline-block;
-      vertical-align: top;
-      font-size: 14px;
-
-      &:hover {
-        color: #1890ff;
-      }
-    }
-  }
-
-  .card-description {
-    color: rgba(0, 0, 0, 0.45);
-    height: 44px;
-    line-height: 22px;
-    overflow: hidden;
-  }
-
-  .project-item {
-    display: flex;
-    margin-top: 8px;
-    overflow: hidden;
-    font-size: 12px;
-    height: 20px;
-    line-height: 20px;
-
-    a {
-      color: rgba(0, 0, 0, 0.45);
-      display: inline-block;
-      flex: 1 1 0;
-
-      &:hover {
-        color: #1890ff;
-      }
-    }
-
-    .datetime {
-      color: rgba(0, 0, 0, 0.25);
-      flex: 0 0 auto;
-      float: right;
-    }
-  }
-
-  .ant-card-meta-description {
-    color: rgba(0, 0, 0, 0.45);
-    height: 44px;
-    line-height: 22px;
-    overflow: hidden;
-  }
+<style scoped>
+#three-frame {
+  width: 100vw;
+  height: 100vh;
+  /* background: green; */
 }
-
-.item-group {
-  padding: 20px 0 8px 24px;
-  font-size: 0;
-
-  a {
-    color: rgba(0, 0, 0, 0.65);
-    display: inline-block;
-    font-size: 14px;
-    margin-bottom: 13px;
-    width: 25%;
-  }
+.threedom {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  /* background: #008c8c63; */
+  top: 0;
+  left: 0;
+  pointer-events: none;
 }
-
-.members {
-  a {
-    display: block;
-    margin: 12px 0;
-    line-height: 24px;
-    height: 24px;
-
-    .member {
-      font-size: 14px;
-      color: rgba(0, 0, 0, 0.65);
-      line-height: 24px;
-      max-width: 100px;
-      vertical-align: top;
-      margin-left: 12px;
-      transition: all 0.3s;
-      display: inline-block;
-    }
-
-    &:hover {
-      span {
-        color: #1890ff;
-      }
-    }
-  }
+.mountNode {
+  width: 100vw;
+  height: 100vh;
+  opacity: 0;
+  /* transition: all .8s ease-in 0s; */
 }
-
-.mobile {
-  .project-list {
-    .project-card-grid {
-      width: 100%;
-    }
-  }
-
-  .more-info {
-    border: 0;
-    padding-top: 16px;
-    margin: 16px 0 16px;
-  }
-
-  .headerContent .title .welcome-text {
-    display: none;
-  }
+.echartshow {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  box-shadow: inset 0 10px 200px 100px #273750;
+}
+.echarts {
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 </style>
