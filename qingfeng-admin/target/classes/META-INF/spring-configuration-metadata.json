@@ -1,0 +1,72 @@
+{
+  "groups": [
+    {
+      "name": "ftp",
+      "type": "com.qingfeng.ftpserver.config.YmlProperties",
+      "sourceType": "com.qingfeng.ftpserver.config.YmlProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "ftp.adminname",
+      "type": "java.lang.String",
+      "sourceType": "com.qingfeng.ftpserver.config.YmlProperties"
+    },
+    {
+      "name": "ftp.ftpport",
+      "type": "java.lang.String",
+      "sourceType": "com.qingfeng.ftpserver.config.YmlProperties"
+    },
+    {
+      "name": "ftp.homedirectory",
+      "type": "java.lang.String",
+      "sourceType": "com.qingfeng.ftpserver.config.YmlProperties"
+    },
+    {
+      "name": "ftp.maxlogins",
+      "type": "java.lang.String",
+      "sourceType": "com.qingfeng.ftpserver.config.YmlProperties"
+    },
+    {
+      "name": "ftp.passiveports",
+      "type": "java.lang.String",
+      "sourceType": "com.qingfeng.ftpserver.config.YmlProperties"
+    },
+    {
+      "name": "ftp.sqluseradmin",
+      "type": "java.lang.String",
+      "sourceType": "com.qingfeng.ftpserver.config.YmlProperties"
+    },
+    {
+      "name": "ftp.sqluserauthenticate",
+      "type": "java.lang.String",
+      "sourceType": "com.qingfeng.ftpserver.config.YmlProperties"
+    },
+    {
+      "name": "ftp.sqluserdelete",
+      "type": "java.lang.String",
+      "sourceType": "com.qingfeng.ftpserver.config.YmlProperties"
+    },
+    {
+      "name": "ftp.sqluserinsert",
+      "type": "java.lang.String",
+      "sourceType": "com.qingfeng.ftpserver.config.YmlProperties"
+    },
+    {
+      "name": "ftp.sqluserselect",
+      "type": "java.lang.String",
+      "sourceType": "com.qingfeng.ftpserver.config.YmlProperties"
+    },
+    {
+      "name": "ftp.sqluserselectall",
+      "type": "java.lang.String",
+      "sourceType": "com.qingfeng.ftpserver.config.YmlProperties"
+    },
+    {
+      "name": "ftp.sqluserupdate",
+      "type": "java.lang.String",
+      "sourceType": "com.qingfeng.ftpserver.config.YmlProperties"
+    }
+  ],
+  "hints": []
+}

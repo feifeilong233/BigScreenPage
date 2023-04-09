@@ -1,0 +1,58 @@
+{
+  "groups": [
+    {
+      "name": "qingfeng.auth",
+      "type": "com.qingfeng.framework.properties.AuthProperties",
+      "sourceType": "com.qingfeng.framework.properties.AuthProperties"
+    },
+    {
+      "name": "qingfeng.server.system",
+      "type": "com.qingfeng.framework.properties.ServerSystemProperties",
+      "sourceType": "com.qingfeng.framework.properties.ServerSystemProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "qingfeng.auth.access-token-validity-seconds",
+      "type": "java.lang.Integer",
+      "sourceType": "com.qingfeng.framework.properties.AuthProperties"
+    },
+    {
+      "name": "qingfeng.auth.anon-url",
+      "type": "java.lang.String",
+      "sourceType": "com.qingfeng.framework.properties.AuthProperties"
+    },
+    {
+      "name": "qingfeng.auth.clients",
+      "type": "com.qingfeng.framework.properties.ClientsProperties[]",
+      "sourceType": "com.qingfeng.framework.properties.AuthProperties"
+    },
+    {
+      "name": "qingfeng.auth.code",
+      "type": "com.qingfeng.framework.properties.ValidateCodeProperties",
+      "sourceType": "com.qingfeng.framework.properties.AuthProperties"
+    },
+    {
+      "name": "qingfeng.auth.refresh-token-validity-seconds",
+      "type": "java.lang.Integer",
+      "sourceType": "com.qingfeng.framework.properties.AuthProperties"
+    },
+    {
+      "name": "qingfeng.server.system.anon-url",
+      "type": "java.lang.String",
+      "description": "免认证 URI，多个值的话以逗号分隔",
+      "sourceType": "com.qingfeng.framework.properties.ServerSystemProperties"
+    },
+    {
+      "name": "qingfeng.server.system.gencode-field",
+      "type": "java.lang.String",
+      "sourceType": "com.qingfeng.framework.properties.ServerSystemProperties"
+    },
+    {
+      "name": "qingfeng.server.system.swagger",
+      "type": "com.qingfeng.framework.properties.SwaggerProperties",
+      "sourceType": "com.qingfeng.framework.properties.ServerSystemProperties"
+    }
+  ],
+  "hints": []
+}
