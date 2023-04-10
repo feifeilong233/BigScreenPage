@@ -4,7 +4,7 @@
   "scripts": {
     "serve": "vite preview",
     "build": "vue-tsc --noEmit && vite build",
-    "dev": "cross-env NODE_ENV=development vite"
+    "dev": "cross-env NODE_ENV=development vite --port 3003"
   },
   "dependencies": {
     "@ant-design-vue/pro-layout": "^3.1.13",
@@ -34,12 +34,14 @@
     "querystring": "^0.2.1",
     "store": "^2.0.12",
     "three": "0.129.0",
+    "vite-plugin-windicss": "1.6.2",
     "vue": "^3.2.16",
     "vue-clipboard3": "^1.0.1",
     "vue-cropper": "^1.0.2",
     "vue-i18n": "^9.2.0-beta.26",
     "vue-router": "^4.0.12",
-    "vuex": "^4.0.2"
+    "vuex": "^4.0.2",
+    "windicss": "3.4.2"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.1.1",

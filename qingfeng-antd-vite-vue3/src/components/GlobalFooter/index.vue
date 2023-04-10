@@ -2,10 +2,9 @@
   <global-footer
     class="footer custom-render"
     :links="[
-          { title: '青锋官网', href: 'http://www.qingfeng.plus/' },
           { title: 'Ant Design Vue', href: 'https://next.antdv.com' },
         ]"
-    copyright="2021 &copy; Andrew"
+    copyright="2023 &copy; Feilong Wen"
   />
 </template>
 

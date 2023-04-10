@@ -1,79 +1,59 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-12 19:20:41
+ * @LastEditTime: 2022-04-23 12:47:44
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \vuebig-screen\src\view\d3maps\dome\dome1.vue
+-->
 <template>
-  <div>
+  <div class="doms">
     <div id="three-frame"></div>
-    <div class="threedom">
-      <div class="mountNode" id="mountNode"></div>
-      <!--  -->
-    </div>
-    <div class="echartshow" v-if="showechart">
+    <div class="echartbox">
       <Comps></Comps>
-    </div>
-    <div class="echarts">
-      <button @click="clickhandle">asdasd</button>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import Comps from './comps.vue';
 // 圆盘地盘 地盘动画
-import Comps from './comps/comps.vue';
-import Render3DMode from './lib/usethree2';
-import { onMounted, ref } from '@vue/runtime-core';
-import { getGeoJsonall } from '@/lib/getGeoJson';
-let { initMaps, intoCloud, setMapDom, setmapborder } =
-    Render3DMode('three-frame');
-let showechart = ref(false);
-const clickhandle = () => {
-  intoCloud();
-  setTimeout(() => {
-    showechart.value = true;
-  }, 5000);
-};
-onMounted(() => {
-  initMaps();
-  getGeoJsonall('100000_full').then((e) => {
-    setMapDom(e.data.features);
-  });
-  getGeoJsonall('100000').then((e) => {
-    // console.log()
-    setmapborder(e.data.features);
-  });
-});
+import Render3DMode from './uselib/useThree1';
+import {onMounted} from '@vue/runtime-core';
+import {getGeoJsonall} from '@/lib/getGeoJson';
+
+// let {initMaps, setMapDom, setmapborder} = Render3DMode('three-frame');
+// onMounted(() => {
+//   initMaps();
+//   getGeoJsonall('100000_full').then((e) => {
+//     setMapDom(e.data.features);
+//   });
+//   getGeoJsonall('100000').then((e) => {
+//     // console.log()
+//     setmapborder(e.data.features);
+//   });
+// });
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 #three-frame {
-  width: 100vw;
+  width: 100%;
   height: 100vh;
-  /* background: green; */
 }
-.threedom {
-  width: 100vw;
+
+.doms {
+  width: 100%;
   height: 100vh;
-  position: fixed;
-  /* background: #008c8c63; */
+  background: #4d5353;
+}
+
+.echartbox {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  /* background: rgba(153, 150, 150, 0.738); */
   top: 0;
   left: 0;
   pointer-events: none;
-}
-.mountNode {
-  width: 100vw;
-  height: 100vh;
-  opacity: 0;
-  /* transition: all .8s ease-in 0s; */
-}
-.echartshow {
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  box-shadow: inset 0 10px 200px 100px #273750;
-}
-.echarts {
-  position: fixed;
-  top: 0;
-  left: 0;
 }
 </style>

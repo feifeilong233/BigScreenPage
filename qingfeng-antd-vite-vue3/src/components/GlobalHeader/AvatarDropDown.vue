@@ -14,12 +14,12 @@
           </template>
           <span>{{ $t("menu.password.settings") }}</span>
         </a-menu-item>
-        <a-menu-item v-if="menu" key="settings" @click="switchOrganize()">
-          <template #icon>
-            <SettingOutlined />
-          </template>
-          <span>{{ $t("menu.organize.switch") }}</span>
-        </a-menu-item>
+<!--        <a-menu-item v-if="menu" key="settings" @click="switchOrganize()">-->
+<!--          <template #icon>-->
+<!--            <SettingOutlined />-->
+<!--          </template>-->
+<!--          <span>{{ $t("menu.organize.switch") }}</span>-->
+<!--        </a-menu-item>-->
         <a-menu-divider v-if="menu" />
         <a-menu-item key="logout" @click="handleLogout">
           <template #icon>

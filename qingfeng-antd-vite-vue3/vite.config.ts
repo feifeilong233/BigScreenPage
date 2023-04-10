@@ -3,6 +3,7 @@ import { UserConfigExport, ConfigEnv } from 'vite'
 import {resolve} from 'path'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import WindiCSS from 'vite-plugin-windicss';
 import viteSvgIcons from 'vite-plugin-svg-icons'
 import { viteThemePlugin } from 'vite-plugin-theme';
 import { getThemeColors } from './src/utils/themeUtil'
@@ -81,6 +82,7 @@ export default ({ command }: ConfigEnv): UserConfigExport =>{
       viteThemePlugin({
         colorVariables: [...getThemeColors()],
       }),
+      WindiCSS()
     ]
   }
 }

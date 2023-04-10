@@ -54,7 +54,7 @@
     </router-view>
 
     <!-- content end -->
-    <pro-global-footer/>
+<!--    <pro-global-footer/>-->
   </pro-layout>
 </template>
 

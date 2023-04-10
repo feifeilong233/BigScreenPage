@@ -1,15 +1,15 @@
 <template>
-   <div :style="{ display: 'inline', margin: '0 8px', fontSize: '20px' }" @click="onLockScreen">
-      <a-tooltip title="锁屏">
-        <LockOutlined />
-      </a-tooltip>
-    </div>
+<!--   <div :style="{ display: 'inline', margin: '0 8px', fontSize: '20px' }" @click="onLockScreen">-->
+<!--      <a-tooltip title="锁屏">-->
+<!--        <LockOutlined />-->
+<!--      </a-tooltip>-->
+<!--    </div>-->
   <div :style="{ margin: '0 8px', fontSize: '16px', cursor: 'pointer' }" :class="wrpCls">
     <avatar-dropdown :current-user="currentUser" :class="prefixCls" />
   </div>
-  <div :style="{ display: 'flex', margin: '0 8px', fontSize: '20px', cursor: 'pointer' }" :class="wrpCls">
-    <select-lang :class="prefixCls" />
-  </div>
+<!--  <div :style="{ display: 'flex', margin: '0 8px', fontSize: '20px', cursor: 'pointer' }" :class="wrpCls">-->
+<!--    <select-lang :class="prefixCls" />-->
+<!--  </div>-->
 </template>
 
 <script lang="ts">
