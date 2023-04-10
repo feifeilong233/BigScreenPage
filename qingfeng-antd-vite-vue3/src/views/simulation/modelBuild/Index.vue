@@ -54,7 +54,7 @@ interface Activity {
   user: {
     nickname: String,
     avatar: String
-},
+  },
   project: {
     name: String,
     action: String,
@@ -74,46 +74,46 @@ export default defineComponent({
   components: {
   },
   setup(){
-  const tf = timeFix()
-  const userInfo = computed(() => {
-    return store.getters.userInfo
-  })
+    const tf = timeFix()
+    const userInfo = computed(() => {
+      return store.getters.userInfo
+    })
 
-  const avatar = store.state.user.info.avatar
-  const user = store.state.user.info
+    const avatar = store.state.user.info.avatar
+    const user = store.state.user.info
 
-  const projects = reactive<Project[]>([])
-  const loading = ref(true)
-  const activities = reactive<Activity[]>([])
-  const teams = ref(<team[]>[])
+    const projects = reactive<Project[]>([])
+    const loading = ref(true)
+    const activities = reactive<Activity[]>([])
+    const teams = ref(<team[]>[])
 
-  const nickname = computed(() => store.state.user.nickname)
+    const nickname = computed(() => store.state.user.nickname)
 
-  const currentUser = () => {
-    return {
-      name: nickname,
-      avatar: '/avatar.jpg'
+    const currentUser = () => {
+      return {
+        name: nickname,
+        avatar: '/avatar.jpg'
+      }
+    }
+
+
+    onMounted(
+        () =>{
+        },
+    )
+
+    return{
+      tf,
+      avatar,
+      user,
+      projects,
+      loading,
+      activities,
+      nickname,
+      currentUser,
+      userInfo
     }
   }
-
-
-  onMounted(
-    () =>{
-    },
-  )
-
-  return{
-    tf,
-    avatar,
-    user,
-    projects,
-    loading,
-    activities,
-    nickname,
-    currentUser,
-    userInfo
-  }
-}
 })
 
 

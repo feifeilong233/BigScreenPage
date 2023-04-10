@@ -7,7 +7,7 @@
   <div :style="{ margin: '0 8px', fontSize: '16px', cursor: 'pointer' }" :class="wrpCls">
     <avatar-dropdown :current-user="currentUser" :class="prefixCls"/>
   </div>
-  <div :style="{ display: 'inline', margin: '0 8px', fontSize: '20px', float: 'right' }" @click="onLockMode">
+  <div :style="{ display: 'inline', margin: '0 8px', fontSize: '20px', float: 'right' }" @click="onLockModel">
     <a-tooltip title="锁屏">
       <lock-outlined v-if="isLocked" />
       <unlock-outlined v-if="!isLocked" />
@@ -67,7 +67,7 @@ export default defineComponent({
 
     const isLocked = ref(true);
 
-    const onLockMode = () => {
+    const onLockModel = () => {
       const echartbox = document.querySelector('.echartbox');
       if (echartbox) {
         // @ts-ignore
@@ -90,7 +90,7 @@ export default defineComponent({
       wrpCls,
       currentUser,
       onLockScreen,
-      onLockMode,
+      onLockModel,
       isLocked
     }
   }

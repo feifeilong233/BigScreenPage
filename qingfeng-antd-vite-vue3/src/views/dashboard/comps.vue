@@ -157,6 +157,7 @@
 </template>
 
 <script lang="ts" setup>
+import 'virtual:windi.css';
 import { defineAsyncComponent, ref } from 'vue';
 import {
   baroption,
