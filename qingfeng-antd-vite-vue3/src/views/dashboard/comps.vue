@@ -121,8 +121,8 @@
         </div>
       </div>
       <div class="chartsdoms_cons_rights space-y-2 w-22vw">
-        <div class="box1 enter-x-r w-22vw">
-          <div class="title1">测试指数</div>
+        <div @click="viewRoadDetail" role="button" class="box1 enter-x-r w-22vw">
+          <div class="title1">路面结构与材料</div>
           <div class="h-25vh">
             <EchartTemp
               elementName="CriOption"
@@ -166,9 +166,15 @@ import {
   ApOption,
   WaterOptions,
 } from './datas';
+import {useRouter} from "vue-router";
+const router = useRouter();
 const EchartTemp = defineAsyncComponent(
   () => import('@/components/echartTemp.vue'),
 );
+const viewRoadDetail = () => {
+  console.log('/')
+  router.push({ path: '/chart/workplace' })
+};
 let option = ref();
 option.value = {
   grid: {

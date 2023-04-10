@@ -3,7 +3,7 @@
     v-model:collapsed="baseState.collapsed"
     v-model:selectedKeys="baseState.selectedKeys"
     v-model:openKeys="baseState.openKeys"
-    :menu-data="menuData"
+    :menu-data="filteredMenuData"
     v-bind="settings"
     :loading="loading"
     :breadcrumb="{ routes: breadcrumb }"
@@ -87,8 +87,9 @@ export default defineComponent({
     const store = useStore()
     const { t } = useI18n()
     const { menuData } = getMenuData(clearMenuItem(router.getRoutes()));
-    // console.log('BasicLayout..',menuData)
-    const baseState = reactive<Omit<RouteContextProps, 'menuData'>>({
+    console.log('BasicLayout..',menuData)
+    const filteredMenuData = menuData.filter(item => item.path !== '/chart');
+    const baseState = reactive<Omit<RouteContextProps, 'filteredMenuData'>>({
       selectedKeys: [],
       openKeys: [],
       // default
@@ -157,6 +158,7 @@ export default defineComponent({
       t,
       watermarkContent,
       menuData,
+      filteredMenuData,
       baseState,
       settings,
       loading,

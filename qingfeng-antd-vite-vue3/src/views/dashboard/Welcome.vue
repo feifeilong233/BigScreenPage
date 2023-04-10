@@ -8,7 +8,7 @@
 -->
 <template>
   <div class="doms">
-    <div id="three-frame"></div>
+<!--    <div id="three-frame"></div>-->
     <div class="echartbox">
       <Comps></Comps>
     </div>
@@ -54,6 +54,6 @@ import {getGeoJsonall} from '@/lib/getGeoJson';
   /* background: rgba(153, 150, 150, 0.738); */
   top: 0;
   left: 0;
-  pointer-events: none;
+  //pointer-events: none;
 }
 </style>

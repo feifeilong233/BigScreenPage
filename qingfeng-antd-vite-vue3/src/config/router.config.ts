@@ -100,7 +100,7 @@ export const asyncRouterMap = [
         ]
       },
     ]
-  },      
+  },
   {
     path: "/:pathMatch(.*)*",
     redirect: '/404',
@@ -113,6 +113,10 @@ export const asyncRouterMap = [
  * @type { *[] }
  */
 export const constantRouterMap: CustemRouter[] = [
+  // {
+  //   path: '/dtChart/Workplace',
+  //   component: () => import('@/views/dtChart/Workplace.vue')
+  // },
   {
     path: '/user',
     component: UserLayout,
