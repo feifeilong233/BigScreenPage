@@ -120,7 +120,6 @@
           </div>
         </div>
       </div>
-      <div class="map" id="map" style="background-color:#90d866; color: #b54102; height:100%; width:100%;"></div>
       <div class="chartsdoms_cons_rights space-y-2 w-22vw">
         <div @click="viewRoadDetail" role="button" class="box1 enter-x-r w-22vw">
           <div class="title1">路面结构与材料</div>
@@ -168,12 +167,6 @@ import {
   WaterOptions,
 } from './datas';
 import {useRouter} from "vue-router";
-import Render3DMode from './uselib/useThree2';
-import {onMounted} from '@vue/runtime-core';
-
-onMounted(() => {
-  Render3DMode('map');
-});
 
 const router = useRouter();
 const EchartTemp = defineAsyncComponent(

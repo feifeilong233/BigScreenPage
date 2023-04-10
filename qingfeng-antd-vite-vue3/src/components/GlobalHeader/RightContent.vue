@@ -1,25 +1,31 @@
 <template>
-<!--   <div :style="{ display: 'inline', margin: '0 8px', fontSize: '20px' }" @click="onLockScreen">-->
-<!--      <a-tooltip title="锁屏">-->
-<!--        <LockOutlined />-->
-<!--      </a-tooltip>-->
-<!--    </div>-->
+  <!--   <div :style="{ display: 'inline', margin: '0 8px', fontSize: '20px' }" @click="onLockScreen">-->
+  <!--      <a-tooltip title="锁屏">-->
+  <!--        <LockOutlined />-->
+  <!--      </a-tooltip>-->
+  <!--    </div>-->
   <div :style="{ margin: '0 8px', fontSize: '16px', cursor: 'pointer' }" :class="wrpCls">
-    <avatar-dropdown :current-user="currentUser" :class="prefixCls" />
+    <avatar-dropdown :current-user="currentUser" :class="prefixCls"/>
   </div>
-<!--  <div :style="{ display: 'flex', margin: '0 8px', fontSize: '20px', cursor: 'pointer' }" :class="wrpCls">-->
-<!--    <select-lang :class="prefixCls" />-->
-<!--  </div>-->
+  <div :style="{ display: 'inline', margin: '0 8px', fontSize: '20px', float: 'right' }" @click="onLockMode">
+    <a-tooltip title="锁屏">
+      <lock-outlined v-if="isLocked" />
+      <unlock-outlined v-if="!isLocked" />
+    </a-tooltip>
+  </div>
+  <!--  <div :style="{ display: 'flex', margin: '0 8px', fontSize: '20px', cursor: 'pointer' }" :class="wrpCls">-->
+  <!--    <select-lang :class="prefixCls" />-->
+  <!--  </div>-->
 </template>
 
 <script lang="ts">
-import {defineComponent, computed, onMounted, reactive, UnwrapRef} from 'vue'
+import {defineComponent, computed, onMounted, reactive, UnwrapRef, ref} from 'vue'
 import AvatarDropdown from './AvatarDropdown.vue'
 import SelectLang from '@/components/SelectLang'
 import storage from 'store';
 // import store from '@/store';
-import { useStore } from 'vuex';
-import { SET_LOCK_SCREEN } from '@/store/mutation-types'
+import {useStore} from 'vuex';
+import {SET_LOCK_SCREEN} from '@/store/mutation-types'
 
 export default defineComponent({
   name: 'RightContent',
@@ -45,8 +51,8 @@ export default defineComponent({
       required: false
     }
   },
-  setup(props){
-    const currentUser: UnwrapRef<{[p: string]: any}> = reactive({name: String})
+  setup(props) {
+    const currentUser: UnwrapRef<{ [p: string]: any }> = reactive({name: String})
     const wrpCls = computed(() => {
       return {
         'ant-pro-global-header-index-right': true,
@@ -56,19 +62,36 @@ export default defineComponent({
     const store = useStore();
     const onLockScreen = () => {
       store.commit(SET_LOCK_SCREEN, true)
-      storage.set(SET_LOCK_SCREEN,true);
+      storage.set(SET_LOCK_SCREEN, true);
     }
 
-    onMounted(() =>{
-      setTimeout( () => {
+    const isLocked = ref(true);
+
+    const onLockMode = () => {
+      const echartbox = document.querySelector('.echartbox');
+      if (echartbox) {
+        // @ts-ignore
+        const currentPointerEvents = echartbox.style.pointerEvents;
+        // @ts-ignore
+        echartbox.style.pointerEvents = currentPointerEvents === 'none' ? 'auto' : 'none';
+        const isLock = isLocked.value;
+        isLocked.value = !isLock;
+      }
+    };
+
+
+    onMounted(() => {
+      setTimeout(() => {
         currentUser.name = store.getters.nickname
       }, 1000)
     })
 
-    return{
+    return {
       wrpCls,
       currentUser,
-      onLockScreen
+      onLockScreen,
+      onLockMode,
+      isLocked
     }
   }
 })

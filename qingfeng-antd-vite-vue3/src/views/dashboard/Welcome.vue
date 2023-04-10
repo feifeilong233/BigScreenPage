@@ -12,15 +12,20 @@
     <div class="echartbox">
       <Comps></Comps>
     </div>
+    <div id="map"></div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import Comps from './comps.vue';
 // 圆盘地盘 地盘动画
-import Render3DMode from './uselib/useThree1';
+import Render3DMode from './uselib/useThree2';
 import {onMounted} from '@vue/runtime-core';
 import {getGeoJsonall} from '@/lib/getGeoJson';
+
+onMounted(() => {
+  Render3DMode('map');
+});
 
 // let {initMaps, setMapDom, setmapborder} = Render3DMode('three-frame');
 // onMounted(() => {
@@ -36,7 +41,7 @@ import {getGeoJsonall} from '@/lib/getGeoJson';
 </script>
 
 <style lang="less" scoped>
-#three-frame {
+#map {
   width: 100%;
   height: 100vh;
 }
