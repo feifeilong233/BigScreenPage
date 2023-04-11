@@ -113,7 +113,7 @@ export const baroption = {
         axisLabel: {
           show: true,
           textStyle: {
-            color: '#c9dcf5',
+            color: '#ffb137',
             fontSize: 20,
           },
         },
@@ -191,7 +191,7 @@ export const baroption = {
           itemStyle: {
             normal: {
               barBorderRadius: 5,
-              color: '#48b1eb',
+              color: '#ffb137',
               fontSize: 10,
             },
           },
@@ -209,8 +209,8 @@ export const baroption = {
 };
 
 export const pieOpsionts = (
-  color = '#008c8c',
-  color2 = '#fde68a',
+  color = '#ffb137',
+  color2 = '#ffb137',
   num = 10,
 ) => {
   return {
@@ -310,9 +310,9 @@ var trafficWay = [
 var data = [];
 var data1 = [];
 var color = [
-  '#54b2c4',
-  '#00FFE3',
-  '#257fc3',
+  '#ffb137',
+  '#fb923c',
+  '#f87171',
   '#c3e8f0',
   '#0869b2',
   '#0869b2',
@@ -427,7 +427,7 @@ export const lineOptions = {
     trigger: 'axis',
     axisPointer: {
       lineStyle: {
-        color: '#c9dcf5',
+        color: '#ffb137',
       },
     },
   },
@@ -528,7 +528,7 @@ export const lineOptions = {
             [
               {
                 offset: 1,
-                color: 'rgba(156,107,211,0.9)',
+                color: '#f87171',
               },
               {
                 offset: 1,
@@ -543,7 +543,7 @@ export const lineOptions = {
       },
       itemStyle: {
         normal: {
-          color: 'rgba(156,107,211,1)',
+          color: '#f87171',
           borderColor: 'rgba(20,132,159,0.27)',
           borderWidth: 12,
         },
@@ -572,7 +572,7 @@ export const lineOptions = {
             [
               {
                 offset: 1,
-                color: '#3EACE5',
+                color: '#ffb137',
               },
               {
                 offset: 1,
@@ -587,7 +587,7 @@ export const lineOptions = {
       },
       itemStyle: {
         normal: {
-          color: '#54b2c4',
+          color: '#ffb137',
           borderColor: 'rgba(239, 113,70,0.2)',
           borderWidth: 12,
         },
@@ -757,7 +757,7 @@ export const ApOption = {
             },
             {
               offset: 1,
-              color: '#4693EC',
+              color: '#ffb137',
             },
           ]),
         },
@@ -806,11 +806,7 @@ export const WaterOptions = {
       type: 'liquidFill',
       radius: '78%',
       center: ['50%', '50%'],
-      color: [
-        'rgba(1,157,217,0.6)',
-        'rgba(1,157,217,0.6)',
-        'rgba(1,157,217,0.6)',
-      ], //水波
+      color: ['#ffb137', '#ffb137', '#ffb137'], //水波
       data: [0.5, 0.5, 0.5], // data个数代表波浪数
       label: {
         normal: {
@@ -828,7 +824,7 @@ export const WaterOptions = {
       outline: {
         show: true,
         itemStyle: {
-          borderColor: 'rgba(1,157,217,0.6)',
+          borderColor: '#ffb137',
           borderWidth: 2,
         },
         borderDistance: 3,
