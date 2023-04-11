@@ -1,3 +1,4 @@
+// @ts-nocheck
 import request from '@/utils/request'
 import querystring from 'querystring'
 
@@ -12,7 +13,7 @@ export function getListPage (params) {
     }
   })
 }
-  
+
 //保存或更新数据
 export function saveOrUpdate (params) {
   let url = '/system/dictionary';

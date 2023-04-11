@@ -8,27 +8,6 @@
       </a-col>
       <a-col :md="24" :lg="18">
         <a-card :bordered="false">
-          <div class="table-page-search-wrapper">
-            <a-form layout="inline">
-              <a-row :gutter="48" :style="{width:'100%'}">
-
-                <a-col :md="6" :sm="24">
-                  <a-form-item label="字典名称">
-                    <a-input v-model:value="queryParam.name" placeholder="字典名称" />
-                  </a-form-item>
-                </a-col>
-                <a-col :md="6" :sm="24">
-                  <a-button type="primary" @click="table.refresh(true)"
-                    >查询</a-button
-                  >
-                  <a-button style="margin-left: 8px" @click="resetQueryParam"
-                    >重置</a-button
-                  >
-                </a-col>
-              </a-row>
-            </a-form>
-          </div>
-
           <div class="table-operator">
             <a-button type="primary" @click="handleAdd" v-action:tdemo:add
               ><plus-outlined />新建</a-button
@@ -46,6 +25,42 @@
           </div>
 
           <a-table
+              v-if="isParent"
+              :columns="columns2"
+              :row-key="(record) => record.id"
+              :data-source="dataSource"
+              :pagination="pagination"
+              :loading="loading"
+              :rowSelection="rowSelection"
+              @change="handleTableChange"
+          >
+            <template #bodyCell="{ column, text, record }">
+              <span v-if="column.dataIndex === 'operation'">
+                <a-button
+                    size="small"
+                    v-action:tdemo:info
+                    @click="() => handleInfo(record)"
+                >详情</a-button
+                >
+                <a-button
+                    size="small"
+                    type="primary"
+                    v-action-dauth:[{...record,auth:`tdemo:edit`}]
+                    @click="() => handleEdit(record)"
+                >编辑</a-button
+                >
+                <a-button
+                    size="small"
+                    type="danger"
+                    v-action-dauth:[{...record,auth:`tdemo:del`}]
+                    @click="() => handleDel(record)"
+                >删除</a-button
+                >
+              </span>
+            </template>
+          </a-table>
+
+          <a-table
             :columns="columns"
             :row-key="(record) => record.id"
             :data-source="dataSource"
@@ -54,15 +69,10 @@
             :rowSelection="rowSelection"
             @change="handleTableChange"
             bordered
+            v-else
           >
             <template #bodyCell="{ column, text, record }">
               <span v-if="column.dataIndex === 'operation'">
-                <a-button
-                  size="small"
-                  v-action:tdemo:info
-                  @click="() => handleInfo(record)"
-                  >详情</a-button
-                >
                 <a-button
                   size="small"
                   type="primary"
@@ -77,22 +87,9 @@
                   @click="() => handleDel(record)"
                   >删除</a-button
                 >
-                <a-button
-                  size="small"
-                  type="danger"
-                  v-action:tdemo:status
-                  v-show="record.status == '0'"
-                  @click="() => editStatus(record.id, '1')"
-                  >禁用</a-button
-                >
-                <a-button
-                  size="small"
-                  type="primary"
-                  v-action:tdemo:status
-                  v-show="record.status == '1'"
-                  @click="() => editStatus(record.id, '0')"
-                  >启用</a-button
-                >
+              </span>
+              <span v-if="column.dataIndex === 'code'">
+                {{ getCode(record.code) }}
               </span>
             </template>
           </a-table>
@@ -105,14 +102,6 @@
             :model="mdl"
             @cancel="handleCancel"
             @ok="handleOk"
-          />
-          <info
-            v-if="visibleInfo"
-            ref="infoModal"
-            :visible="visibleInfo"
-            :loading="confirmLoading"
-            :model="mdl"
-            @cancel="handleCancel"
           />
         </a-card>
       </a-col>
@@ -128,7 +117,6 @@ import {
   unref,
   reactive,
   toRaw,
-  createVNode,
   onMounted,
 } from "vue";
 import { message, Form, Modal } from "ant-design-vue";
@@ -138,7 +126,6 @@ import { findDataAuth } from "@/core/baseAction";
 import { findDictionaryList } from "@/api/system/dictionary";
 
 import Edit from "./Edit.vue";
-import Info from "./Info.vue";
 import Tree from "./Tree.vue";
 
 interface QueryParam {}
@@ -149,7 +136,6 @@ export default defineComponent({
   components: {
     STable,
     Edit,
-    Info,
     Tree,
   },
   setup() {
@@ -160,51 +146,58 @@ export default defineComponent({
     const treeData = ref({});
     const columns = [
       {
-        title: "字典名称",
+        title: "#",
+        dataIndex: "short_name",
+        width: "40px",
+      },
+      {
+        title: "路面层数",
         dataIndex: "name",
         ellipsis: true,
       },
-
       {
-        title: "字典简称",
+        title: "路面材料",
+        dataIndex: "code",
+        ellipsis: true,
+        width: "170px",
+      },
+      {
+        title: "弹性模量",
+        dataIndex: "classify",
+        ellipsis: true,
+      },
+      {
+        title: "泊松比",
+        dataIndex: "remark",
+        ellipsis: true,
+      },
+      {
+        title: "操作",
+        dataIndex: "operation",
+        width: "190px",
+      },
+    ];
+
+    const columns2 = [
+      {
+        title: "#",
         dataIndex: "short_name",
-        ellipsis: true,
-        customRender: (record) => {
-          if(record.value=='0'){
-            return '北京';
-          }
-          if(record.value=='1'){
-            return '上海';
-          }
-          if(record.value=='2'){
-            return '深圳';
-          }
-        },
       },
-
       {
-        title: "字典编码",
-        dataIndex: "code_name",
+        title: "路面名称",
+        dataIndex: "name",
         ellipsis: true,
       },
-
       {
-        title: "分类",
-        dataIndex: "classify_name",
+        title: "路面层数",
+        dataIndex: "child_num",
         ellipsis: true,
       },
-
-      {
-        title: "排序",
-        dataIndex: "order_by",
-        ellipsis: true,
-      },
-
       {
         title: "操作",
         dataIndex: "operation",
         scopedSlots: { customRender: "operation" },
-        width: "280px",
+        width: "200px",
       },
     ];
 
@@ -225,6 +218,21 @@ export default defineComponent({
 
     onMounted(() => {
       loadData({});
+      initData();
+    });
+
+    const code_data = ref([]);
+
+    const initData = () => {
+      findDictionaryList({parent_code: 'lmcl'}).then((response) => {
+        code_data.value = response.data.data;
+      })
+    }
+
+    // 计算属性，根据record.code翻译出对应的code值
+    const getCode = computed(() => (code) => {
+      const item = code_data.value.find((item) => item.id === code);
+      return item ? item.name : code;
     });
 
     const formRef = reactive(<QueryParam>{});
@@ -422,7 +430,14 @@ export default defineComponent({
         });
       }
     };
+
+    const isParent = ref(false);
+
     const selectTree = (id, name) => {
+      isParent.value = false;
+      if(id == '1') {
+        isParent.value = true;
+      }
       treeData.value = {
         parent_id: id,
         parent_name: name,
@@ -440,6 +455,7 @@ export default defineComponent({
       createModal,
       modal,
       columns,
+      columns2,
       formRef,
       resetFields,
       validate,
@@ -465,6 +481,9 @@ export default defineComponent({
       child,
       dataSource,
       handleTableChange,
+      isParent,
+      code_data,
+      getCode
     };
   },
 });

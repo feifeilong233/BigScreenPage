@@ -7,13 +7,14 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
  * @ProjectName Tdemo
  * @author Administrator
  * @version 1.0.0
- * @Description 字典信息
+ * @Description 路面信息
  * @createTime 2022/1/19 0019 22:54
  */
 @Data
@@ -33,17 +34,17 @@ public class Tdemo implements Serializable {
     @TableField("type")
     private String type;
     /**
-    * 字典名称
+    * 路面名称/层数
     */
     @TableField("name")
     private String name;
     /**
-    * 字典简称
+    * 路面层数
     */
     @TableField("short_name")
     private String short_name;
     /**
-    * 字典编码
+    * 路面材料
     */
     @TableField("code")
     private String code;
@@ -53,7 +54,7 @@ public class Tdemo implements Serializable {
     @TableField("status")
     private String status;
     /**
-    * 分类
+    * 弹性模量
     */
     @TableField("classify")
     private String classify;
@@ -63,7 +64,7 @@ public class Tdemo implements Serializable {
     @TableField("order_by")
     private String order_by;
     /**
-    * 备注
+    * 泊松比
     */
     @TableField("remark")
     private String remark;
@@ -100,22 +101,10 @@ public class Tdemo implements Serializable {
     private String parent_id;
 
     @TableField(exist = false)
-    private String parent_name;
-
-    @TableField(exist = false)
-    private String start_time;
-
-    @TableField(exist = false)
-    private String end_time;
-
-    @TableField(exist = false)
     private List<String> auth_organize_ids;
 
     @TableField(exist = false)
     private String auth_user;
-
-    @TableField(exist = false)
-    private String ids;
 
     @TableField(exist = false)
     private String child_num;

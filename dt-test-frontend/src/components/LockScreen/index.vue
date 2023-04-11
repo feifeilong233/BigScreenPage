@@ -127,8 +127,11 @@ export default defineComponent({
     const lockImg = ref(null);
     onMounted(async () => {
       indexdb.selectData("indexDBname", "tablename", "indexkey", (res) => {
-        const bg = res.data.lockImg;
-        lockImg.value = bg || initBg;
+        if (res?.data?.lockImg) { // 确保res.data存在且lockImg有值
+          lockImg.value = res.data.lockImg;
+        } else {
+          lockImg.value = initBg;
+        }
       }); //获取数据-查
     });
 
