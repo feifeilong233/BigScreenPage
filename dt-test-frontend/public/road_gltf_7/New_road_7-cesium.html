@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no" />
+    <title>BimAngle.com - Trial version</title>
+    <script src="../lib-cesium/Cesium.js"></script>
+    <style>
+        @import url(../lib-cesium/Widgets/widgets.css);
+
+        html, body, #cesiumContainer {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div id="cesiumContainer"></div>
+    <script>
+        var url = './New_road_7.gltf';
+        var longitude = 116.432998657227;
+        var latitude = 39.9160003662109;
+        var height = 0;
+
+        //set home view
+        Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90);
+
+        //Please replace it with your own token
+        const TIANDITU_TOKEN = '01e768fa9e1bcf33ae174c9231479793';
+
+        var options = {
+            // Google Maps (Has been blocked)
+            // imageryProvider: new Cesium.UrlTemplateImageryProvider({ url: "http://mt1.google.cn/vt/lyrs=s&hl=zh-CN&x={x}&y={y}&z={z}&s=Gali" }),
+
+            // TianDiTu(https://www.tianditu.gov.cn/) - China Only
+            imageryProvider: new Cesium.WebMapTileServiceImageryProvider({
+                url: 'http://t0.tianditu.com/img_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=img&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles&tk=' + TIANDITU_TOKEN,
+                layer: 'tdtBasicLayer',
+                style: 'default',
+                format: 'tiles',
+                tileMatrixSetID: 'GoogleMapsCompatible',
+                show: true,
+                maximumLevel: 18
+            }),
+        };
+        var viewer = new Cesium.Viewer('cesiumContainer', options);
+        var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(
+            Cesium.Cartesian3.fromDegrees(longitude, latitude, height)
+        );
+        var primitive = viewer.scene.primitives.add(Cesium.Model.fromGltf({
+            url: url,
+            modelMatrix: modelMatrix,
+            scale: 1.0,
+            dequantizeInShader: false,
+            minimumPixelSize: 1.0
+        }));
+		
+        primitive.readyPromise.then(function(model){
+            var center = new Cesium.Cartesian3();
+            Cesium.Matrix4.multiplyByPoint(model.modelMatrix, model.boundingSphere.center, center);
+            var boundingSphere = new Cesium.BoundingSphere(center, model.boundingSphere.radius * 1.5);			
+			
+            viewer.camera.flyToBoundingSphere(boundingSphere);
+        });
+		
+        var selectedEntity = new Cesium.Entity();
+        var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+        handler.setInputAction(
+            function (movement) {
+                var pick = viewer.scene.pick(movement.position);
+                if (Cesium.defined(pick) && Cesium.defined(pick.node)) {
+                    var node = pick.primitive.gltf.nodes[pick.node.id];
+                    selectedEntity.name = node.name || "<null>";
+                    selectedEntity.description = 'Loading <div class="cesium-infoBox-loading"></div>';
+                    viewer.selectedEntity = selectedEntity;
+                    if(node.extras){
+                        selectedEntity.description = '<table class="cesium-infoBox-defaultTable"><tbody>' +
+                            '<tr><th>DbId</th><td>' + node.extras.DbId + '</td></tr>' +
+                            '<tr><th>ExId</th><td>' + node.extras.ExId + '</td></tr>' +
+                            '</tbody></table>';
+                    }else{
+                        selectedEntity.description = '<table class="cesium-infoBox-defaultTable"><tbody>' +
+                            '</tbody></table>';
+                    }
+                }
+            },
+            Cesium.ScreenSpaceEventType.LEFT_CLICK
+        );
+
+    </script>
+</body>
+</html>

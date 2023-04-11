@@ -13,17 +13,31 @@
       </div>
     </div>
     <div class="echartsdoms_cons w-full flex justify-between">
-      <div id="map"></div>
+      <div id="three-frame"></div>
       <div class="chartsdoms_cons_rights space-y-2 w-22vw">
         <div class="box1 enter-x-r w-22vw">
           <div class="title1">测试指数</div>
-          <div class="h-45vh">
-
+          <div class="h-40vh box-body">
+            <a-row>
+              <a-col :span="12">
+                <a-slider @change="onChange" v-model:value="inputValue" :min="0" :max="1" :step="0.01" />
+              </a-col>
+              <a-col :span="4">
+                <a-input-number
+                    id="text1"
+                    v-model:value="inputValue"
+                    :min="0"
+                    :max="1"
+                    :step="0.01"
+                    style="margin-left: 16px"
+                />
+              </a-col>
+            </a-row>
           </div>
         </div>
         <div class="box1 enter-x-r w-22vw">
           <div class="title1">测试指数</div>
-          <div class="h-45vh">
+          <div class="h-40vh">
             <EchartTemp
               elementName="ApOption"
               :stateData="ApOption"
@@ -39,6 +53,7 @@
 <script lang="ts" setup>
 import 'virtual:windi.css';
 import { defineAsyncComponent, ref } from 'vue';
+import {onMounted} from '@vue/runtime-core';
 import {
   baroption,
   pieOpsionts,
@@ -48,7 +63,12 @@ import {
   WaterOptions,
 } from './datas';
 import {useRouter} from "vue-router";
+import Render3DMode from './uselib/useThree2';
+let {onChange} = Render3DMode('three-frame');
 
+onMounted(() => {
+  Render3DMode('three-frame');
+});
 const router = useRouter();
 const EchartTemp = defineAsyncComponent(
   () => import('@/components/echartTemp.vue'),
@@ -83,7 +103,7 @@ option.value = {
 </script>
 
 <style lang="less" scoped>
-#map {
+#three-frame {
   width: 100%;
   height: 100%;
   background: rgba(153, 150, 150, 0.738);
@@ -227,6 +247,9 @@ option.value = {
     .chartsdoms_cons_rights {
       .box1 {
         .maobg;
+        .box-body {
+          padding: 24px;
+        }
       }
     }
   }
