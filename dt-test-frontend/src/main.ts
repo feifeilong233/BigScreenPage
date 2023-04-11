@@ -10,7 +10,7 @@ import ProLayout, { PageContainer } from '@ant-design-vue/pro-layout'
 import './style/global.less' // global style
 import permission from './permission'
 import router from '@/router'
-import { Tree ,Transfer } from 'ant-design-vue'
+import { Tree, Transfer, Slider } from 'ant-design-vue'
 //导入所有图标库
 import * as Icons from "@ant-design/icons-vue";
 
@@ -28,6 +28,7 @@ vueApp.use(lazyApp)
 vueApp.use(bootstrap)
 vueApp.use(Tree)
 vueApp.use(Transfer)
+vueApp.use(Slider)
 vueApp.use(permission)
 
 // 全局指令

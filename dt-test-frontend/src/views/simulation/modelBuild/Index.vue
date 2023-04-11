@@ -2,7 +2,7 @@
   <div>
     <a-row>
       <a-col :span="12">
-        <a-slider style="width: 100%; height: 100%" v-model:value="inputValue1" :min="1" :max="20" />
+        <a-slider v-model:value="inputValue1" :min="1" :max="20" />
       </a-col>
       <a-col :span="4">
         <a-input-number v-model:value="inputValue1" :min="1" :max="20" style="margin-left: 16px" />
