@@ -7,27 +7,37 @@ import {ref} from "vue";
 function Render3DMode(idNames = 'three-frame') {
     let scene, camera, controls;
     let idName = ref(idNames);
-
-    scene = new THREE.Scene();
-    const width = document.getElementById(idName.value)?.offsetWidth;//窗口宽度
-    const height = document.getElementById(idName.value)?.offsetHeight;//窗口高度
-
-    camera = new THREE.PerspectiveCamera(85, width / height, 0.1, 1000000);
-    camera.position.set(0, 20, 80);
-    camera.lookAt(scene.position);
-
-    //灯光效果
-    const point = new THREE.PointLight(0xffffff);
-    point.position.set(400, 200, 300);
-    scene.add(point);
-    const ambient = new THREE.AmbientLight(0xffffff);
-    scene.add(ambient);
-
     //创建场景渲染
     const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(width, height);
-    renderer.setClearColor(0xb9d3ff,1);
-    document.getElementById(idName.value)?.appendChild(renderer.domElement);
+    //添加gltf
+    let loader = new GLTFLoader()
+
+    const initMode = () => {
+        scene = new THREE.Scene();
+        const width = document.getElementById(idName.value)?.offsetWidth;//窗口宽度
+        const height = document.getElementById(idName.value)?.offsetHeight;//窗口高度
+
+        camera = new THREE.PerspectiveCamera(85, width / height, 0.1, 1000000);
+        camera.position.set(0, 20, 80);
+        camera.lookAt(scene.position);
+
+        //灯光效果
+        const point = new THREE.PointLight(0xffffff);
+        point.position.set(400, 200, 300);
+        scene.add(point);
+        const ambient = new THREE.AmbientLight(0xffffff);
+        scene.add(ambient);
+
+        renderer.setSize(width, height);
+        renderer.setClearColor(0xb9d3ff,1);
+        document.getElementById(idName.value)?.appendChild(renderer.domElement);
+
+        loader.load('/road_gltf_7/New_road_7.gltf', (gltf) => {
+            scene.add(gltf.scene);
+            mouseMove();
+            animate();
+        });
+    }
 
     // 渲染内容
     const render = () => {
@@ -38,14 +48,6 @@ function Render3DMode(idNames = 'three-frame') {
         controls = new OrbitControls(camera, renderer.domElement); //创建控件对象
         controls.addEventListener('change', render);
     };
-
-    //添加gltf
-    const loader = new GLTFLoader()
-    loader.load('/road_gltf_7/New_road_7.gltf', (gltf) => {
-        scene.add(gltf.scene);
-        mouseMove();
-        animate();
-    });
 
     // 压路机动画
     let dir = 1;
@@ -161,7 +163,7 @@ function Render3DMode(idNames = 'three-frame') {
                 console.log("*********" + i);
                 let n = 0;
                 while (n < i.length) {
-                    ChangeTexture(obj, i[n], "/road_gltf_7/" + texture[te[j] - 1]);
+                    // ChangeTexture(obj, i[n], "/road_gltf_7/" + texture[te[j] - 1]);
                     ChangePosition(obj, i[n], z);
                     ChangeDepth(obj, i[n], H[j]);
                     n = n + 1;
@@ -184,7 +186,7 @@ function Render3DMode(idNames = 'three-frame') {
         });
     }
 
-    return { onChange };
+    return { initMode,onChange };
 }
 
 export default Render3DMode;
