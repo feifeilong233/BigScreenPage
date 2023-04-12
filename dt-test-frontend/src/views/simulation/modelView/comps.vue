@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="echartsdoms_cons w-full flex justify-between">
-      <div id="three-frame"></div>
+      <div id="map"></div>
       <div class="chartsdoms_cons_rights space-y-2 w-22vw">
         <div class="box1 enter-x-r w-22vw">
           <a-card class="h-45vh" title="测试指数" size="small">
@@ -51,10 +51,13 @@
 import 'virtual:windi.css';
 import {defineAsyncComponent, ref} from 'vue';
 import {onMounted} from '@vue/runtime-core';
+import Render3DEcharts from './useEchart.ts'
 
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
+import {CreateConLabel, CreateLabel} from "@/views/dashboard/lib/spritetext";
+import border1 from "@/assets/bgs.png";
 
 let roadValue = ref([]);
 roadValue.value = [
@@ -86,10 +89,11 @@ roadValue.value = [
 
 onMounted(() => {
   initMode();
+  renderEcharts();
 });
 
 let scene, camera, controls;
-let idName = ref('three-frame');
+let idName = ref('map');
 //创建场景渲染
 const renderer = new THREE.WebGLRenderer();
 //添加gltf
@@ -120,6 +124,8 @@ const initMode = () => {
     mouseMove();
     animate();
   });
+
+  addEventListener('click', onMouseClick);
 }
 
 // 渲染内容
@@ -135,6 +141,10 @@ const mouseMove = () => {
 // 压路机动画
 let dir = 1;
 const animate = () => {
+  if (selectObject != undefined) {
+    console.log(selectObject);
+  }
+
   render();
   const car = scene.children[2].children[0].children[0].children;
   const i = [car[0].position.y, car[1].position.y, car[2].position.y, car[3].position.y, car[4].position.y];
@@ -161,6 +171,7 @@ const animate = () => {
 
 // 修改模型数据
 const onChange = () => {
+  renderEcharts();
   // 循环删除从第3项开始的子场景
   for(let i=2; i<scene.children.length; i++){
     scene.remove(scene.children[i]);
@@ -177,6 +188,64 @@ const onChange = () => {
   model_load(H);
 }
 
+const renderEcharts = () => {
+  const dataset = [];
+  roadValue.value.forEach(item => {
+    const value = item.value * 100;
+    dataset.push([0.5, 0.5, value]);
+  });
+  Render3DEcharts('container3D', dataset.reverse());
+}
+
+// 文字标签
+const Texttags = (text, posi) => {
+  CreateLabel(300, 150, text, border1, posi).then((res) => {
+    scene.add(res);
+  });
+};
+
+let selectObject, OBJ;
+
+const onMouseClick = (event) => {
+// 获取 raycaster 和所有模型相交的数组，其中的元素按照距离排序，越近的越靠前
+  const intersects = getIntersects(event);
+
+// 获取选中最近的 Mesh 对象
+  if (intersects.length != 0 && intersects[0].object instanceof THREE.Mesh) {
+    selectObject = intersects[0].object;
+    if (OBJ != selectObject && OBJ != null) {
+      OBJ = selectObject;
+    }
+    OBJ = selectObject;
+  }
+}
+
+// 获取与射线相交的对象数组
+const getIntersects = (event) => {
+  event.preventDefault();
+  console.log("event.clientX:" + event.clientX)
+  console.log("event.clientY:" + event.clientY)
+
+  // 声明 raycaster 和 mouse 变量
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+
+  /// 通过鼠标点击位置,计算出 raycaster 所需点的位置,以屏幕为中心点,范围 -1 到 1
+  mouse.x = (event.clientX / window.innerWidth) * 2 / 0.7 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 / 0.5 + 1;
+
+  //通过鼠标点击的位置(二维坐标)和当前相机的矩阵计算出射线位置
+  raycaster.setFromCamera(mouse, camera);
+
+  // 获取与raycaster射线相交的数组集合，其中的元素按照距离排序，越近的越靠前
+
+  const intersects = raycaster.intersectObjects(scene.children, true);
+
+  //返回选中的对象数组
+
+  console.log(intersects);
+  return intersects;
+}
 
 //找到目标模型
 const FindTarget = (obj, target) => {
@@ -274,10 +343,14 @@ const model_load = (H) => {
 </script>
 
 <style lang="less" scoped>
-#three-frame {
+#map {
   width: 100%;
   height: 100%;
-  background: rgba(153, 150, 150, 0.738);
+}
+
+#container3D {
+  width: 100%;
+  height: 100%;
 }
 
 .xline {

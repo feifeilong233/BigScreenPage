@@ -7,6 +7,7 @@
  * @FilePath: \datadome\src\ntils\libs.ts
  */
 import * as echarts from 'echarts/core';
+import "echarts-gl";
 // echart 按需引入
 import {
   BarChart,
