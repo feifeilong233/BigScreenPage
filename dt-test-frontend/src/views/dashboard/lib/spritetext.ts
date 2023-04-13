@@ -42,7 +42,7 @@ export const CreateLabel = (w, h, textArr, imgs, post) => {
       });
       let sprite = new THREE.Sprite(spriteMaterial); // 创建精灵模型
       // 设置基本信息 就ok了
-      sprite.scale.set(15, 3.25, 5);
+      sprite.scale.set(18, 3.25, 5);
       sprite.position.set(x, y, z);
       resolve(sprite);
     };

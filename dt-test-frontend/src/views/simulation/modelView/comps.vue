@@ -14,31 +14,38 @@
     </div>
     <div class="echartsdoms_cons w-full flex justify-between">
       <div id="map"></div>
-      <div class="chartsdoms_cons_rights space-y-2 w-22vw">
-        <div class="box1 enter-x-r w-22vw">
-          <a-card class="h-45vh" title="测试指数" size="small">
-            <a-row v-for="(item, index) in roadValue" :key="index" type="flex" align="middle">
-              <a-col :span="4">
-                <span>road_{{ index }}</span>
+      <div class="chartsdoms_cons_rights space-y-2 w-30vw">
+        <div class="box1 enter-x-r w-30vw">
+          <a-card class="h-40vh" title="测试指数" size="small">
+            <a-row v-for="(item, index) in roadValue" :key="index" type="flex" align="middle" :gutter="12">
+              <a-col :span="8">
+                <a-select @change="onChange" style="width: 100%" v-model:value="item.code">
+                  <a-select-option v-for="(item, index) in code_data" :key="index" :value="item.code"> {{ item.name }}
+                  </a-select-option>
+                </a-select>
               </a-col>
-              <a-col :span="12">
-                <a-slider @afterChange="onChange" v-model:value="item.value" :min="0" :max="0.5" :step="0.01"/>
+              <a-col :span="8">
+                <a-slider @afterChange="onChange" v-model:value="item.order_by" :min="0" :max="0.5" :step="0.01"/>
               </a-col>
               <a-col :span="4">
                 <a-input-number
                     @change="onChange"
-                    v-model:value="item.value"
+                    v-model:value="item.order_by"
                     :min="0"
                     :max="0.5"
                     :step="0.01"
                 />
               </a-col>
             </a-row>
+            <a-row>
+              <a-button>保存</a-button>
+              <a-button type="primary" style="margin-left: 24px">进入分析</a-button>
+            </a-row>
           </a-card>
         </div>
-        <div class="box1 enter-x-r w-22vw">
+        <div class="box1 enter-x-r w-30vw">
           <div class="title1">路面结构</div>
-          <div class="h-40vh">
+          <div class="h-45vh">
             <div id="container3D"></div>
           </div>
         </div>
@@ -49,8 +56,8 @@
 
 <script lang="ts" setup>
 import 'virtual:windi.css';
-import {ref} from 'vue';
-import {onMounted} from '@vue/runtime-core';
+import {computed, ref} from 'vue';
+import {onMounted, onBeforeUnmount} from '@vue/runtime-core';
 import Render3DEcharts from './useEchart.ts'
 
 import * as THREE from 'three';
@@ -58,39 +65,55 @@ import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
 import {CreateLabel} from "@/views/dashboard/lib/spritetext";
 import border1 from "@/assets/bgs.png";
+import {findDictionaryList} from "@/api/system/dictionary";
 
 let roadValue = ref([]);
 roadValue.value = [
   {
-    code: 0,
-    value: 0.05,
+    code: 'AC13',
+    order_by: 0.05,
   },
   {
-    code: 1,
-    value: 0.07,
+    code: 'AC20',
+    order_by: 0.07,
   },
   {
-    code: 2,
-    value: 0.03,
+    code: 'AC25',
+    order_by: 0.03,
   },
   {
-    code: 3,
-    value: 0.27,
+    code: 'CS',
+    order_by: 0.27,
   },
   {
-    code: 4,
-    value: 0.31,
+    code: 'GB',
+    order_by: 0.31,
   },
   {
-    code: 5,
-    value: 0.33,
+    code: 'CBG25',
+    order_by: 0.33,
   },
 ]
 
 onMounted(() => {
+  initData();
   initMode();
   renderEcharts();
 });
+
+onBeforeUnmount(()=>{
+  document.getElementById(idName.value)?.removeEventListener('click', onMouseClick);
+  window.removeEventListener('resize', onWindowResize);
+  controls.removeEventListener('change', render);
+});
+
+const code_data = ref([]);
+
+const initData = () => {
+  findDictionaryList({parent_code: 'lmcl'}).then((response) => {
+    code_data.value = response.data.data;
+  })
+}
 
 let scene, camera, controls;
 let idName = ref('map');
@@ -98,14 +121,15 @@ let idName = ref('map');
 const renderer = new THREE.WebGLRenderer();
 // 添加gltf
 let loader = new GLTFLoader()
+let width, height;
 
 const initMode = () => {
   scene = new THREE.Scene();
-  const width = document.getElementById(idName.value)?.offsetWidth;//窗口宽度
-  const height = document.getElementById(idName.value)?.offsetHeight;//窗口高度
+  width = document.getElementById(idName.value)?.offsetWidth;//窗口宽度
+  height = document.getElementById(idName.value)?.offsetHeight;//窗口高度
 
   camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000000);
-  camera.position.set(-5, 10, 80);
+  camera.position.set(-20, 8.5, 80);
   camera.lookAt(scene.position);
 
   // 灯光效果
@@ -126,6 +150,16 @@ const initMode = () => {
   });
 
   document.getElementById(idName.value)?.addEventListener('click', onMouseClick);
+  window.addEventListener('resize', onWindowResize);
+}
+
+const onWindowResize = () => {
+  width = document.getElementById(idName.value)?.offsetWidth;//窗口宽度
+  height = document.getElementById(idName.value)?.offsetHeight;//窗口高度
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
+  renderer.setSize(width, height);
+  render();
 }
 
 // 渲染内容
@@ -174,12 +208,15 @@ const onChange = () => {
   }
 
   const H = [];
+  const te = [];
+
 
   roadValue.value.forEach(item => {
-    H.push(parseFloat(item.value) * 3);
+    H.push(parseFloat(item.order_by) * 3);
+    te.push(item.code);
   });
 
-  model_load(H);
+  model_load(H, te);
 }
 
 const renderEcharts = () => {
@@ -193,7 +230,7 @@ const renderEcharts = () => {
 
 // 文字标签
 const Texttags = (text, posi) => {
-  CreateLabel(600, 150, text, border1, posi).then((res) => {
+  CreateLabel(720, 150, text, border1, posi).then((res) => {
     scene.add(res);
   });
 };
@@ -201,6 +238,7 @@ const Texttags = (text, posi) => {
 let selectObject, OBJ;
 
 const onMouseClick = (event) => {
+  console.log(camera.position)
   // 获取 raycaster 和所有模型相交的数组，其中的元素按照距离排序，越近的越靠前
   const intersects = getIntersects(event);
 
@@ -223,10 +261,18 @@ const onMouseClick = (event) => {
   }
 
   if (selectObject != undefined && selectObject != null) {
-    const text = selectObject.name.split('_')[0] + " " + (selectObject.geometry.attributes.position.data.array[2] / 3).toFixed(2);
-    Texttags(text, [selectObject.position.x / 10 + 10, selectObject.position.y + 35, selectObject.position.z + 30])
+    const str = selectObject.name.split('_');
+    const roadName = str[1] > 100 ? str[0] : getCode(parseInt(str[1])+1);
+    const text = roadName + " " + (selectObject.geometry.attributes.position.data.array[2] / 3).toFixed(2);
+    Texttags(text, [selectObject.position.x / 10 + 12, selectObject.position.y + 35, selectObject.position.z + 43])
   }
 }
+
+// 计算属性，根据record.code翻译出对应的code值
+const getCode = (code) => {
+  const item = code_data.value.find((item) => item.order_by == code);
+  return item ? item.name : code;
+};
 
 // 获取与射线相交的对象数组
 const getIntersects = (event) => {
@@ -279,17 +325,22 @@ const FindTarget = (obj, target) => {
 // 修改材质
 const ChangeTexture = (obj, target, img_path) => {
   obj = obj.scene;
-  const texture = new THREE.TextureLoader().load(img_path);
-  texture.encoding = THREE.sRGBEncoding;
-  texture.flipY = false;
-  texture.needsUpdate = true;
-  texture.wrapS = THREE.RepeatWrapping;
-  texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(1, 1);
+  const textureLoader = new THREE.TextureLoader();
 
-  // 新建材质
-  obj.children[0].children[target].material = new THREE.MeshStandardMaterial({map: texture});
-  obj.children[0].children[target].material.needsUpdate = true;
+  // 加载纹理图像
+  textureLoader.load(img_path, (texture) => {
+    texture.encoding = THREE.sRGBEncoding;
+    texture.flipY = false;
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(1, 1);
+
+    // 将纹理图像应用到材质
+    // obj.children[0].children[target].material.map = texture;
+    // 新建材质
+    obj.children[0].children[target].material = new THREE.MeshStandardMaterial({map: texture});
+    obj.children[0].children[target].material.needsUpdate = true;
+  });
 }
 
 // 修改路面厚度
@@ -317,12 +368,11 @@ const ChangePosition = (obj, target, z) => {
 }
 
 let loader2 = new GLTFLoader()
-const model_load = (H) => {
+const model_load = (H, te) => {
   let obj;
   loader2.load('/road_gltf_7/New_road_7.gltf', (gltf) => {
     obj = gltf;
     const ary = ["road_5", "road_4", "road_3", "road_2", "road_1", "road_0", "绿化带"];
-    // const texture = ["New_road_7_img_007.png", "New_road_7_img_000.jpg", "New_road_7_img_005.jpg", "New_road_7_img_002.jpg", "New_road_7_img_003.jpg", "New_road_7_img_001.jpg"];
     let j = 5;
     let z = 3.28084;
     FindTarget(obj, ary[0]);
@@ -330,7 +380,8 @@ const model_load = (H) => {
       const i = FindTarget(obj, ary[5 - j]);
       let n = 0;
       while (n < i.length) {
-        // ChangeTexture(obj, i[n], "/road_gltf_7/" + texture[te[j] - 1]);
+        const path = "/road_gltf_7/New_road_7_img_" + te[j] + (te[j] == 'AC13' ? ".png" : ".jpg");
+        ChangeTexture(obj, i[n], path);
         ChangePosition(obj, i[n], z);
         ChangeDepth(obj, i[n], H[j]);
         n = n + 1;

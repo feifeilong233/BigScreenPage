@@ -172,6 +172,11 @@ export default defineComponent({
         ellipsis: true,
       },
       {
+        title: "厚度",
+        dataIndex: "order_by",
+        ellipsis: true,
+      },
+      {
         title: "操作",
         dataIndex: "operation",
         width: "190px",
@@ -231,7 +236,7 @@ export default defineComponent({
 
     // 计算属性，根据record.code翻译出对应的code值
     const getCode = computed(() => (code) => {
-      const item = code_data.value.find((item) => item.id === code);
+      const item = code_data.value.find((item) => item.code === code);
       return item ? item.name : code;
     });
 

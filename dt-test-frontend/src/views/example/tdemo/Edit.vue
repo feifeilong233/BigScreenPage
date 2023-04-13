@@ -21,7 +21,7 @@
         </a-form-item>
         <a-form-item v-if="isRoot" v-bind="validateInfos.code" label="路面材料">
           <a-select v-model:value="formRef.code" placeholder="请选择路面材料">
-            <a-select-option v-for="(item, index) in code_data" :key="index" :value="item.id"> {{ item.name }}
+            <a-select-option v-for="(item, index) in code_data" :key="index" :value="item.code"> {{ item.name }}
             </a-select-option>
           </a-select>
         </a-form-item>
