@@ -19,7 +19,7 @@
           <a-card class="h-45vh" title="测试指数" size="small">
             <a-row v-for="(item, index) in roadValue" :key="index" type="flex" align="middle">
               <a-col :span="4">
-                <span>road_{{index}}</span>
+                <span>road_{{ index }}</span>
               </a-col>
               <a-col :span="12">
                 <a-slider @afterChange="onChange" v-model:value="item.value" :min="0" :max="0.5" :step="0.01"/>
@@ -37,7 +37,7 @@
           </a-card>
         </div>
         <div class="box1 enter-x-r w-22vw">
-          <div class="title1">路面材料</div>
+          <div class="title1">路面结构</div>
           <div class="h-40vh">
             <div id="container3D"></div>
           </div>
@@ -94,9 +94,9 @@ onMounted(() => {
 
 let scene, camera, controls;
 let idName = ref('map');
-//创建场景渲染
+// 创建场景渲染
 const renderer = new THREE.WebGLRenderer();
-//添加gltf
+// 添加gltf
 let loader = new GLTFLoader()
 
 const initMode = () => {
@@ -108,7 +108,7 @@ const initMode = () => {
   camera.position.set(-5, 10, 80);
   camera.lookAt(scene.position);
 
-  //灯光效果
+  // 灯光效果
   const point = new THREE.PointLight(0xffffff);
   point.position.set(400, 200, 300);
   scene.add(point);
@@ -169,14 +169,14 @@ const animate = () => {
 const onChange = () => {
   renderEcharts();
   const len = scene.children.length;
-  for(let i=2; i<len; i++){
+  for (let i = 2; i < len; i++) {
     scene.remove(scene.children[2]);
   }
 
   const H = [];
 
   roadValue.value.forEach(item => {
-    H.push(parseFloat(item.value)*3);
+    H.push(parseFloat(item.value) * 3);
   });
 
   model_load(H);
@@ -201,14 +201,16 @@ const Texttags = (text, posi) => {
 let selectObject, OBJ;
 
 const onMouseClick = (event) => {
-// 获取 raycaster 和所有模型相交的数组，其中的元素按照距离排序，越近的越靠前
+  // 获取 raycaster 和所有模型相交的数组，其中的元素按照距离排序，越近的越靠前
   const intersects = getIntersects(event);
 
-// 获取选中最近的 Mesh 对象
+  // 获取选中最近的 Mesh 对象
   selectObject = undefined;
   if (intersects.length != 0 && intersects[0].object instanceof THREE.Mesh) {
     selectObject = intersects[0].object;
+    changeMaterial(selectObject);
     if (OBJ != selectObject && OBJ != null) {
+      changeColor(OBJ);
       OBJ = selectObject;
     }
     OBJ = selectObject;
@@ -216,13 +218,13 @@ const onMouseClick = (event) => {
 
   // 循环删除从第4项开始的子场景
   const arr = scene.children.length;
-  for(let i=3; i<arr; i++) {
+  for (let i = 3; i < arr; i++) {
     scene.remove(scene.children[3]);
   }
 
   if (selectObject != undefined && selectObject != null) {
     const text = selectObject.name.split('_')[0] + " " + (selectObject.geometry.attributes.position.data.array[2] / 3).toFixed(2);
-    Texttags(text, [selectObject.position.x/10+10, selectObject.position.y+35, selectObject.position.z+30])
+    Texttags(text, [selectObject.position.x / 10 + 10, selectObject.position.y + 35, selectObject.position.z + 30])
   }
 }
 
@@ -241,16 +243,24 @@ const getIntersects = (event) => {
   mouse.x = ((event.clientX - containerBounds.left) / containerBounds.width) * 2 - 1;
   mouse.y = -((event.clientY - containerBounds.top) / containerBounds.height) * 2 + 1;
 
-  //通过鼠标点击的位置(二维坐标)和当前相机的矩阵计算出射线位置
+  // 通过鼠标点击的位置(二维坐标)和当前相机的矩阵计算出射线位置
   raycaster.setFromCamera(mouse, camera);
 
   // 获取与raycaster射线相交的数组集合，其中的元素按照距离排序，越近的越靠前
-
-  //返回选中的对象数组
+  // 返回选中的对象数组
   return raycaster.intersectObjects(scene.children, true);
 }
 
-//找到目标模型
+// 改变对象材质属性
+const changeColor = (object) => {
+  object.material.color.r = 1;
+}
+
+const changeMaterial = (object) => {
+  object.material.color.r = 0;
+}
+
+// 找到目标模型
 const FindTarget = (obj, target) => {
   obj = obj.scene;
   let i = 0;
@@ -277,7 +287,7 @@ const ChangeTexture = (obj, target, img_path) => {
   texture.wrapT = THREE.RepeatWrapping;
   texture.repeat.set(1, 1);
 
-  //新建材质
+  // 新建材质
   obj.children[0].children[target].material = new THREE.MeshStandardMaterial({map: texture});
   obj.children[0].children[target].material.needsUpdate = true;
 }
@@ -360,14 +370,12 @@ const model_load = (H) => {
   width: 100%;
   height: 10px;
 
-  background: linear-gradient(
-      to right,
-      transparent,
-      rgba(6, 141, 193, 0.3),
-      transparent,
-      rgba(6, 141, 193, 0.3),
-      transparent
-  );
+  background: linear-gradient(to right,
+  transparent,
+  rgba(6, 141, 193, 0.3),
+  transparent,
+  rgba(6, 141, 193, 0.3),
+  transparent);
   transform: translateY(-100px);
   animation: doms 0.5s linear forwards;
   animation-delay: 0.7s;
@@ -381,11 +389,13 @@ const model_load = (H) => {
   left: 0;
   width: 100%;
   height: 40px;
+
   .titlbox {
     width: 28rem;
     height: 100%;
     overflow: hidden;
     position: relative;
+
     & > div {
       position: absolute;
       width: 100%;
@@ -404,6 +414,7 @@ const model_load = (H) => {
         opacity: 0;
         z-index: 9;
       }
+
       &:nth-of-type(2) {
         width: 90%;
         left: 5%;
@@ -415,6 +426,7 @@ const model_load = (H) => {
         animation-delay: 0.3s;
         opacity: 0;
       }
+
       &:nth-of-type(3) {
         width: 100%;
         border: 100px solid rgba(6, 141, 193, 0.1);
@@ -425,6 +437,7 @@ const model_load = (H) => {
         animation-delay: 0.4s;
         opacity: 0;
       }
+
       &:nth-of-type(4) {
         width: 100%;
         text-align: center;
@@ -439,17 +452,16 @@ const model_load = (H) => {
         'Lucida Sans', Arial, sans-serif;
         // background: url('../../../../assets/header.png');
       }
+
       &:nth-of-type(5) {
         width: 80%;
         left: 10%;
         height: 10px;
         top: 38px;
-        background: linear-gradient(
-            to right,
-            transparent,
-            rgba(115, 208, 245, 0.7),
-            transparent
-        );
+        background: linear-gradient(to right,
+        transparent,
+        rgba(115, 208, 245, 0.7),
+        transparent);
         z-index: 9;
       }
     }
@@ -466,10 +478,12 @@ const model_load = (H) => {
 .echartsdoms {
   width: 100%;
   height: 100%;
+
   .maobg {
     background: rgba(193, 189, 189, 0.1);
     backdrop-filter: blur(4px);
   }
+
   .title1 {
     color: rgba(0, 0, 0, 0.85);
     border-bottom: 2px solid #525c66;
@@ -477,6 +491,7 @@ const model_load = (H) => {
     position: relative;
     font-size: 0.8rem;
     font-weight: bold;
+
     &::before {
       content: '';
       display: inline-block;
@@ -494,6 +509,7 @@ const model_load = (H) => {
       color: #c9dcf5;
       font-size: 8px;
     }
+
     .chartsdoms_cons_rights {
       .box1 {
         .maobg;
