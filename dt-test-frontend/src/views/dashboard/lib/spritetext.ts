@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 // 地图中的文字标签
 export const CreateLabel = (w, h, textArr, imgs, post) => {
-  let [x, y] = post;
+  let [x, y, z] = post;
   // canvas 宽高最好是2的倍数
   let sizes = 50;
   let width = w;
@@ -42,8 +42,8 @@ export const CreateLabel = (w, h, textArr, imgs, post) => {
       });
       let sprite = new THREE.Sprite(spriteMaterial); // 创建精灵模型
       // 设置基本信息 就ok了
-      sprite.scale.set(3, 1.5, 5);
-      sprite.position.set(x, 7.5, y);
+      sprite.scale.set(15, 3.25, 5);
+      sprite.position.set(x, y, z);
       resolve(sprite);
     };
     //图片加载失败的方法

@@ -49,41 +49,41 @@
 
 <script lang="ts" setup>
 import 'virtual:windi.css';
-import {defineAsyncComponent, ref} from 'vue';
+import {ref} from 'vue';
 import {onMounted} from '@vue/runtime-core';
 import Render3DEcharts from './useEchart.ts'
 
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
-import {CreateConLabel, CreateLabel} from "@/views/dashboard/lib/spritetext";
+import {CreateLabel} from "@/views/dashboard/lib/spritetext";
 import border1 from "@/assets/bgs.png";
 
 let roadValue = ref([]);
 roadValue.value = [
   {
     code: 0,
-    value: 0.04,
+    value: 0.05,
   },
   {
     code: 1,
-    value: 0.08,
+    value: 0.07,
   },
   {
     code: 2,
-    value: 0.12,
+    value: 0.03,
   },
   {
     code: 3,
-    value: 0.24,
+    value: 0.27,
   },
   {
     code: 4,
-    value: 0.4,
+    value: 0.31,
   },
   {
     code: 5,
-    value: 0.5,
+    value: 0.33,
   },
 ]
 
@@ -104,8 +104,8 @@ const initMode = () => {
   const width = document.getElementById(idName.value)?.offsetWidth;//窗口宽度
   const height = document.getElementById(idName.value)?.offsetHeight;//窗口高度
 
-  camera = new THREE.PerspectiveCamera(85, width / height, 0.1, 1000000);
-  camera.position.set(0, 20, 80);
+  camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000000);
+  camera.position.set(-5, 10, 80);
   camera.lookAt(scene.position);
 
   //灯光效果
@@ -125,7 +125,7 @@ const initMode = () => {
     animate();
   });
 
-  addEventListener('click', onMouseClick);
+  document.getElementById(idName.value)?.addEventListener('click', onMouseClick);
 }
 
 // 渲染内容
@@ -141,10 +141,6 @@ const mouseMove = () => {
 // 压路机动画
 let dir = 1;
 const animate = () => {
-  if (selectObject != undefined) {
-    console.log(selectObject);
-  }
-
   render();
   const car = scene.children[2].children[0].children[0].children;
   const i = [car[0].position.y, car[1].position.y, car[2].position.y, car[3].position.y, car[4].position.y];
@@ -172,11 +168,10 @@ const animate = () => {
 // 修改模型数据
 const onChange = () => {
   renderEcharts();
-  // 循环删除从第3项开始的子场景
-  for(let i=2; i<scene.children.length; i++){
-    scene.remove(scene.children[i]);
+  const len = scene.children.length;
+  for(let i=2; i<len; i++){
+    scene.remove(scene.children[2]);
   }
-  console.log(scene);
 
   const H = [];
 
@@ -184,7 +179,6 @@ const onChange = () => {
     H.push(parseFloat(item.value)*3);
   });
 
-  console.log(H)
   model_load(H);
 }
 
@@ -199,7 +193,7 @@ const renderEcharts = () => {
 
 // 文字标签
 const Texttags = (text, posi) => {
-  CreateLabel(300, 150, text, border1, posi).then((res) => {
+  CreateLabel(600, 150, text, border1, posi).then((res) => {
     scene.add(res);
   });
 };
@@ -211,6 +205,7 @@ const onMouseClick = (event) => {
   const intersects = getIntersects(event);
 
 // 获取选中最近的 Mesh 对象
+  selectObject = undefined;
   if (intersects.length != 0 && intersects[0].object instanceof THREE.Mesh) {
     selectObject = intersects[0].object;
     if (OBJ != selectObject && OBJ != null) {
@@ -218,33 +213,41 @@ const onMouseClick = (event) => {
     }
     OBJ = selectObject;
   }
+
+  // 循环删除从第4项开始的子场景
+  const arr = scene.children.length;
+  for(let i=3; i<arr; i++) {
+    scene.remove(scene.children[3]);
+  }
+
+  if (selectObject != undefined && selectObject != null) {
+    const text = selectObject.name.split('_')[0] + " " + (selectObject.geometry.attributes.position.data.array[2] / 3).toFixed(2);
+    Texttags(text, [selectObject.position.x/10+10, selectObject.position.y+35, selectObject.position.z+30])
+  }
 }
 
 // 获取与射线相交的对象数组
 const getIntersects = (event) => {
   event.preventDefault();
-  console.log("event.clientX:" + event.clientX)
-  console.log("event.clientY:" + event.clientY)
 
   // 声明 raycaster 和 mouse 变量
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
 
-  /// 通过鼠标点击位置,计算出 raycaster 所需点的位置,以屏幕为中心点,范围 -1 到 1
-  mouse.x = (event.clientX / window.innerWidth) * 2 / 0.7 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 / 0.5 + 1;
+  // 获取渲染容器的位置和大小
+  const containerBounds = document.getElementById(idName.value)?.getBoundingClientRect();
+
+  // 通过鼠标点击位置，计算出鼠标点击事件在渲染容器内的相对位置
+  mouse.x = ((event.clientX - containerBounds.left) / containerBounds.width) * 2 - 1;
+  mouse.y = -((event.clientY - containerBounds.top) / containerBounds.height) * 2 + 1;
 
   //通过鼠标点击的位置(二维坐标)和当前相机的矩阵计算出射线位置
   raycaster.setFromCamera(mouse, camera);
 
   // 获取与raycaster射线相交的数组集合，其中的元素按照距离排序，越近的越靠前
 
-  const intersects = raycaster.intersectObjects(scene.children, true);
-
   //返回选中的对象数组
-
-  console.log(intersects);
-  return intersects;
+  return raycaster.intersectObjects(scene.children, true);
 }
 
 //找到目标模型
@@ -315,7 +318,6 @@ const model_load = (H) => {
     FindTarget(obj, ary[0]);
     while (j > -1) {
       const i = FindTarget(obj, ary[5 - j]);
-      console.log("*********" + i);
       let n = 0;
       while (n < i.length) {
         // ChangeTexture(obj, i[n], "/road_gltf_7/" + texture[te[j] - 1]);
@@ -327,7 +329,6 @@ const model_load = (H) => {
       j--;
     }
     const car = FindTarget(obj, "Caterpillar");
-    console.log(car);
     let m = 0;
     while (m < 5) {
       obj.scene.children[0].children[car[0]].children[m].position.z = z;
@@ -337,7 +338,6 @@ const model_load = (H) => {
     scene.add(gltf.scene);
     render();
     animate();
-    console.log(scene);
   });
 }
 </script>

@@ -45,7 +45,7 @@ const basicRouter: RouterRaws[] = [
   {
     name: 'd3maps',
     meta: { title: '自定义大屏' },
-    component: () => import('@/view/d3maps/dome/dome1.vue'),
+    component: () => import('@/view/d3maps/dome1/page.vue'),
     path: '/d3maps',
   },
 

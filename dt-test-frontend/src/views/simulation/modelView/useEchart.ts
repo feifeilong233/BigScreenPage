@@ -5,10 +5,10 @@ function Render3DEcharts (idNames = 'container3D', dataset) {
     let idName = ref(idNames);
     const dom = document.getElementById(idName.value);
     const myChart = echarts.init(dom);
-    let option;
 
     const days = [1.0];
     const series = [];
+
     for (let i = 0; i < dataset.length; i++) {
         series.push({
             type: 'bar3D',
@@ -22,7 +22,7 @@ function Render3DEcharts (idNames = 'container3D', dataset) {
             }
         });
     }
-    console.log(series);
+
     myChart.setOption({
         xAxis3D: {
             type: 'category',
@@ -48,10 +48,6 @@ function Render3DEcharts (idNames = 'container3D', dataset) {
         },
         series: series
     });
-
-    if (option && typeof option === 'object') {
-        myChart.setOption(option);
-    }
 }
 
 export default Render3DEcharts;
