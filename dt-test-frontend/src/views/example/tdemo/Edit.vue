@@ -13,8 +13,8 @@
         <a-form-item v-bind="validateInfos.parent_name" label="父级名称">
           <a-input disabled v-model:value="formRef.parent_name" placeholder="父级名称"/>
         </a-form-item>
-        <a-form-item v-bind="validateInfos.short_name" label="路面层数">
-          <a-input v-model:value="formRef.short_name" placeholder="路面层数"/>
+        <a-form-item v-bind="validateInfos.short_name" label="路面索引">
+          <a-input v-model:value="formRef.short_name" placeholder="路面索引"/>
         </a-form-item>
         <a-form-item v-bind="validateInfos.name" label="路面名称">
           <a-input v-model:value="formRef.name" placeholder="路面名称"/>
@@ -29,7 +29,7 @@
           <a-input-number v-model:value="formRef.classify" placeholder="弹性模量"/>
         </a-form-item>
         <a-form-item v-if="isRoot" v-bind="validateInfos.remark" label="泊松比">
-          <a-input-number step="0.01" v-model:value="formRef.remark" placeholder="泊松比"/>
+          <a-input-number :step="0.01" v-model:value="formRef.remark" placeholder="泊松比"/>
         </a-form-item>
       </a-form>
     </a-spin>

@@ -151,7 +151,7 @@ export default defineComponent({
         width: "40px",
       },
       {
-        title: "路面层数",
+        title: "层次名称",
         dataIndex: "name",
         ellipsis: true,
       },

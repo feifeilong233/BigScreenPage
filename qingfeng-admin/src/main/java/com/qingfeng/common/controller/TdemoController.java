@@ -1,6 +1,7 @@
 package com.qingfeng.common.controller;
 
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.qingfeng.base.controller.BaseController;
 import com.qingfeng.base.entity.QueryRequest;
 import com.qingfeng.framework.exception.BizException;
@@ -97,6 +98,9 @@ public class TdemoController extends BaseController {
             tdemo.setCreate_organize(authParams.split(":")[2]);
 
             this.tdemoService.save(tdemo);
+
+            List<Tdemo> AC20 = tdemoService.list(Wrappers.lambdaQuery(Tdemo.class).eq(Tdemo::getName, "AC20"));
+
             json.setSuccess(true);
             json.setMsg("新增信息成功");
         } catch (Exception e) {

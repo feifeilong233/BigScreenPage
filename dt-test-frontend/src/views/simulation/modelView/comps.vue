@@ -39,7 +39,7 @@
             </a-row>
             <a-row>
               <a-button>保存</a-button>
-              <a-button type="primary" style="margin-left: 24px">进入分析</a-button>
+              <a-button ghost type="primary" style="margin-left: 24px">进入分析</a-button>
             </a-row>
           </a-card>
         </div>
