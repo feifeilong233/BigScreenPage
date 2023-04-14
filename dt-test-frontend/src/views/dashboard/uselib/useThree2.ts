@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
 import {ref} from "vue";
+import {SkyboxUtils} from '@/lib/threeUtils.ts';
 
 function Render3DMode(idNames = 'map') {
     let scene2, camera2, controls2;
@@ -27,6 +28,10 @@ function Render3DMode(idNames = 'map') {
     renderer2.setSize(width, height);
     renderer2.setClearColor(0x5588ff, 1);
     document.getElementById(idName.value)?.appendChild(renderer2.domElement);
+
+    SkyboxUtils.createSkyFromTextures("sky_2").then(texture => {
+        scene2.background = texture;
+    });
 
     // 渲染内容
     const render = () => {

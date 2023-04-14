@@ -37,10 +37,22 @@
                 />
               </a-col>
             </a-row>
-            <a-row>
-              <a-button>保存</a-button>
-              <a-button ghost type="primary" style="margin-left: 24px">进入分析</a-button>
-            </a-row>
+            <a-space>
+              <div>场景选择器:</div>
+              <a-select @change="onChangeSkyBox" style="width: 100px" v-model:value="skyBox">
+                <a-select-option value="sky_1">
+                  场景1
+                </a-select-option>
+                <a-select-option value="sky_2">
+                  场景2
+                </a-select-option>
+                <a-select-option value="sky_3">
+                  场景3
+                </a-select-option>
+              </a-select>
+              <a-button style="margin-left: 66px">保存</a-button>
+              <a-button ghost type="primary">进入分析</a-button>
+            </a-space>
           </a-card>
         </div>
         <div class="box1 enter-x-r w-30vw">
@@ -66,8 +78,10 @@ import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
 import {CreateLabel} from "@/views/dashboard/lib/spritetext";
 import border1 from "@/assets/bgs.png";
 import {findDictionaryList} from "@/api/system/dictionary";
+import {SkyboxUtils} from '@/lib/threeUtils.ts';
 
 let roadValue = ref([]);
+let skyBox = ref('sky_2');
 roadValue.value = [
   {
     code: 'AC13',
@@ -143,6 +157,10 @@ const initMode = () => {
   renderer.setClearColor(0xb9d3ff, 1);
   document.getElementById(idName.value)?.appendChild(renderer.domElement);
 
+  SkyboxUtils.createSkyFromTextures("sky_2").then(texture => {
+    scene.background = texture;
+  });
+
   loader.load('/road_gltf_7/New_road_7.gltf', (gltf) => {
     scene.add(gltf.scene);
     mouseMove();
@@ -197,6 +215,12 @@ const animate = () => {
     dir = 1;
   }
   requestAnimationFrame(animate);
+}
+
+const onChangeSkyBox = () => {
+  SkyboxUtils.createSkyFromTextures(skyBox.value).then(texture => {
+    scene.background = texture;
+  });
 }
 
 // 修改模型数据
