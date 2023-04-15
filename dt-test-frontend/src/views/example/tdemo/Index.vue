@@ -390,7 +390,7 @@ export default defineComponent({
     //详情
     const router = useRouter();
     const handleInfo = (record) => {
-      router.push({ path: '/simulation/view', query: {short_name: record.short_name, id: record.id} })
+      router.push({ path: '/simulation/tdemo/view', query: {short_name: record.short_name, id: record.id} })
     };
 
     //批量删除

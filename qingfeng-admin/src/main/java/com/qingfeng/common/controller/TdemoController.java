@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.qingfeng.base.controller.BaseController;
 import com.qingfeng.base.entity.QueryRequest;
+import com.qingfeng.common.entity.FormFields;
+import com.qingfeng.common.entity.RoadDetail;
 import com.qingfeng.framework.exception.BizException;
 import com.qingfeng.common.entity.Tdemo;
 import com.qingfeng.system.entity.UserOrganize;
@@ -117,6 +119,61 @@ public class TdemoController extends BaseController {
         this.writeJson(response,json);
     }
 
+    @PostMapping("/batch")
+    public void saveBatch(@RequestBody FormFields formFields, HttpServletResponse response) throws Exception {
+        Json json = new Json();
+        try {
+            // 先创建一个父级数据
+            Tdemo parent = new Tdemo();
+            parent.setName(formFields.getRoad_name());
+            parent.setShort_name(formFields.getShort_name());
+            parent.setParent_id("1");
+            String id = GuidUtil.getUuid();
+            parent.setId(id);
+            String time = DateTimeUtil.getDateTimeStr();
+            parent.setCreate_time(time);
+            parent.setStatus("0");
+            parent.setType("1");
+            String authParams = SecurityContextHolder.getContext().getAuthentication().getName();
+            parent.setCreate_user(authParams.split(":")[1]);
+            parent.setCreate_organize(authParams.split(":")[2]);
+            this.tdemoService.save(parent);
+            String parentId = parent.getId();
+
+            // 批量保存子级数据
+            List<Tdemo> childList = new ArrayList<>();
+            for (RoadDetail detail : formFields.getRoad_detail()) {
+                Tdemo child = new Tdemo();
+                String ids = GuidUtil.getUuid();
+                child.setId(ids);
+                child.setName(detail.getName());
+                child.setClassify(detail.getClassify());
+                child.setCode(detail.getCode());
+                child.setRemark(detail.getRemark());
+                child.setShort_name(detail.getShort_name());
+                child.setOrder_by(detail.getOrder_by());
+                child.setParent_id(parentId);
+                child.setCreate_time(time);
+                child.setStatus("0");
+                child.setType("2");
+                child.setCreate_user(authParams.split(":")[1]);
+                child.setCreate_organize(authParams.split(":")[2]);
+                childList.add(child);
+            }
+            this.tdemoService.saveBatch(childList);
+
+            json.setSuccess(true);
+            json.setMsg("新增信息成功");
+        } catch (Exception e) {
+            String message = "新增信息失败";
+            json.setSuccess(false);
+            json.setMsg(message);
+            log.error(message, e);
+            throw new BizException(message);
+        }
+        this.writeJson(response, json);
+    }
+
     /**
      * @title update
      * @description 更新数据
@@ -144,6 +201,30 @@ public class TdemoController extends BaseController {
             throw new BizException(message);
         }
         this.writeJson(response,json);
+    }
+
+    @PutMapping("/batch-update")
+    public void batchUpdate(@Valid @RequestBody List<Tdemo> tdemoList, HttpServletResponse response) throws Exception {
+        Json json = new Json();
+        try {
+            // 批量更新组织信息
+            String time = DateTimeUtil.getDateTimeStr();
+            String authParams = SecurityContextHolder.getContext().getAuthentication().getName();
+            for (Tdemo tdemo : tdemoList) {
+                tdemo.setUpdate_time(time);
+                tdemo.setUpdate_user(authParams.split(":")[1]);
+            }
+            this.tdemoService.updateBatchById(tdemoList);
+            json.setSuccess(true);
+            json.setMsg("更新信息成功");
+        } catch (Exception e) {
+            String message = "更新信息失败";
+            json.setSuccess(false);
+            json.setMsg(message);
+            log.error(message, e);
+            throw new BizException(message);
+        }
+        this.writeJson(response, json);
     }
 
     /**

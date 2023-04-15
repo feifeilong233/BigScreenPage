@@ -17,7 +17,7 @@
       <div class="chartsdoms_cons_rights space-y-2 w-30vw">
         <div class="box1 enter-x-r w-30vw">
           <a-card class="h-40vh" title="测试指数" size="small">
-            <a-row v-for="(item, index) in roadValue" :key="index" type="flex" align="middle" :gutter="12">
+            <a-row v-for="(item, index) in roadValue" :key="index" v-show="item.code !== undefined" type="flex" align="middle" :gutter="12">
               <a-col :span="8">
                 <a-select @change="onChange" style="width: 100%" v-model:value="item.code">
                   <a-select-option v-for="(item, index) in code_data" :key="index" :value="item.code"> {{ item.name }}
@@ -68,7 +68,7 @@
 
 <script lang="ts" setup>
 import 'virtual:windi.css';
-import {computed, ref} from 'vue';
+import {ref} from 'vue';
 import {onMounted, onBeforeUnmount} from '@vue/runtime-core';
 import Render3DEcharts from './useEchart.ts'
 
@@ -80,7 +80,7 @@ import border1 from "@/assets/bgs.png";
 import {findDictionaryList} from "@/api/system/dictionary";
 import {SkyboxUtils} from '@/lib/threeUtils.ts';
 import {useRoute} from "vue-router";
-import {getTdemoById, saveOrUpdate} from "@/api/common/tdemo";
+import {getTdemoById, updateBatch} from "@/api/common/tdemo";
 import {message} from "ant-design-vue";
 
 let roadValue = ref([]);
@@ -113,8 +113,8 @@ let skyBox = ref('sky_2');
 ]*/
 
 onMounted(() => {
-  initData();
   initMode();
+  initData();
 });
 
 onBeforeUnmount(()=>{
@@ -127,9 +127,15 @@ const code_data = ref([]);
 const route = useRoute();
 
 const initData = () => {
-  getTdemoById(route.query.id).then((response) => {
-    roadValue.value = response.data.data;
-    renderEcharts();
+  getTdemoById(route.query.id || 'b517be01d6584cfb908d0c49c8d2996e').then((response) => {
+    let roadData = response.data.data;
+    const defaultValue = { order_by: 0.000001 };
+    const length = 6 - roadData.length;
+    if (length > 0) {
+      roadData = [...roadData, ...Array(length).fill(defaultValue)];
+    }
+    roadValue.value = roadData;
+    onChange();
   })
   findDictionaryList({parent_code: 'lmcl'}).then((response) => {
     code_data.value = response.data.data;
@@ -138,7 +144,7 @@ const initData = () => {
 
 const handleSubmit = () => {
   new Promise((resolve, reject) => {
-    saveOrUpdate(roadValue.value).then((response) => {
+    updateBatch(roadValue.value).then((response) => {
       resolve(roadValue.value);
     });
   }).then((res) => {
@@ -178,12 +184,7 @@ const initMode = () => {
     scene.background = texture;
   });
 
-  loader.load('/road_gltf_7/New_road_7.gltf', (gltf) => {
-    scene.add(gltf.scene);
-    mouseMove();
-    animate();
-  });
-
+  mouseMove();
   document.getElementById(idName.value)?.addEventListener('click', onMouseClick);
   window.addEventListener('resize', onWindowResize);
 }
@@ -266,6 +267,7 @@ const renderEcharts = () => {
     const value = item.order_by * 100;
     dataset.push([0.5, 0.5, value]);
   });
+  console.log(dataset);
   Render3DEcharts('container3D', dataset.reverse());
 }
 
@@ -421,8 +423,10 @@ const model_load = (H, te) => {
       const i = FindTarget(obj, ary[5 - j]);
       let n = 0;
       while (n < i.length) {
-        const path = "/road_gltf_7/New_road_7_img_" + te[j] + (te[j] == 'AC13' ? ".png" : ".jpg");
-        ChangeTexture(obj, i[n], path);
+        if(te[j] !== undefined) {
+          const path = "/road_gltf_7/New_road_7_img_" + te[j] + (te[j] == 'AC13' ? ".png" : ".jpg");
+          ChangeTexture(obj, i[n], path);
+        }
         ChangePosition(obj, i[n], z);
         ChangeDepth(obj, i[n], H[j]);
         n = n + 1;

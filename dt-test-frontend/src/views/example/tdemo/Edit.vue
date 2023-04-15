@@ -31,6 +31,9 @@
         <a-form-item v-if="isRoot" v-bind="validateInfos.remark" label="泊松比">
           <a-input-number :step="0.01" v-model:value="formRef.remark" placeholder="泊松比"/>
         </a-form-item>
+        <a-form-item v-if="isRoot" v-bind="validateInfos.remark" label="厚度">
+          <a-input-number :step="0.01" v-model:value="formRef.order_by" placeholder="厚度"/>
+        </a-form-item>
       </a-form>
     </a-spin>
   </a-modal>
@@ -109,6 +112,7 @@ export default defineComponent({
         formRef.code = model?.code;
         formRef.classify = model?.classify;
         formRef.remark = model?.remark;
+        formRef.order_by = model?.order_by;
         title.value = "编辑数据";
       }
       initData();

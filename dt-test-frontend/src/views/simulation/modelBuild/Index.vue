@@ -37,10 +37,13 @@
           <a-form-item label="泊松比">
             <a-input-number :step="0.01" v-model:value="item.remark" placeholder="请输入泊松比" />
           </a-form-item>
+          <a-form-item label="厚度">
+            <a-input-number :step="0.01" v-model:value="item.order_by" placeholder="请输入厚度" />
+          </a-form-item>
           <MinusCircleOutlined @click="removeItem(item)" />
         </a-space>
         <a-form-item>
-          <a-button type="dashed" style="width: 840px" @click="addItem">
+          <a-button type="dashed" v-if="formRef.road_detail.length < 6" style="width: 840px" @click="addItem">
             <PlusOutlined />
             新增层次
           </a-button>
@@ -56,6 +59,8 @@
 <script lang="ts" setup>
 import {onMounted, reactive, ref} from 'vue';
 import {findDictionaryList} from "@/api/system/dictionary";
+import {saveBatch} from "@/api/common/tdemo";
+import {message} from "ant-design-vue";
 const code_data = ref([]);
 
 interface RoadDetail {
@@ -64,6 +69,7 @@ interface RoadDetail {
   code?: string;
   remark?: number;
   short_name?: number;
+  order_by?: number;
 }
 
 interface FormFields {
@@ -103,7 +109,8 @@ const addItem = () => {
     classify: undefined,
     remark: undefined,
     code: undefined,
-    short_name: undefined
+    short_name: undefined,
+    order_by: undefined
   });
   formRef.road_num = formRef.road_detail.length;
 };
@@ -111,9 +118,20 @@ const addItem = () => {
 const handleSubmit = () => {
   formRef.road_detail = formRef.road_detail.map((detail, i) => ({...detail, short_name: i+1}));
   console.log(formRef)
+  new Promise((resolve, reject) => {
+    saveBatch(formRef).then((response) => {
+      resolve(formRef);
+    });
+  }).then((res) => {
+    message.info("提交成功");
+  });
 };
 
 const handleAddLayers = () => {
+  if(formRef.road_num > 6) {
+    message.warn("无法构建超过6层！");
+    return;
+  }
   const numLayers = formRef.road_num || 0; // 获取层数，如果为空则默认为 0
   const currentNumLayers = formRef.road_detail.length;
   const numToAdd = numLayers - currentNumLayers; // 计算需要添加的层数
@@ -124,6 +142,7 @@ const handleAddLayers = () => {
       remark: undefined,
       code: undefined,
       short_name: undefined,
+      order_by: undefined
     }));
     formRef.road_detail.push(...newLayers); // 将新层次信息插入到 road_detail 数组中
   } else if (numToAdd < 0) { // 需要删除层数

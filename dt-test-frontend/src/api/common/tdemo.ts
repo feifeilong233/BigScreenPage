@@ -38,6 +38,26 @@ export function saveOrUpdate (params) {
   })
 }
 
+//保存或更新数据
+export function updateBatch (params) {
+  let url = '/common/tdemo/batch-update';
+  return request({
+    url: url,
+    method: 'put',
+    data: params
+  })
+}
+
+//保存或更新数据
+export function saveBatch (params) {
+  let url = '/common/tdemo/batch';
+  return request({
+    url: url,
+    method: 'post',
+    data: params
+  })
+}
+
 //删除数据
 export function delData (ids) {
   return request({
