@@ -127,6 +127,7 @@ import { findDictionaryList } from "@/api/system/dictionary";
 
 import Edit from "./Edit.vue";
 import Tree from "./Tree.vue";
+import {useRouter} from "vue-router";
 
 interface QueryParam {}
 
@@ -311,6 +312,7 @@ export default defineComponent({
       createModal.value
         .validate()
         .then((result) => {
+          console.log(result)
           if (isArray(result.order_by)) {
             result.order_by = result.order_by.join(",");
           }
@@ -386,12 +388,9 @@ export default defineComponent({
     };
 
     //详情
+    const router = useRouter();
     const handleInfo = (record) => {
-      mdl.value = {
-        ...treeData.value,
-        ...record,
-      };
-      visibleInfo.value = true;
+      router.push({ path: '/simulation/view', query: {short_name: record.short_name, id: record.id} })
     };
 
     //批量删除

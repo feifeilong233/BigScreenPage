@@ -74,6 +74,12 @@ public class TdemoController extends BaseController {
         return new MyResponse().data(dataTable);
     }
 
+    @GetMapping("/queryById/{id}")
+    public MyResponse queryById(@PathVariable String id) {
+        List<Tdemo> dataTable = tdemoService.list(Wrappers.lambdaQuery(Tdemo.class).eq(Tdemo::getParent_id, id).orderByAsc(Tdemo::getShort_name));
+        return new MyResponse().data(dataTable);
+    }
+
     /**
      * @title save
      * @description 保存数据
@@ -98,8 +104,6 @@ public class TdemoController extends BaseController {
             tdemo.setCreate_organize(authParams.split(":")[2]);
 
             this.tdemoService.save(tdemo);
-
-            List<Tdemo> AC20 = tdemoService.list(Wrappers.lambdaQuery(Tdemo.class).eq(Tdemo::getName, "AC20"));
 
             json.setSuccess(true);
             json.setMsg("新增信息成功");

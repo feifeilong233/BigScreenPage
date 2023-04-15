@@ -12,6 +12,17 @@ export function getListPage (params) {
     }
   })
 }
+
+//根据id查询
+export function getTdemoById (id) {
+  return request({
+    url: '/common/tdemo/queryById/'+id,
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+    }
+  })
+}
   
 //保存或更新数据
 export function saveOrUpdate (params) {

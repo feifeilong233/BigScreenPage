@@ -50,7 +50,7 @@
                   场景3
                 </a-select-option>
               </a-select>
-              <a-button style="margin-left: 66px">保存</a-button>
+              <a-button @click="handleSubmit" style="margin-left: 66px">保存</a-button>
               <a-button ghost type="primary">进入分析</a-button>
             </a-space>
           </a-card>
@@ -79,10 +79,13 @@ import {CreateLabel} from "@/views/dashboard/lib/spritetext";
 import border1 from "@/assets/bgs.png";
 import {findDictionaryList} from "@/api/system/dictionary";
 import {SkyboxUtils} from '@/lib/threeUtils.ts';
+import {useRoute} from "vue-router";
+import {getTdemoById, saveOrUpdate} from "@/api/common/tdemo";
+import {message} from "ant-design-vue";
 
 let roadValue = ref([]);
 let skyBox = ref('sky_2');
-roadValue.value = [
+/*roadValue.value = [
   {
     code: 'AC13',
     order_by: 0.05,
@@ -107,12 +110,11 @@ roadValue.value = [
     code: 'CBG25',
     order_by: 0.33,
   },
-]
+]*/
 
 onMounted(() => {
   initData();
   initMode();
-  renderEcharts();
 });
 
 onBeforeUnmount(()=>{
@@ -122,11 +124,26 @@ onBeforeUnmount(()=>{
 });
 
 const code_data = ref([]);
+const route = useRoute();
 
 const initData = () => {
+  getTdemoById(route.query.id).then((response) => {
+    roadValue.value = response.data.data;
+    renderEcharts();
+  })
   findDictionaryList({parent_code: 'lmcl'}).then((response) => {
     code_data.value = response.data.data;
   })
+}
+
+const handleSubmit = () => {
+  new Promise((resolve, reject) => {
+    saveOrUpdate(roadValue.value).then((response) => {
+      resolve(roadValue.value);
+    });
+  }).then((res) => {
+    message.info("修改成功");
+  });
 }
 
 let scene, camera, controls;
@@ -246,7 +263,7 @@ const onChange = () => {
 const renderEcharts = () => {
   const dataset = [];
   roadValue.value.forEach(item => {
-    const value = item.value * 100;
+    const value = item.order_by * 100;
     dataset.push([0.5, 0.5, value]);
   });
   Render3DEcharts('container3D', dataset.reverse());

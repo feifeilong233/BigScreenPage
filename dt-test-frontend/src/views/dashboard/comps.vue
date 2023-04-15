@@ -174,7 +174,6 @@ const EchartTemp = defineAsyncComponent(
   () => import('@/components/echartTemp.vue'),
 );
 const viewRoadDetail = () => {
-  console.log('/')
   router.push({ path: '/chart/workplace' })
 };
 </script>
