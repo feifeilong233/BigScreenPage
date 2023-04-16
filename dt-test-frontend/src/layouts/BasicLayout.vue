@@ -88,7 +88,7 @@ export default defineComponent({
     const { t } = useI18n()
     const { menuData } = getMenuData(clearMenuItem(router.getRoutes()));
     console.log('BasicLayout..',menuData)
-    const filteredMenuData = menuData.filter(item => item.path !== '/chart');
+    const filteredMenuData = [...menuData.slice(0, 1), ...menuData.slice(2)];
     const baseState = reactive<Omit<RouteContextProps, 'filteredMenuData'>>({
       selectedKeys: [],
       openKeys: [],
