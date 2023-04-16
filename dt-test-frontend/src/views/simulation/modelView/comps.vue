@@ -127,14 +127,8 @@ const code_data = ref([]);
 const route = useRoute();
 
 const initData = () => {
-  getTdemoById(route.query.id || 'b517be01d6584cfb908d0c49c8d2996e').then((response) => {
-    let roadData = response.data.data;
-    const defaultValue = { order_by: 0.000001 };
-    const length = 6 - roadData.length;
-    if (length > 0) {
-      roadData = [...roadData, ...Array(length).fill(defaultValue)];
-    }
-    roadValue.value = roadData;
+  getTdemoById(route.query.id).then((response) => {
+    roadValue.value = response.data.data;
     onChange();
   })
   findDictionaryList({parent_code: 'lmcl'}).then((response) => {
@@ -156,8 +150,6 @@ let scene, camera, controls;
 let idName = ref('map');
 // 创建场景渲染
 const renderer = new THREE.WebGLRenderer();
-// 添加gltf
-let loader = new GLTFLoader()
 let width, height;
 
 const initMode = () => {
@@ -258,6 +250,10 @@ const onChange = () => {
     te.push(item.code);
   });
 
+  while (H.length < 6) {
+    H.push(0.00);
+  }
+
   model_load(H, te);
 }
 
@@ -267,7 +263,7 @@ const renderEcharts = () => {
     const value = item.order_by * 100;
     dataset.push([0.5, 0.5, value]);
   });
-  console.log(dataset);
+  console.log("dataset====",dataset);
   Render3DEcharts('container3D', dataset.reverse());
 }
 
@@ -281,7 +277,7 @@ const Texttags = (text, posi) => {
 let selectObject, OBJ;
 
 const onMouseClick = (event) => {
-  console.log(camera.position)
+  console.log("camera.position====",camera.position)
   // 获取 raycaster 和所有模型相交的数组，其中的元素按照距离排序，越近的越靠前
   const intersects = getIntersects(event);
 
@@ -303,17 +299,18 @@ const onMouseClick = (event) => {
     scene.remove(scene.children[3]);
   }
 
-  if (selectObject != undefined && selectObject != null) {
+  if (selectObject != undefined) {
+    console.log("selectObject====", selectObject)
     const str = selectObject.name.split('_');
-    const roadName = str[1] > 100 ? str[0] : getCode(parseInt(str[1])+1);
-    const text = roadName + " " + (selectObject.geometry.attributes.position.data.array[2] / 3).toFixed(2);
+    const texName = str[1] > 100 ? str[0] : getCode(selectObject.material.name);
+    const text = texName + " " + (selectObject.geometry.attributes.position.data.array[2] / 3).toFixed(2);
     Texttags(text, [selectObject.position.x / 10 + 12, selectObject.position.y + 35, selectObject.position.z + 43])
   }
 }
 
 // 计算属性，根据record.code翻译出对应的code值
 const getCode = (code) => {
-  const item = code_data.value.find((item) => item.order_by == code);
+  const item = code_data.value.find((item) => item.code == code);
   return item ? item.name : code;
 };
 
@@ -366,7 +363,7 @@ const FindTarget = (obj, target) => {
 }
 
 // 修改材质
-const ChangeTexture = (obj, target, img_path) => {
+const ChangeTexture = (obj, target, img_path, tex_name) => {
   obj = obj.scene;
   const textureLoader = new THREE.TextureLoader();
 
@@ -377,11 +374,11 @@ const ChangeTexture = (obj, target, img_path) => {
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set(1, 1);
+    texture.needsUpdate = true;
 
-    // 将纹理图像应用到材质
-    // obj.children[0].children[target].material.map = texture;
-    // 新建材质
-    obj.children[0].children[target].material = new THREE.MeshStandardMaterial({map: texture});
+    const material = new THREE.MeshStandardMaterial({map: texture});
+    material.name = tex_name; // 为材质添加名称
+    obj.children[0].children[target].material = material;
     obj.children[0].children[target].material.needsUpdate = true;
   });
 }
@@ -418,14 +415,13 @@ const model_load = (H, te) => {
     const ary = ["road_5", "road_4", "road_3", "road_2", "road_1", "road_0", "绿化带"];
     let j = 5;
     let z = 3.28084;
-    FindTarget(obj, ary[0]);
     while (j > -1) {
       const i = FindTarget(obj, ary[5 - j]);
       let n = 0;
       while (n < i.length) {
         if(te[j] !== undefined) {
           const path = "/road_gltf_7/New_road_7_img_" + te[j] + (te[j] == 'AC13' ? ".png" : ".jpg");
-          ChangeTexture(obj, i[n], path);
+          ChangeTexture(obj, i[n], path, te[j]);
         }
         ChangePosition(obj, i[n], z);
         ChangeDepth(obj, i[n], H[j]);

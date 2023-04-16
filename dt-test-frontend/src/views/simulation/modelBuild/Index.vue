@@ -61,6 +61,8 @@ import {onMounted, reactive, ref} from 'vue';
 import {findDictionaryList} from "@/api/system/dictionary";
 import {saveBatch} from "@/api/common/tdemo";
 import {message} from "ant-design-vue";
+import {useRouter} from "vue-router";
+const router = useRouter();
 const code_data = ref([]);
 
 interface RoadDetail {
@@ -117,12 +119,13 @@ const addItem = () => {
 
 const handleSubmit = () => {
   formRef.road_detail = formRef.road_detail.map((detail, i) => ({...detail, short_name: i+1}));
-  console.log(formRef)
+  console.log("formRef====",formRef)
   new Promise((resolve, reject) => {
     saveBatch(formRef).then((response) => {
       resolve(formRef);
     });
   }).then((res) => {
+    router.push({path: '/simulation/tdemo'});
     message.info("提交成功");
   });
 };

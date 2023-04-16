@@ -49,7 +49,7 @@ export default defineComponent({
             data[0].name,
           );
         } else {
-          defaultExpandedKeys.push(params.parent_id);
+          defaultExpandedKeys.value.push(params.parent_id);
         }
       });
     };

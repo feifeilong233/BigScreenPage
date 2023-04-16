@@ -31,7 +31,7 @@
         <a-form-item v-if="isRoot" v-bind="validateInfos.remark" label="泊松比">
           <a-input-number :step="0.01" v-model:value="formRef.remark" placeholder="泊松比"/>
         </a-form-item>
-        <a-form-item v-if="isRoot" v-bind="validateInfos.remark" label="厚度">
+        <a-form-item v-if="isRoot" v-bind="validateInfos.order_by" label="厚度">
           <a-input-number :step="0.01" v-model:value="formRef.order_by" placeholder="厚度"/>
         </a-form-item>
       </a-form>
@@ -127,6 +127,7 @@ export default defineComponent({
       remark: [{required: false}],
       parent_id: [{required: false}],
       parent_name: [{required: false}],
+      order_by: [{required: false}]
     })
 
     const isRoot = ref(true);
