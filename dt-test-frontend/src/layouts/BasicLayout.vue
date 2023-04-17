@@ -1,15 +1,15 @@
 <template>
   <pro-layout
-    v-model:collapsed="baseState.collapsed"
-    v-model:selectedKeys="baseState.selectedKeys"
-    v-model:openKeys="baseState.openKeys"
-    :menu-data="filteredMenuData"
-    v-bind="settings"
-    :loading="loading"
-    :breadcrumb="{ routes: breadcrumb }"
-    iconfont-url="//at.alicdn.com/t/font_2804900_nzigh7z84gc.js"
-    :collapsedButtonRender=false
-    :locale="t"
+      v-model:collapsed="baseState.collapsed"
+      v-model:selectedKeys="baseState.selectedKeys"
+      v-model:openKeys="baseState.openKeys"
+      :menu-data="filteredMenuData"
+      v-bind="settings"
+      :loading="loading"
+      :breadcrumb="{ routes: breadcrumb }"
+      iconfont-url="//at.alicdn.com/t/font_2804900_nzigh7z84gc.js"
+      :collapsedButtonRender=false
+      :locale="t"
   >
     <template #menuHeaderRender>
       <a>
@@ -50,11 +50,11 @@
 
     <!-- content begin -->
     <router-view v-slot="{ Component }">
-        <component :is="Component" />
+      <component :is="Component" />
     </router-view>
 
     <!-- content end -->
-<!--    <pro-global-footer/>-->
+    <!--    <pro-global-footer/>-->
   </pro-layout>
 </template>
 
@@ -88,7 +88,7 @@ export default defineComponent({
     const { t } = useI18n()
     const { menuData } = getMenuData(clearMenuItem(router.getRoutes()));
     console.log('BasicLayout..',menuData)
-    const filteredMenuData = [...menuData.slice(0, 1), ...menuData.slice(2)];
+    const filteredMenuData = menuData.filter(item => item.path !== '/chart');
     const baseState = reactive<Omit<RouteContextProps, 'filteredMenuData'>>({
       selectedKeys: [],
       openKeys: [],
@@ -122,12 +122,12 @@ export default defineComponent({
     }
 
     const breadcrumb = computed(() =>
-      router.currentRoute.value.matched.concat().map(item => {
-        return {
-          path: item.path,
-          breadcrumbName: item.meta.title || '',
-        };
-      }),
+        router.currentRoute.value.matched.concat().map(item => {
+          return {
+            path: item.path,
+            breadcrumbName: item.meta.title || '',
+          };
+        }),
     );
 
     const handleCollapsed = () => {
@@ -139,8 +139,8 @@ export default defineComponent({
         const matched = router.currentRoute.value.matched.concat();
         baseState.selectedKeys = matched.filter(r => r.name !== 'index').map(r => r.path);
         baseState.openKeys = matched
-          .filter(r => r.path !== router.currentRoute.value.path)
-          .map(r => r.path);
+            .filter(r => r.path !== router.currentRoute.value.path)
+            .map(r => r.path);
       }
     });
     function handlePageLoadingClick() {
