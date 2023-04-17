@@ -1,103 +1,116 @@
 <template>
   <div>
-    <a-modal :title="title" :width="800" :visible="visible">
+    <a-modal
+        :title="title"
+        :width="800"
+        :visible="visible"
+        @cancel="() => {$emit('cancel');}"
+    >
       <template #footer>
         <a-button
-          key="submit"
-          type="primary"
-          :loading="loading"
-          @click="
+            key="submit"
+            type="primary"
+            :loading="loading"
+            @click="
             () => {
               $emit('cancel');
             }
           "
-          >确定</a-button
+        >确定
+        </a-button
         >
       </template>
       <div class="operate">
         <a-button type="dashed" style="width: 100%" @click="handleAdd"
-          ><plus-outlined />添加</a-button
+        >
+          <plus-outlined/>
+          添加
+        </a-button
         >
       </div>
       <a-table
-        ref="table"
-        :row-key="(record) => record.id"
-        :columns="columns"
-        :data-source="data"
-        :loading="loading"
-        :pagination="pagination"
-        bordered
-        @change="handleTableChange"
+          ref="table"
+          :row-key="(record) => record.id"
+          :columns="columns"
+          :data-source="data"
+          :loading="loading"
+          :pagination="pagination"
+          bordered
+          @change="handleTableChange"
       >
         <template #bodyCell="{ column, text, record }">
           <span v-if="column.dataIndex === 'operation'">
             <a-button
-              size="small"
-              type="primary"
-              @click="() => handleEdit(record)"
-              >编辑</a-button
+                size="small"
+                type="primary"
+                @click="() => handleEdit(record)"
+            >编辑</a-button
             >
             <a-button
-              size="small"
-              type="danger"
-              v-show="record.type == '1'"
-              @click="() => handleDel(record.id)"
-              >删除</a-button
+                size="small"
+                type="danger"
+                v-show="record.type == '1'"
+                @click="() => handleDel(record.id)"
+            >删除</a-button
             >
           </span>
         </template>
       </a-table>
     </a-modal>
     <a-modal
-      :title="设置组织"
-      :width="640"
-      :visible="visibleEdit"
-      :confirmLoading="loading"
-      @cancel="handCancel"
-      @ok="handleOk"
+        :title="设置组织"
+        :width="640"
+        :visible="visibleEdit"
+        :confirmLoading="loading"
+        @cancel="handCancel"
+        @ok="handleOk"
     >
       <a-form layout="vertical" v-bind="formLayout">
         <a-form-item v-bind="validateInfos.name" label="组织类型">
           <a-input
-            v-model:value="formRef.type_name"
-            disabled
-            placeholder="组织类型"
+              v-model:value="formRef.type_name"
+              disabled
+              placeholder="组织类型"
           />
         </a-form-item>
         <a-form-item v-bind="validateInfos.organize_name" label="组织名称">
           <a-row type="flex">
             <a-col :flex="4"
-              ><a-input
-                v-model:value="formRef.organize_id"
-                v-show="false"
-                placeholder="组织id" />
+            >
               <a-input
-                v-model:value="formRef.organize_name"
-                placeholder="组织名称"
-            /></a-col>
+                  v-model:value="formRef.organize_id"
+                  v-show="false"
+                  placeholder="组织id"/>
+              <a-input
+                  v-model:value="formRef.organize_name"
+                  placeholder="组织名称"
+              />
+            </a-col>
             <a-col :flex="1"
-              ><a-button @click="selectOneOrganize" type="primary">
+            >
+              <a-button @click="selectOneOrganize" type="primary">
                 选择
-              </a-button></a-col
+              </a-button>
+            </a-col
             >
           </a-row>
         </a-form-item>
         <a-form-item v-bind="validateInfos.position" label="担任职务">
-          <a-input v-model:value="formRef.position" placeholder="担任职务" />
+          <a-input v-model:value="formRef.position" placeholder="担任职务"/>
         </a-form-item>
         <a-form-item v-bind="validateInfos.order_by" label="排序">
-          <a-input v-model:value="formRef.order_by" placeholder="排序" />
+          <a-input v-model:value="formRef.order_by" placeholder="排序"/>
         </a-form-item>
       </a-form>
     </a-modal>
     <select-one-organize
-      v-if="visibleOneOrganize"
-      ref="oneOrganizeModal"
-      :visible="visibleOneOrganize"
-      :loading="confirmLoading"
-      :model="mdl"
-      @cancel="handleOrganizeCancel()"
-      @ok="handleOrganizeOk()"
+        v-if="visibleOneOrganize"
+        ref="oneOrganizeModal"
+        :visible="visibleOneOrganize"
+        :loading="confirmLoading"
+        :model="mdl"
+        @cancel="handleOrganizeCancel()"
+        @ok="handleOrganizeOk()"
     />
   </div>
 </template>
@@ -110,7 +123,7 @@ import {
   onMounted,
   reactive,
 } from "vue";
-import { Form, message, Modal } from "ant-design-vue";
+import {Form, message, Modal} from "ant-design-vue";
 import {
   getMyOrganizeListPage,
   saveOrUpdateUserOrganize,
@@ -139,7 +152,7 @@ export default defineComponent({
   },
   setup(props) {
     const table = ref(null);
-    const { model } = props;
+    const {model} = props;
     const title = ref("组织管理");
     const data = ref([]);
     const visibleEdit = ref(false);
@@ -181,7 +194,7 @@ export default defineComponent({
       {
         title: "操作",
         dataIndex: "operation",
-        scopedSlots: { customRender: "operation" },
+        scopedSlots: {customRender: "operation"},
         width: "160px",
       },
     ];
@@ -196,9 +209,9 @@ export default defineComponent({
     });
 
     const handleTableChange = (
-      pag: { pageSize: number; current: number },
-      filters: any,
-      sorter: any
+        pag: { pageSize: number; current: number },
+        filters: any,
+        sorter: any
     ) => {
       pagination.value.current = pag.current;
       pagination.value.pageSize = pag.pageSize;
@@ -243,7 +256,8 @@ export default defineComponent({
           });
         },
         // eslint-disable-next-line @typescript-eslint/no-empty-function
-        onCancel() {},
+        onCancel() {
+        },
       });
     };
     //弹框model
@@ -263,20 +277,20 @@ export default defineComponent({
     //打开新增页面
     const handleAdd = () => {
       (formRef.organize_id = ""),
-        (formRef.organize_name = ""),
-        (formRef.order_by = ""),
-        (formRef.position = ""),
-        (visibleEdit.value = true);
+          (formRef.organize_name = ""),
+          (formRef.order_by = ""),
+          (formRef.position = ""),
+          (visibleEdit.value = true);
     };
 
     //打开编辑页面
     const handleEdit = (record) => {
       (formRef.id = record.id),
-        (formRef.organize_id = record.organize_id),
-        (formRef.organize_name = record.organize_name),
-        (formRef.order_by = record.order_by),
-        (formRef.position = record.position),
-        (visibleEdit.value = true);
+          (formRef.organize_id = record.organize_id),
+          (formRef.organize_name = record.organize_name),
+          (formRef.order_by = record.order_by),
+          (formRef.position = record.position),
+          (visibleEdit.value = true);
     };
 
     //取消新增编辑
@@ -339,15 +353,15 @@ export default defineComponent({
 
     //校验规则
     const rulesRef = reactive({
-      id: [{ required: false }],
-      type: [{ required: false }],
-      organize_id: [{ required: false }],
-      organize_name: [{ required: true, message: "请选择组织" }],
-      position: [{ max: 50, message: "不能超过50个字符" }],
-      order_by: [{ max: 50, message: "不能超过50个字符" }],
-      user_id: [{ required: false }],
+      id: [{required: false}],
+      type: [{required: false}],
+      organize_id: [{required: false}],
+      organize_name: [{required: true, message: "请选择组织"}],
+      position: [{max: 50, message: "不能超过50个字符"}],
+      order_by: [{max: 50, message: "不能超过50个字符"}],
+      user_id: [{required: false}],
     });
-    const { validate, validateInfos } = useForm(formRef, rulesRef);
+    const {validate, validateInfos} = useForm(formRef, rulesRef);
 
     return {
       title,
