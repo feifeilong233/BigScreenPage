@@ -9,7 +9,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-@TableName("road_structure")
+@TableName("road_flatness")
 public class RoadFlatness {
     /**
      * 主键id

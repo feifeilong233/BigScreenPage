@@ -1,7 +1,7 @@
 package com.qingfeng.common.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.qingfeng.common.entity.RoadStructure;
+import com.qingfeng.common.entity.RoadFlatness;
 
-public interface RoadStuctureMapper extends BaseMapper<RoadStructure> {
+public interface RoadFlatnessMapper extends BaseMapper<RoadFlatness> {
 }

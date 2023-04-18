@@ -1,16 +1,23 @@
 import echarts from '@/lib/echarts';
 import 'echarts-liquidfill/src/liquidFill.js';
-import {queryRoadStructureByParentName} from "@/api/common/chart";
-var myData = ['测试1', '测试1', '测试1', '测试1', '测试1', '测试1', '测试1', '测试1'];
-var lineData = [100, 100, 100, 100, 100, 100];
+import {queryRoadFlatnessByPname, queryRoadStructureByParentName} from "@/api/common/chart";
+var myData = [];
+var lineData = [2.1, 2.1, 2.1, 2.1, 2.1, 2.1, 2.1, 2.1];
 var lastYearData = {
   1: [20, 62, 34, 55, 65, 33],
 };
 var thisYearData = {
-  1: [38, 23, 39, 66, 66, 79],
+  1: [],
 };
 
 var timeLineData = [1];
+
+await queryRoadFlatnessByPname('STR1').then((response) => {
+  thisYearData[timeLineData[0]] = response.data.data;
+  myData = response.data.data
+      .map((obj) => obj.name)
+      .slice(0, 8);
+})
 
 var background = '#0e2147'; //背景
 
@@ -169,8 +176,8 @@ export const baroption = {
             normal: {
               show: true,
               formatter: (series) => {
-                console.log(series.dataIndex);
-                return series.dataIndex + '%';
+                console.log(thisYearData[timeLineData[0]][series.dataIndex].value);
+                return thisYearData[timeLineData[0]][series.dataIndex].value;
               },
               position: 'right',
               textStyle: {
