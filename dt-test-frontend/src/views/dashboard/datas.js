@@ -1,5 +1,6 @@
 import echarts from '@/lib/echarts';
 import 'echarts-liquidfill/src/liquidFill.js';
+import { queryRoadStructureByPid } from "@/api/common/chart";
 var myData = ['测试1', '测试1', '测试1', '测试1', '测试1', '测试1'];
 var lineData = [100, 100, 100, 100, 100, 100];
 var lastYearData = {
@@ -307,12 +308,34 @@ var trafficWay = [
   },
 ];
 
+await queryRoadStructureByPid('b517be01d6584cfb908d0c49c8d2996e').then((response) => {
+  trafficWay = response.data.data;
+})
+
 var data = [];
 var data1 = [];
 var color = [
   '#ffb137',
   '#fb923c',
   '#f87171',
+  '#c3e8f0',
+  '#0869b2',
+  '#0869b2',
+  '#ff3000',
+];
+var color1 = [
+  '#54b2c4',
+  '#83a8fb',
+  '#8e88d6',
+  '#d23f87',
+  '#ffa800',
+  '#ff5b00',
+  '#ff3000',
+];
+var color2 = [
+  '#54b2c4',
+  '#00FFE3',
+  '#257fc3',
   '#c3e8f0',
   '#0869b2',
   '#0869b2',
@@ -359,7 +382,7 @@ for (var i = 0; i < trafficWay.length; i++) {
 }
 
 export const CriOption = {
-  color: color,
+  color: color1,
 
   tooltip: {
     show: false,
