@@ -1,7 +1,7 @@
 import echarts from '@/lib/echarts';
 import 'echarts-liquidfill/src/liquidFill.js';
-import { queryRoadStructureByPid } from "@/api/common/chart";
-var myData = ['测试1', '测试1', '测试1', '测试1', '测试1', '测试1'];
+import {queryRoadStructureByParentName} from "@/api/common/chart";
+var myData = ['测试1', '测试1', '测试1', '测试1', '测试1', '测试1', '测试1', '测试1'];
 var lineData = [100, 100, 100, 100, 100, 100];
 var lastYearData = {
   1: [20, 62, 34, 55, 65, 33],
@@ -308,7 +308,7 @@ var trafficWay = [
   },
 ];
 
-await queryRoadStructureByPid('b517be01d6584cfb908d0c49c8d2996e').then((response) => {
+await queryRoadStructureByParentName('STR1').then((response) => {
   trafficWay = response.data.data;
 })
 

@@ -110,7 +110,7 @@
           </div>
         </div>
         <div class="box3 enter-x-l h-45vh">
-          <div class="title1">测试指数</div>
+          <div class="title1"></div>
           <div class="h-40vh">
             <EchartTemp
               elementName="enter4"

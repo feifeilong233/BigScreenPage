@@ -2,7 +2,9 @@ package com.qingfeng.common.controller;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.qingfeng.base.controller.BaseController;
+import com.qingfeng.common.entity.RoadFlatness;
 import com.qingfeng.common.entity.RoadStructure;
+import com.qingfeng.common.service.IRoadFlatnessService;
 import com.qingfeng.common.service.IRoadStructureService;
 import com.qingfeng.utils.*;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,9 @@ public class ChartController extends BaseController {
     @Autowired
     IRoadStructureService roadStructureService;
 
+    @Autowired
+    IRoadFlatnessService roadFlatnessService;
+
     @GetMapping("/queryByPid/{id}")
     public MyResponse queryById(@PathVariable String id) {
         List<RoadStructure> dataTable = roadStructureService.list(Wrappers.lambdaQuery(RoadStructure.class).eq(RoadStructure::getPid, id));
@@ -42,6 +47,12 @@ public class ChartController extends BaseController {
     @GetMapping("/getList")
     public MyResponse getList() {
         List<RoadStructure> dataTable = roadStructureService.list();
+        return new MyResponse().data(dataTable);
+    }
+
+    @GetMapping("/queryFlatnessByPname/{name}")
+    public MyResponse queryFlatnessByPname(@PathVariable String name) {
+        List<RoadFlatness> dataTable = roadFlatnessService.list(Wrappers.lambdaQuery(RoadFlatness.class).eq(RoadFlatness::getPid_name, name));
         return new MyResponse().data(dataTable);
     }
 }

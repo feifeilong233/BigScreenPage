@@ -11,6 +11,7 @@ export function queryRoadStructureByPid (id) {
     })
 }
 
+//根据父级路面名称查询
 export function queryRoadStructureByParentName (name) {
     return request({
         url: '/chart/workplace/queryByParentName/'+name,
@@ -25,6 +26,17 @@ export function queryRoadStructureByParentName (name) {
 export function getRoadStructureList () {
     return request({
         url: '/chart/workplace/getList',
+        method: 'get',
+        headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+        }
+    })
+}
+
+//根据父级路面名称查询平整度数据
+export function queryRoadFlatnessByPname (name) {
+    return request({
+        url: '/chart/workplace/queryFlatnessByPname/'+name,
         method: 'get',
         headers: {
             'Content-Type': 'application/json;charset=UTF-8',

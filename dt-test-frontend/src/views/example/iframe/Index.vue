@@ -25,8 +25,8 @@ export default defineComponent({
       const oIframe = document.getElementById("bdIframe");
       const deviceWidth = document.documentElement.clientWidth;
       const deviceHeight = document.documentElement.clientHeight;
-      oIframe.style.width = Number(deviceWidth) - 220 + "px"; //数字是页面布局宽度差值
-      oIframe.style.height = Number(deviceHeight) - 120 + "px"; //数字是页面布局高度差
+      oIframe.style.width = Number(deviceWidth) - 180 + "px"; //数字是页面布局宽度差值
+      oIframe.style.height = Number(deviceHeight) - 80 + "px"; //数字是页面布局高度差
     });
 
     return {
