@@ -1,0 +1,102 @@
+<div class="grey lighten-3" :id="$style.root">
+  <v-responsive class="grey darken-3">
+    <v-container grid-list-lg fill-height :id="$style.banner">
+      <v-layout row align-center>
+        <v-flex
+          :xs6="!$vuetify.breakpoint.smAndDown"
+          :xs12="$vuetify.breakpoint.smAndDown"
+        >
+          <v-card flat dark color="transparent">
+            <v-card-title class="display-1 text-center pv-break-word">
+              Visualize your data with Kitware Glance
+            </v-card-title>
+            <v-card-text>
+              A general purpose standalone web application by
+              <a
+                target="_blank"
+                class="indigo--text text--lighten-3"
+                href="https://www.kitware.com/"
+                rel="noopener noreferrer"
+              >Kitware, Inc.</a>
+              that can be used to visualize many data types.
+              It is also a great framework for building custom
+              viewers on the web which can involve remote services.
+            </v-card-text>
+          </v-card>
+        </v-flex>
+        <v-flex
+          v-if="!$vuetify.breakpoint.smAndDown"
+          key="if-large-enough-screen"
+          xs6
+          fill-height
+        >
+          <drag-and-drop
+            enabled
+            :class="$style.dnd"
+            @drop="$emit('open-files', $event)"
+          >
+            <template v-slot:default="{ dragHover }">
+              <div
+                :class="{ [$style.fileUpload]: true, [$style.fileUploadHover]: dragHover }"
+                @click.stop="$emit('open')"
+              >
+                <div class="white--text body-2" :class="$style.fileUploadContents">
+                  <v-btn
+                    color="primary"
+                    raised="false"
+                    @click.stop="$emit('open')"
+                  >
+                    <span v-if="dragHover" class="text-uppercase mr-2">drop your file</span>
+                    <span v-else class="text-uppercase mr-2">open a file</span>
+                    <v-icon>mdi-folder-outline</v-icon>
+                  </v-btn>
+                  <div class="pv-no-select mt-2">
+                    or drop one anywhere in this box to begin.
+                  </div>
+                </div>
+              </div>
+            </template>
+          </drag-and-drop>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-responsive>
+  <v-container class="mt-4 pv-no-select" grid-list-lg>
+    <v-layout row wrap>
+      <v-flex xs12>
+        <span class="title">Sample Data</span>
+      </v-flex>
+      <v-flex
+        v-for="(sample, i) in samples"
+        :key="i"
+        :xs4="$vuetify.breakpoint.mdAndUp"
+        :xs6="$vuetify.breakpoint.sm"
+        :xs12="$vuetify.breakpoint.xs"
+      >
+        <v-card :class="$style.sampleData" flat tile>
+          <v-img :src="sample.image" height="300px" />
+          <div
+            :class="$style.linkOverlay"
+            @click.stop="openSample(sample)"
+          >
+            <div :class="$style.linkOverlayText" class="body-2">
+              {{ sample.label }} ({{ sample.size }})
+              <div :class="$style.description" v-if="sample.description">
+                {{ sample.description }}
+              </div>
+              <div :class="$style.acknowledgement" v-if="sample.acknowledgement">
+                {{ sample.acknowledgement }}
+              </div>
+            </div>
+          </div>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
+  <v-footer class="d-flex flex-column" height="48px" color="transparent">
+    <div class="mb-2 text-center grey--text text--darken-2">
+      <div>&copy; {{ new Date().getFullYear() }} — Kitware, Inc.</div>
+      <div>Glance ({{version}})</div>
+    </div>
+  </v-footer>
+</div>

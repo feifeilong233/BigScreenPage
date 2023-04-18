@@ -1,0 +1,214 @@
+<drag-and-drop
+  :enabled="!landingVisible && !fileUploadDialog"
+  v-on:drop="openFileList"
+>
+  <template v-slot:default="{ dragHover }">
+    <v-app>
+      <v-navigation-drawer
+        v-model="controlsDrawer"
+        :clipped="$vuetify.breakpoint.mdAndUp"
+        :mobile-breakpoint="$vuetify.breakpoint.thresholds.sm"
+        app
+        fixed
+        disable-resize-watcher
+        touchless
+        width="300"
+      >
+        <controls-drawer />
+      </v-navigation-drawer>
+
+      <v-app-bar app clipped-left>
+        <v-app-bar-nav-icon
+          :disabled="landingVisible"
+          @click.native.stop="controlsDrawer = !controlsDrawer"
+        />
+        <v-tooltip
+          bottom
+          :disabled="smallScreen"
+        >
+          <template v-slot:activator="{ on }">
+            <a
+              href="#"
+              v-on="on"
+              v-on:click.prevent="toggleLanding"
+            >
+              <svg-icon
+                :icon="`glance-logo${smallScreen ? '-mark' : ''}`"
+                height="36px"
+                style="margin-top: 6px"
+              />
+            </a>
+          </template>
+          <span v-if="landingVisible" key="if-landingVisible">Go to app</span>
+          <span v-else key="if-landingVisible">Back to landing page</span>
+        </v-tooltip>
+        <v-spacer />
+        <v-toolbar-items>
+          <v-btn
+            v-if="errors.length"
+            key="if-has-errors"
+            text
+            color="error"
+            v-on:click="errorDialog = true"
+          >
+            <v-icon left>mdi-alert-circle</v-icon>
+            <span>{{ errors.length }}</span>
+            &nbsp;
+            <span v-show="!smallScreen">error(s)</span>
+          </v-btn>
+        </v-toolbar-items>
+        <collapsible-toolbar
+          :collapse="$vuetify.breakpoint.xsOnly"
+          :dense="smallScreen"
+        >
+          <template v-slot:default="{ state }">
+            <collapsible-toolbar-item
+              v-on:click="showFileUpload"
+              :state="state"
+            >
+              <v-icon left>mdi-folder</v-icon>
+              <span v-show="state !== 'dense'">Open</span>
+            </collapsible-toolbar-item>
+            <collapsible-toolbar-item
+              v-show="!landingVisible"
+              v-on:click="saveState()"
+              :state="state"
+            >
+              <v-icon left>mdi-cloud-download</v-icon>
+              <span v-show="state !== 'dense'">Save state</span>
+            </collapsible-toolbar-item>
+            <collapsible-toolbar-item
+              v-show="!landingVisible"
+              v-on:click="screenshotsDrawer = true"
+              :state="state"
+            >
+              <v-icon left>mdi-image-multiple</v-icon>
+              <span v-show="state !== 'dense'">
+                Screenshots ({{ screenshotCount }})
+              </span>
+            </collapsible-toolbar-item>
+            <collapsible-toolbar-item
+              v-on:click="aboutDialog = true"
+              :state="state"
+            >
+              <v-icon left>mdi-information</v-icon>
+              <span v-show="state !== 'dense'">About</span>
+            </collapsible-toolbar-item>
+          </template>
+        </collapsible-toolbar>
+      </v-app-bar>
+
+      <v-content
+        :id="$style.appContent"
+        :style="{
+          position: landingVisible ? 'initial' : 'fixed',
+        }"
+      >
+        <landing
+          v-if="landingVisible"
+          key="if-landing"
+          v-on:open="showFileUpload"
+          v-on:open-urls="autoLoadRemotes"
+          v-on:open-files="openFileList"
+        />
+        <layout-view v-else key="if-landing" />
+      </v-content>
+
+      <v-navigation-drawer
+        v-model="screenshotsDrawer"
+        :stateless="screenshotsDrawerStateless"
+        app
+        right
+        temporary
+        touchless
+        width="300"
+      >
+        <screenshots
+          v-on:screenshot-count="screenshotCount = $event"
+          v-on:close="screenshotsDrawer = false"
+        />
+      </v-navigation-drawer>
+
+      <!-- file loader -->
+      <file-loader
+        v-model="fileUploadDialog"
+        v-on:load="doneLoadingFiles"
+      />
+
+      <v-dialog v-model="autoloadDialog" persistent width="60%">
+        <v-card class="pa-4">
+          <v-card-title
+            class="justify-center text-center title black--text pv-break-word"
+          >
+            Loading {{ autoloadLabel }}&nbsp;
+            <span v-if="fileLoadingProgress === 1">
+              (reading...)
+            </span>
+            <span v-else-if="fileLoadingProgress !== Infinity">
+              ({{ Math.round(fileLoadingProgress * 100) }}%)
+            </span>
+          </v-card-title>
+          <v-card-text>
+            <v-progress-linear
+              :indeterminate="fileLoadingProgress === Infinity"
+              :value="fileLoadingProgress * 100"
+            />
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+
+      <!-- state generator -->
+      <state-file-generator />
+
+      <!-- dnd overlay -->
+      <div
+        :class="{ [$style.overlay]: true, [$style.overlayVisible]: dragHover }"
+      >
+        <div :class="$style.overlayText">
+          <div class="display-3">Drop files here</div>
+          <v-icon size="4.75rem">mdi-publish</v-icon>
+        </div>
+      </div>
+
+      <!-- browser issues -->
+      <browser-issues />
+
+      <!-- about dialog -->
+      <component
+        :is="dialogType"
+        v-model="aboutDialog"
+        max-width="50%"
+      >
+        <about-box v-on:close="aboutDialog = false" />
+      </component>
+
+      <!-- error dialog-->
+      <component
+        :is="dialogType"
+        v-model="errorDialog"
+        max-width="50%"
+      >
+        <error-box
+          :errors="errors"
+          v-on:close="errorDialog = false"
+          v-on:clear="errors = []"
+        />
+      </component>
+
+      <v-snackbar
+        :value="!!globalSingleNotification"
+        @input="globalSingleNotification = ''"
+        bottom
+        left
+        :timeout="notifyPermanent ? 0 : 6000"
+        @click="globalSingleNotification = ''"
+      >
+        {{ globalSingleNotification }}
+        <v-btn text>close</v-btn>
+      </v-snackbar>
+
+      <!-- portal mount point -->
+      <div id="app-portal-mount" />
+    </v-app>
+  </template>
+</drag-and-drop>

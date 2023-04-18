@@ -1,0 +1,21 @@
+<v-container fluid :class="$style.container">
+  <div
+    :class="$style.grid"
+    :style="{ gridTemplateRows, gridTemplateColumns }"
+  >
+    <div
+      :class="$style.viewContainer"
+      v-for="(viewType, index) in views"
+      v-bind:key="`${index}::${viewType}`"
+      v-show="index < visibleCount"
+    >
+      <vtk-view
+        v-bind:view-type="viewType"
+        v-bind:layout-index="index"
+        v-bind:layout-count="visibleCount"
+        v-bind:background-color="backgroundColors[viewType]"
+        v-on:bg-change="setViewBackground(view, arguments[0])"
+      />
+    </div>
+  </div>
+</v-container>

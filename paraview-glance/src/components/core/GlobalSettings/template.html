@@ -1,0 +1,259 @@
+<v-container :class="$style.container">
+  <v-card flat :class="$style.card" v-if="isAnimated">
+    <div :class="$style.heading">
+      <span class="subtitle-2">Animation controls</span>
+    </div>
+    <v-divider class="mb-4" />
+    <animationControls />
+  </v-card>
+
+  <v-card flat :class="$style.card">
+    <div :class="$style.heading">
+      <span class="subtitle-2">General Settings</span>
+    </div>
+    <v-divider class="mb-4" />
+    <v-container grid-list-xs class="pa-0">
+      <v-layout row align-center class="pt-1">
+        <v-flex xs10>
+          <span class="body-2">Default collapse datasets</span>
+        </v-flex>
+        <v-flex xs2>
+          <v-switch
+            v-model="collapseDatasetPanelsModel"
+            :class="$style.slimInput"
+            hide-details
+          />
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-card>
+
+  <!-- measurement unit selection -->
+  <v-card flat :class="$style.card">
+    <div :class="$style.heading">
+      <span class="subtitle-2">Measurements</span>
+    </div>
+    <v-divider class="mb-4" />
+    <v-container grid-list-xs class="pa-0">
+      <v-layout row align-center class="pt-1">
+        <v-flex xs9>
+          <span class="body-2">Distance unit symbol</span>
+        </v-flex>
+        <v-flex xs3>
+          <v-text-field
+            :class="$style.slimInput"
+            hint="Symbol"
+            hide-details
+            v-model="distanceUnitSymbolModel"
+            required
+          />
+        </v-flex>
+        <v-flex xs9>
+          <span class="body-2">Distance unit factor</span>
+        </v-flex>
+        <v-flex xs3>
+          <v-text-field
+            :class="$style.slimInput"
+            type="number"
+            hint="Factor"
+            hide-details
+            v-model="distanceUnitFactorModel"
+            :min="0"
+            :step="0.1"
+            required
+          />
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-card>
+
+  <v-card flat :class="$style.card">
+    <div :class="$style.heading">
+      <span class="subtitle-2">Background</span>
+    </div>
+    <v-divider class="mb-4" />
+    <palette-picker
+      :palette="palette"
+      :size="24"
+      v-model="backgroundColorModel"
+    />
+  </v-card>
+  <v-card flat :class="$style.card">
+    <div :class="$style.heading">
+      <span class="subtitle-2">Interaction Style</span>
+    </div>
+    <v-divider :class="$style.divider" />
+    <v-container grid-list-xs class="pa-0">
+      <v-layout row align-center class="pt-1">
+        <v-flex xs6>
+          <span class="body-2">3D</span>
+        </v-flex>
+        <v-flex xs6>
+          <v-select
+            class="pv-no-select"
+            :class="$style.slimInput"
+            dense
+            flat
+            hide-details
+            v-model="interactionStyle3DModel"
+            :items="interactionStyles3D"
+          />
+        </v-flex>
+        <v-flex xs6>
+          <span class="body-2" v-if="firstPersonInteraction">
+            Movement Speed
+          </span>
+        </v-flex>
+        <v-flex xs6>
+          <v-text-field
+            :class="$style.slimInput"
+            hide-details
+            type="number"
+            v-model="firstPersonMovementSpeedModel"
+            v-if="firstPersonInteraction"
+            :min="0"
+            :step="0.1"
+          />
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-card>
+  <v-card flat :class="$style.card">
+    <div :class="$style.heading">
+      <span class="subtitle-2">Overlay</span>
+    </div>
+    <v-divider :class="$style.divider" />
+    <v-container grid-list-xs class="pa-0">
+      <v-layout row align-center class="pt-1">
+        <v-flex xs6>
+          <span class="body-2">Text opacity</span>
+        </v-flex>
+        <v-flex xs6>
+          <v-slider
+            :class="$style.slimInput"
+            hide-details
+            v-model="annotationOpacityModel"
+            :min="0"
+            :max="1"
+            :step="0.01"
+          />
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-card>
+  <v-card flat :class="$style.card">
+    <div :class="$style.heading">
+      <v-container grid-list-xs class="pa-0">
+        <v-layout row align-center>
+          <v-flex xs10>
+            <span class="subtitle-2">Orientation Axis</span>
+          </v-flex>
+          <v-flex xs2>
+            <v-switch
+              v-model="orientationAxisModel"
+              :class="$style.slimInput"
+              hide-details
+            />
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </div>
+    <v-divider :class="$style.divider" />
+    <v-container grid-list-xs class="pa-0">
+      <v-layout row align-center class="pt-1">
+        <v-flex xs3>
+          <span class="body-2">Type</span>
+        </v-flex>
+        <v-flex xs9>
+          <v-select
+            class="pv-no-select"
+            :class="$style.slimInput"
+            dense
+            flat
+            hide-details
+            :disabled="!orientationAxis"
+            v-model="axisTypeModel"
+            :items="axisTypes"
+          />
+        </v-flex>
+      </v-layout>
+      <v-layout row align-center class="pt-1">
+        <v-flex xs3>
+          <span class="body-2">Preset</span>
+        </v-flex>
+        <v-flex xs9>
+          <v-select
+            class="pv-no-select"
+            :class="$style.slimInput"
+            dense
+            flat
+            hide-details
+            v-model="orientationPresetModel"
+            :items="orientationPresets"
+          />
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-card>
+  <gpu-information :width="250" :proxyManager="$proxyManager" />
+  <v-card flat :class="$style.card" v-if="hasVR()">
+    <div :class="$style.heading">
+      <v-container grid-list-xs class="pa-0">
+        <v-layout row align-center>
+          <v-flex xs10>
+            <span class="subtitle-2">Virtual Reality</span>
+          </v-flex>
+          <v-flex xs2>
+            <v-switch
+              v-model="vrEnabled"
+              :class="$style.slimInput"
+              hide-details
+              v-on:change="toggleVR"
+            />
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </div>
+    <v-divider :class="$style.divider" />
+    <v-container grid-list-xs class="pa-0">
+      <v-layout row align-center class="pt-1" wrap>
+        <v-flex xs5>
+          <span class="body-2">Physical scale</span>
+        </v-flex>
+        <v-flex xs7>
+          <v-slider
+            :class="$style.slimInput"
+            hide-details
+            v-model="physicalScale"
+            min="0.1"
+            max="10"
+            step="any"
+          />
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-card>
+  <v-card flat :class="$style.card">
+    <div :class="$style.heading">
+      <span class="subtitle-2">LOD Settings</span>
+    </div>
+    <v-divider :class="$style.divider" />
+    <v-container grid-list-xs class="pa-0">
+      <v-layout row align-center class="pt-1">
+        <v-flex xs7>
+          <span class="body-2">Max Texture LOD Size</span>
+        </v-flex>
+        <v-flex xs5>
+          <v-text-field
+            :class="$style.slimInput"
+            hide-details
+            type="number"
+            v-model="maxTextureLODSizeModel"
+            :min="100"
+            suffix="KiB"
+          />
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-card>
+</v-container>

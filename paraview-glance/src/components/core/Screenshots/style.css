@@ -1,0 +1,35 @@
+.container {
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  user-select: none;
+}
+
+.emptyState {
+  flex: 2;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.filename {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.action {
+  /* override vuetify */
+  min-width: unset;
+  /* override vuetify */
+  margin-left: 4px !important;
+}
+
+.hoverTooltip {
+  background-color: white;
+  opacity: 1;
+}
+
+.hoverImage {
+  max-height: 200px;
+}

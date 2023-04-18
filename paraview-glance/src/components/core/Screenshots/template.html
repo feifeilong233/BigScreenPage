@@ -1,0 +1,97 @@
+<div :class="$style.container">
+  <v-toolbar
+    color="transparent"
+    flat
+    class="flex-grow-0"
+  >
+    <v-toolbar-title>Screenshots</v-toolbar-title>
+    <v-spacer />
+    <v-btn
+      icon
+      v-on:click="$emit('close')"
+    >
+      <v-icon>mdi-arrow-right</v-icon>
+    </v-btn>
+  </v-toolbar>
+  <div
+    v-show="!atLeastOneScreenshot"
+    :class="$style.emptyState"
+  >
+    <v-icon large>mdi-image-multiple</v-icon>
+    <span class="subtitle-1 grey--text text--darken-1">No screenshots yet!</span>
+    <v-btn
+      class="mt-4"
+      :disabled="!activeView"
+      v-on:click="takeScreenshot"
+    >
+      Capture Active View
+    </v-btn>
+  </div>
+  <v-list
+    v-show="atLeastOneScreenshot"
+  >
+    <v-list-group
+      v-for="name in Object.keys(screenshots)"
+      :key="name"
+      prepend-icon="mdi-folder"
+      no-action
+    >
+      <template v-slot:activator>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ name }} ({{ screenshots[name].length }})
+          </v-list-item-title>
+        </v-list-item-content>
+      </template>
+
+      <v-tooltip
+        v-for="(screenshot, i) in screenshots[name]"
+        :key="i"
+        left
+        :disabled="smallScreen"
+        :content-class="$style.hoverTooltip"
+      >
+        <template v-slot:activator="{ on }">
+          <v-list-item
+            link
+            v-on="on"
+            @click="viewScreenshot(name, i)"
+          >
+            <v-list-item-title
+              :title="screenshot.filename"
+              :class="$style.filename"
+            >
+              {{ screenshot.filename }}
+            </v-list-item-title>
+            <v-list-item-action :class="$style.action">
+              <v-btn
+                icon
+                :href="screenshot.image"
+                :download="screenshot.filename"
+                v-on:click.stop
+              >
+                <v-icon>mdi-download</v-icon>
+              </v-btn>
+            </v-list-item-action>
+            <v-list-item-action :class="$style.action">
+              <v-btn
+                icon
+                @click="deleteScreenshot(name, i)"
+                v-on:click.stop
+              >
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </v-list-item-action>
+          </v-list-item>
+        </template>
+        <img
+          :class="$style.hoverImage"
+          :src="screenshot.image"
+        />
+      </v-tooltip>
+    </v-list-group>
+  </v-list>
+  <screenshot-dialog
+    v-on:save="addScreenshot"
+  />
+</div>

@@ -16,7 +16,7 @@ import { defineComponent, computed, ref, unref, onMounted } from "vue";
 export default defineComponent({
   setup() {
     //Url
-    const bdTokenUrl = ref("");
+    const bdTokenUrl = ref("http://localhost:9999/");
 
     onMounted(() => {
       /**

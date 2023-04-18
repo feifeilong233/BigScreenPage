@@ -1,0 +1,84 @@
+.container {
+  padding: 8px;
+}
+
+.container * {
+  user-select: none;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.heading {
+  padding: 8px 0;
+}
+
+.popup {
+  width: 250px;
+  overflow: hidden;
+}
+
+.toolButton {
+  /* override vuetify */
+  min-width: unset !important;
+  /* override vuetify */
+  padding: 0 6px !important;
+}
+
+.tools {
+  text-align: center;
+}
+
+.toolIcon {
+  height: 20px;
+  width: 20px;
+}
+
+.row {
+  width: 100%;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+}
+
+.rowAvatar {
+  flex: 0;
+  margin: 8px;
+}
+
+.rowContent {
+  flex: 2;
+  display: flex;
+  flex-flow: column;
+  margin: 8px;
+  min-width: 0;
+}
+
+.rowContentName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 4px;
+}
+
+.rowContentDetails {
+  font-style: italic;
+  color: #444;
+  padding: 0 4px;
+}
+
+.action {
+  margin: 0 2px;
+}
+
+.toolIconOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #fff;
+  opacity: 0.75;
+}
+

@@ -1,0 +1,21 @@
+<div :class="$style.wrapper">
+  <div
+    v-for="color in palette"
+    :key="color"
+    :class="$style.item"
+  >
+    <div
+      :class="$style.blot"
+      :style="getStyles(color)"
+      v-on:click="$emit('input', color)"
+    >
+      <v-icon
+        v-if="color.toLowerCase() === selectedColor"
+        :class="$style.check"
+        :size="size"
+      >
+        mdi-check
+      </v-icon>
+    </div>
+  </div>
+</div>

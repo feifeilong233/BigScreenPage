@@ -1,0 +1,9 @@
+.dragBox {
+  border: 1px dashed gray;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.dragBox:hover, .dropTarget {
+  background: rgba(0, 0, 0, 0.09);
+}

@@ -1,0 +1,36 @@
+<div>
+  <v-container :class="$style.container">
+    <v-layout wrap align-center>
+      <v-flex xs12>
+        <source-select
+          label="Target volume"
+          :filterFunc="filterImages"
+          bindToActiveSource
+          hideIfOneDataset
+          @input="setTargetVolume"
+        />
+      </v-flex>
+    </v-layout>
+  </v-container>
+  <v-container :class="$style.container">
+    <v-layout wrap align-center>
+      <template v-if="enabled">
+        <v-btn text @click="disable">
+          <v-icon left>mdi-crop-free</v-icon>
+          Hide
+        </v-btn>
+      </template>
+      <template v-else>
+        <v-btn text @click="enable" :disabled="!canCrop">
+          <v-icon left>mdi-crop</v-icon>
+          Crop
+        </v-btn>
+      </template>
+      <v-spacer />
+      <v-btn @click="reset" :disabled="!canReset" text>
+        <v-icon left>mdi-replay</v-icon>
+        Reset
+      </v-btn>
+    </v-layout>
+  </v-container>
+</div>

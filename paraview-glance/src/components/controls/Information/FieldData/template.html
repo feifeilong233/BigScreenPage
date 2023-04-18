@@ -1,0 +1,44 @@
+<v-card
+  flat
+  :class="$style.block"
+  v-if="hasFieldData()"
+>
+  <v-card-text :class="$style.blockContent">
+    <v-select
+      :label="name || type"
+      v-model="activeFieldName"
+      :items="this.getFieldData().getArrays().map((a) => a.getName())"
+      dense
+      flat
+      hide-details
+      :class="$style.noSelect"
+      style="margin-bottom: 10px"
+    />
+    <v-container fluid grid-list-xs class="pa-0">
+      <v-layout row align-center v-if="!!activeFieldName">
+        <v-flex xs6 class="body-2">Type:</v-flex>
+        <v-flex xs6 class="body-2" :class="$style.canSelect">
+          {{ getActiveArray().getDataType() }}
+        </v-flex>
+      </v-layout>
+      <v-layout row align-center v-if="!!activeFieldName">
+          <v-flex xs6 class="body-2">Min value:</v-flex>
+          <v-flex xs6 class="body-2" :class="$style.canSelect">
+            {{ getActiveArray().getRange()[0].toFixed(3) }}
+          </v-flex>
+        </v-layout>
+        <v-layout row align-center v-if="!!activeFieldName">
+          <v-flex xs6 class="body-2">Max value:</v-flex>
+          <v-flex xs6 class="body-2" :class="$style.canSelect">
+            {{ getActiveArray().getRange()[1].toFixed(3) }}
+          </v-flex>
+        </v-layout>
+        <v-layout row align-center v-if="!!activeFieldName">
+          <v-flex xs6 class="body-2"># of components:</v-flex>
+          <v-flex xs6 class="body-2" :class="$style.canSelect">
+            {{ getActiveArray().getNumberOfComponents() }}
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-card-text>
+</v-card>

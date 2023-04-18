@@ -1,0 +1,48 @@
+.datasetPanel:last-child {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* vuetify override */
+.datasetPanel:before, .subpanel:before {
+  box-shadow: none;
+}
+
+.panelContent {
+  /* for positioning the color group absolutely */
+  position: relative;
+}
+
+/* vuetify override */
+.panelContent > :global(.v-expansion-panel-content__wrap) {
+  padding: 0;
+}
+
+.subpanel {
+  padding-left: 20px;
+}
+
+.subpanel .panelContent {
+  padding: 4px 0;
+}
+
+.panelContent .subpanel:first-child {
+  border-top: thin solid rgba(0, 0, 0, 0.1);
+}
+
+/* vuetify override */
+/* This sets flex-grow to 0 for header contents */
+.panelHeader > :not(:global(.v-expansion-panel-header__icon)) {
+  flex: unset;
+}
+
+.headerMenuButton {
+  /* maintain icon width */
+  flex: 0 0 auto !important;
+}
+
+.subpanelHeader {
+  /* the 12px is to line up the expansion panel hide/show icons */
+  padding: 2px 12px 2px 4px;
+  /* revert subpanel height to non-active height */
+  min-height: 48px !important;
+}

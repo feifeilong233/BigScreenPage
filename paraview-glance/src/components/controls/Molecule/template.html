@@ -1,0 +1,97 @@
+<div
+  v-if="domains.atomicRadiusScaleFactor"
+>
+  <v-card light flat :class="$style.block">
+    <v-card-text :class="$style.blockContent">
+      <v-container fluid grid-list-xs class="pa-0">
+        <v-layout row wrap align-center>
+          <v-flex xs3>
+            <label :class="$style.smallLabel">Tolerance</label>
+          </v-flex>
+          <v-flex xs6>
+            <v-slider
+              :class="$style.slimInput"
+              hide-details
+              always-dirty
+              v-model="tolerance"
+              :min="domains.tolerance.min"
+              :max="domains.tolerance.max"
+              :step="domains.tolerance.step"
+            />
+          </v-flex>
+          <v-flex xs3>
+            <v-text-field
+              :class="$style.slimInput"
+              hide-details
+              type="number"
+              v-model="tolerance"
+              :min="domains.tolerance.min"
+              :max="domains.tolerance.max"
+              :step="domains.tolerance.step"
+            />
+          </v-flex>
+          <v-flex xs3>
+            <label :class="$style.smallLabel">Atomic</label>
+          </v-flex>
+          <v-flex xs6>
+            <v-slider
+              :class="$style.slimInput"
+              hide-details
+              always-dirty
+              v-model="atomicRadiusScaleFactor"
+              :min="domains.atomicRadiusScaleFactor.min"
+              :max="domains.atomicRadiusScaleFactor.max"
+              :step="domains.atomicRadiusScaleFactor.step"
+            />
+          </v-flex>
+          <v-flex xs3>
+            <v-text-field
+              :class="$style.slimInput"
+              hide-details
+              type="number"
+              v-model="atomicRadiusScaleFactor"
+              :min="domains.atomicRadiusScaleFactor.min"
+              :max="domains.atomicRadiusScaleFactor.max"
+              :step="domains.atomicRadiusScaleFactor.step"
+            />
+          </v-flex>
+          <v-flex xs3>
+            <label :class="$style.smallLabel">Bond</label>
+          </v-flex>
+          <v-flex xs6>
+            <v-slider
+              :class="$style.slimInput"
+              hide-details
+              always-dirty
+              v-model="bondRadius"
+              :min="domains.bondRadius.min"
+              :max="atomicRadiusScaleFactor"
+              :step="domains.bondRadius.step"
+            />
+          </v-flex>
+          <v-flex xs3>
+            <v-text-field
+              :class="$style.slimInput"
+              hide-details
+              type="number"
+              v-model="bondRadius"
+              :min="domains.bondRadius.min"
+              :max="atomicRadiusScaleFactor"
+              :step="domains.bondRadius.step"
+            />
+          </v-flex>
+          <v-flex xs3>
+            <label :class="$style.smallLabel">Hide Elements</label>
+          </v-flex>
+          <v-flex xs9>
+            <v-text-field
+              :class="$style.slimInput"
+              hide-details
+              v-model="hideElements"
+            />
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-card-text>
+  </v-card>
+</div>

@@ -1,0 +1,238 @@
+<div>
+  <v-container :class="$style.container">
+    <v-layout wrap align-center>
+      <v-flex xs12>
+        <source-select
+          label="Select a Base Image"
+          :filterFunc="filterImageData"
+          bindToActiveSource
+          hideIfOneDataset
+          @input="setTargetVolume"
+        />
+      </v-flex>
+      <v-flex xs12>
+        <v-menu offset-x>
+          <template v-slot:activator="{ on }">
+            <v-select
+              label="Select a Labelmap"
+              append-outer-icon="mdi-dots-vertical"
+              :items="labelmaps"
+              item-text="name"
+              item-value="sourceId"
+              :disabled="targetImageId === -1"
+              :value="labelmapSelection"
+              style="overflow:hidden; text-overflow:ellipses;"
+              @input="setLabelMap"
+              @click:append-outer="on.click"
+            ></v-select>
+          </template>
+          <v-list>
+            <template v-if="labelmapSelection">
+              <v-list-item @click="editName">
+                <v-list-item-title>Edit Name</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="deleteLabelmap">
+                <v-list-item-title>Delete</v-list-item-title>
+              </v-list-item>
+            </template>
+            <template v-else>
+              <v-list-item>
+                <v-list-item-title>(no labelmap selected)</v-list-item-title>
+              </v-list-item>
+            </template>
+          </v-list>
+        </v-menu>
+      </v-flex>
+      <template v-if="editingName">
+        <v-flex xs10>
+          <v-text-field
+            label="Renaming labelmap"
+            v-model="editableLabelmapName"
+          />
+        </v-flex>
+        <v-flex xs2 class="text-center">
+          <v-btn icon @click="editingName = false">
+            <v-icon>mdi-content-save</v-icon>
+          </v-btn>
+        </v-flex>
+      </template>
+    </v-layout>
+  </v-container>
+
+  <v-card color="teal lighten-5">
+    <v-card-text :class="$style.paintActions">
+        <v-switch
+          :value="enabled"
+          @change="$emit('enable', Boolean($event))"
+          hide-details
+          label="Paint Mode"
+          :disabled="!canPaint"
+          :class="$style.paintSwitch"
+        />
+        <v-spacer />
+        <v-btn
+          icon
+          small
+          class="mr-3"
+          @click="undo"
+          :disabled="!canPaint"
+        >
+          <v-icon>mdi-undo</v-icon>
+        </v-btn>
+        <v-btn
+          icon
+          small
+          @click="redo"
+          :disabled="!canPaint"
+        >
+          <v-icon>mdi-redo</v-icon>
+        </v-btn>
+    </v-card-text>
+  </v-card>
+
+  <v-container grid-list-md :class="$style.container">
+    <v-layout
+      v-show="canPaint"
+      wrap
+      align-center
+    >
+      <v-flex xs10 class="mt-1">
+        <label class="v-label theme--light" for="paint-2D-brush-toggle">2D Brush</label>
+      </v-flex>
+      <v-flex xs2 class="mt-1">
+        <v-switch
+          v-model="brush2D"
+          id="paint-2D-brush-toggle"
+          class="mt-n1 pt-0"
+          hide-details
+        />
+      </v-flex>
+      <v-flex xs12>
+        <v-slider
+          label="Radius"
+          min="1"
+          :max="brushSizeMax"
+          step="1"
+          dirty
+          hide-details
+          :value="radius"
+          @input="setRadius"
+        >
+          <template v-slot:append>
+            <v-text-field
+              type="number"
+              min="1"
+              :max="brushSizeMax"
+              step="1"
+              hide-details
+              single-line
+              class="mt-n1 pt-0"
+              :value="radius"
+              @input="setRadius"
+            />
+          </template>
+        </v-slider>
+      </v-flex>
+      <v-flex xs12>
+        <v-list :class="$style.fullWidth">
+          <v-subheader :class="$style.headerRow">
+            <span class="black--text subtitle-1 body-2">Labels</span>
+            <v-spacer />
+            <v-btn
+              :class="$style.lowercaseText"
+              text
+              @click="addLabel"
+            >
+              <v-icon small color="blue">mdi-plus-circle</v-icon>
+              <span class="pl-2 grey--text text--darken-2">Add Label</span>
+            </v-btn>
+          </v-subheader>
+          <v-radio-group
+            :value="activeLabel"
+            @change="setLabel"
+            :class="$style.radioGroup"
+          >
+            <template
+              v-for="(labelData, i) in colormapArray"
+            >
+              <v-divider :key="`divider_${i}`" />
+              <v-list-item :key="labelData.label">
+                <v-list-item-action>
+                  <v-radio
+                    :class="$style.activeRadio"
+                    :value="labelData.label"
+                  />
+                </v-list-item-action>
+                <v-list-item-content :class="$style.listRow">
+                  <template v-if="labelData.label === 0">
+                    <div :class="$style.colorBoxBackground">
+                      <div
+                        :class="$style.colorBox"
+                        :style="colorToBackgroundCSS(colormapArray, 0)"
+                      />
+                    </div>
+                    <span class="pl-1">Eraser</span>
+                  </template>
+                  <template v-else>
+                    <pop-up class="flex-grow-0 flex-shrink-1">
+                      <template v-slot:trigger>
+                        <div :class="$style.colorBoxBackground">
+                          <!-- hacky way to get PopUp to re-render when colormapArray changes,
+                               i.e. reference colormapArray directly inside the PopUp trigger slot
+                               so it will re-render when this.colormapArray changes -->
+                          <div
+                            :class="$style.colorBox"
+                            :style="colorToBackgroundCSS(colormapArray, i)"
+                          />
+                        </div>
+                      </template>
+                      <template v-slot:popup>
+                        <div :class="$style.colorPicker">
+                          <palette-picker
+                            :palette="palette"
+                            :size="28"
+                            :value="asHex(labelData.color)"
+                            @input="setLabelColor(labelData.label, arguments[0])"
+                          />
+                          <div :class="$style.opacitySlider">
+                            <v-slider
+                              label="Opacity"
+                              :value="labelData.opacity"
+                              @input="setLabelOpacity(labelData.label, arguments[0])"
+                              :min="0"
+                              :max="255"
+                              :step="1"
+                            />
+                          </div>
+                        </div>
+                      </template>
+                    </pop-up>
+                    <span class="pl-1">Label {{ labelData.label }}</span>
+                  </template>
+                </v-list-item-content>
+                <v-list-item-action>
+                  <v-btn
+                    v-if="labelData.label !== 0"
+                    icon
+                    :class="$style.deleteButton"
+                    @click="deleteLabel(labelData.label)"
+                  >
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+                </v-list-item-action>
+              </v-list-item>
+            </template>
+            <v-divider />
+          </v-radio-group>
+        </v-list>
+      </v-flex>
+      <v-btn
+        :disabled="!girderRest.user"
+        @click="upload()"
+      >
+        Upload
+      </v-btn>
+      <span v-show="!girderRest.user" class="body-2">Log in to upload</span>
+    </v-layout>
+  </v-container>
+</div>

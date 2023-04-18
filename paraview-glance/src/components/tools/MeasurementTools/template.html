@@ -1,0 +1,179 @@
+<div>
+  <v-container :class="$style.container">
+    <v-layout wrap align-center>
+      <v-flex xs12>
+        <source-select
+          label="Target Dataset"
+          :filterFunc="filterImageData"
+          bindToActiveSource
+          @input="setTargetDataset"
+        />
+      </v-flex>
+    </v-layout>
+
+    <v-card flat>
+      <div :class="$style.heading">
+        <v-layout align-center>
+          <v-flex xs10>
+            <span class="body-2">Tool List</span>
+          </v-flex>
+          <v-flex xs6>
+            <v-btn-toggle
+              :value="activeToolIndex"
+              @change="toggleActiveTool"
+              :class="$style.toolList"
+            >
+              <v-tooltip
+                v-for="tool in uiToolList"
+                :key="tool.name"
+                bottom
+              >
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    small
+                    text
+                    v-on="on"
+                    :class="$style.toolButton"
+                    :disabled="targetPid === -1"
+                  >
+                    <svg-icon :icon="tool.icon" :class="$style.toolIcon" />
+                  </v-btn>
+                </template>
+                {{ tool.name }}
+              </v-tooltip>
+            </v-btn-toggle>
+          </v-flex>
+        </v-layout>
+      </div>
+      <v-divider :class="$style.divider" />
+      <div :class="$style.fullWidth">
+        <template v-if="tools.length > 0">
+          <component
+            v-for="(tool, idx) in tools"
+            :key="idx"
+
+            :is="tool.component"
+            :targetPid="targetPid"
+            :tool-data="tool.data"
+            @remove="removeTool(idx)"
+            @saveData="saveToolData(idx, $event)"
+            v-slot="toolState"
+          >
+            <div :class="$style.row">
+              <span :class="$style.rowAvatar">
+                <svg-icon :icon="tool.icon" :class="$style.toolIcon" />
+              </span>
+              <div :class="$style.rowContent">
+                <span :class="$style.rowContentName" :title="toolState.toolName">
+                  {{ toolState.toolName || tool.name }}
+                </span>
+                <span
+                  v-for="label in toolState.labels"
+                  :key="label"
+                  :class="$style.rowContentDetails"
+                >
+                  {{ label }}: {{ toolState.measurements[label] }}
+                </span>
+              </div>
+              <div :class="$style.action">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      small
+                      icon
+                      v-on="on"
+                      @click="jumpTo(tool.data.axis, tool.data.lockToSlice)"
+                    >
+                      <v-icon>mdi-crosshairs-gps</v-icon>
+                    </v-btn>
+                  </template>
+                  Jump to slice
+                </v-tooltip>
+              </div>
+              <div :class="$style.action">
+                <pop-up>
+                  <template v-slot:trigger>
+                    <v-btn small icon>
+                      <v-icon>mdi-dots-vertical</v-icon>
+                    </v-btn>
+                  </template>
+                  <template v-slot:popup="{ close }">
+                    <v-container grid-list-md :class="[$style.container, $style.popup]">
+                      <v-layout wrap align-center>
+                        <v-flex xs12>
+                          <v-text-field
+                            label="Name"
+                            :placeholder="tool.name"
+                            :value="toolState.toolName"
+                            @input="toolState.setName"
+                          />
+                        </v-flex>
+                        <v-flex xs12>
+                          <div class="body-1">Tool color</div>
+                          <v-divider :class="$style.divider" />
+                          <palette-picker
+                            class="pt-2"
+                            :palette="palette"
+                            :size="28"
+                            :value="toolState.color"
+                            @input="toolState.setColor"
+                          />
+                        </v-flex>
+                        <v-flex xs12>
+                          <div class="body-1">Text Size</div>
+                          <v-divider :class="$style.divider" />
+                        </v-flex>
+                        <v-flex xs9>
+                          <v-slider
+                            min="8"
+                            max="32"
+                            step="1"
+                            dirty
+                            hide-details
+                            :value="toolState.textSize"
+                            @input="toolState.setTextSize"
+                          />
+                        </v-flex>
+                        <v-flex xs3>
+                          <v-text-field
+                            type="number"
+                            min="8"
+                            max="32"
+                            step="1"
+                            :value="toolState.textSize"
+                            @input="toolState.setTextSize"
+                          />
+                        </v-flex>
+                      </v-layout>
+                      <v-divider :class="$style.divider" />
+                      <v-layout align-center>
+                        <v-flex xs3 class="text-center">
+                          <v-btn icon @click="close">
+                            <v-icon>mdi-content-save</v-icon>
+                          </v-btn>
+                        </v-flex>
+                        <v-spacer />
+                        <v-flex xs3 class="text-center">
+                          <v-btn icon @click="toolState.remove(); close()">
+                            <v-icon color="red">mdi-delete</v-icon>
+                          </v-btn>
+                        </v-flex>
+                      </v-layout>
+                    </v-container>
+                  </template>
+                </pop-up>
+              </div>
+            </div>
+          </component>
+        </template>
+        <template v-else>
+          <div class="pt-2 body-1 teal--text text-center">No measurements yet</div>
+        </template>
+        <v-btn :disabled="!targetProxy || !girderRest.user" @click="upload">
+          Upload
+        </v-btn>
+        <span v-show="!girderRest.user" class="body-2">Log in to upload</span>
+      </div>
+    </v-card>
+  </v-container>
+</div>

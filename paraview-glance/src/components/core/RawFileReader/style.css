@@ -1,0 +1,27 @@
+.toolbarButton span {
+  margin-left: 4px;
+}
+
+.overlay {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  user-select: none;
+}
+
+.overlayHidden {
+  visibility: hidden;
+}
+
+.overlayText {
+  position: relative;
+  top: 45%;
+  transform: translateY(-50%);
+  width: 80%;
+  margin: auto;
+}

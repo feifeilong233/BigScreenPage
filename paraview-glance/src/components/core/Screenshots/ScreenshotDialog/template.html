@@ -1,0 +1,81 @@
+<component
+  :is="dialogType"
+  :value="showDialog"
+  @input="close"
+  max-width="60%"
+>
+  <v-card
+    flat
+    v-if="screenshot"
+  >
+    <v-card-title>Save Screenshot</v-card-title>
+    <v-container grid-list-md>
+      <v-layout row wrap>
+        <v-flex v-bind="flexLayout">
+          <v-img
+            :class="$style.imagePreview"
+            :src="imageUrl"
+            contain
+            :height="smallScreen ? '125px' : '250px'"
+          />
+        </v-flex>
+        <v-flex v-bind="flexLayout">
+          <v-container
+            :class="{ 'pa-1': smallScreen }"
+          >
+            <v-layout row>
+              <v-flex xs9>
+                <v-text-field
+                  v-model="filename"
+                  label="Filename"
+                  v-on:keyup.enter="save(); close()"
+                />
+              </v-flex>
+              <v-flex xs3>
+                <v-select
+                  label="File type"
+                  hide-details
+                  single-line
+                  v-model="fileType"
+                  :items="fileTypes"
+                />
+              </v-flex>
+            </v-layout>
+            <v-layout row>
+              <v-flex xs12>
+                <v-checkbox
+                  label="Transparent background"
+                  v-model="transparentBackground"
+                />
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-flex>
+      </v-layout>
+    </v-container>
+    <v-card-actions>
+      <v-spacer />
+      <v-btn
+        text
+        color="red"
+        @click.native="close"
+      >
+        <span>Cancel</span>
+      </v-btn>
+      <v-btn
+        color="secondary"
+        @click.native="save(); close()"
+      >
+        <span>Save</span>
+      </v-btn>
+      <v-btn
+        color="primary"
+        :href="imageUrl"
+        :download="filename + fileType"
+        @click.native="close"
+      >
+        <span>Download</span>
+      </v-btn>
+    </v-card-actions>
+  </v-card>
+</component>

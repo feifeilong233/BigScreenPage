@@ -1,0 +1,19 @@
+.card {
+  padding: 8px 16px;
+}
+
+.heading {
+  padding: 8px 0;
+}
+
+.divider {
+  margin-bottom: 16px;
+}
+
+.monitor {
+  position: relative;
+}
+
+.table td {
+  padding: 0 10px;
+}

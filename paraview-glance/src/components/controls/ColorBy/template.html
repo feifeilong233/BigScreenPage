@@ -1,0 +1,178 @@
+<div v-if="available">
+  <v-card flat :class="$style.block">
+    <v-container fluid grid-list-xs class="pa-0">
+      <v-layout row wrap align-center>
+        <template v-if="available === 'geometry'">
+          <v-flex xs3>
+            <span class="body-2">Color By:</span>
+          </v-flex>
+          <v-flex xs9>
+            <v-select
+              class="pv-no-select"
+              :class="$style.slimInput"
+              dense
+              flat
+              hide-details
+              :items="arrays"
+              :value="arraySelectValue"
+              @change="setColorBy"
+            />
+          </v-flex>
+          <v-flex xs12 v-if="colorBy === 'solid'">
+            <palette-picker
+              v-model="solidColor"
+              :palette="palette"
+              :size="24"
+              class="pt-1 pb-1"
+            />
+          </v-flex>
+        </template>
+        <template v-if="colorBy !== 'solid'">
+          <v-flex xs12 class="pt-2">
+            <v-menu
+              :close-on-content-click="false"
+              offset-y
+              v-model="presetMenu"
+            >
+              <template v-slot:activator="{ on }">
+                <div v-on="on" :class="$style.clickable">
+                  <span class="body-2">{{ presetName }}</span>
+                  <img :src="lutImage" :class="$style.lutImage" />
+                </div>
+              </template>
+              <tree-view
+                v-if="presetMenu"
+                :class="$style.dropdownMenu"
+                :tree="presets"
+                labelKey="Name"
+                childrenKey="Children"
+                v-on:input="onChangePreset"
+              />
+            </v-menu>
+          </v-flex>
+          <v-flex xs5 class="pb-4" :class="$style.negativeTopSpacing">
+            <v-text-field
+              @change="$proxyManager.renderAllViews()"
+              label="Min"
+              step="any"
+              :disabled="available !== 'geometry'"
+              :class="$style.negativeTopSpacing"
+              hide-details
+              :value="dataRange[0]"
+              @input="setDataRangeIndex(0, $event)"
+            />
+          </v-flex>
+          <v-flex
+            xs2
+            class="text-center pb-4"
+            :class="$style.negativeTopSpacing"
+          >
+            <v-tooltip v-if="available === 'geometry'" bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  icon
+                  small
+                  :class="$style.negativeTopSpacing"
+                  v-on="on"
+                  @click="resetDataRange"
+                >
+                  <v-icon>mdi-arrow-expand-horizontal</v-icon>
+                </v-btn>
+              </template>
+              Reset range
+            </v-tooltip>
+            <v-spacer v-else />
+          </v-flex>
+          <v-flex xs5 class="pb-4" :class="$style.negativeTopSpacing">
+            <v-text-field
+              @change="$proxyManager.renderAllViews()"
+              label="Max"
+              step="any"
+              :disabled="available !== 'geometry'"
+              :class="$style.negativeTopSpacing"
+              reverse
+              hide-details
+              :value="dataRange[1]"
+              @input="setDataRangeIndex(1, $event)"
+            />
+          </v-flex>
+        </template>
+        <template v-if="available === 'volume'">
+          <v-flex
+            xs12
+            v-if="piecewiseFunction && !hasPresetOpacity"
+            v-on:touchstart.stop
+          >
+            <piecewise-function-editor
+              :piecewiseFunction="piecewiseFunction"
+              :source="source"
+              :proxyManager="$proxyManager"
+            />
+          </v-flex>
+          <v-flex xs12 v-if="hasPresetOpacity">
+            <v-layout row align-center>
+              <v-flex xs3>
+                <span :class="$style.smallLabel">Shift</span>
+              </v-flex>
+              <v-flex xs6>
+                <v-slider
+                  v-model="shift"
+                  :min="shiftRange[0]"
+                  :max="shiftRange[1]"
+                  step="0"
+                  hide-details
+                  :class="$style.slimInput"
+                />
+              </v-flex>
+              <v-flex xs3>
+                <v-text-field
+                  v-model="shift"
+                  type="number"
+                  :min="shiftRange[0]"
+                  :max="shiftRange[1]"
+                  step="1"
+                  hide-details
+                  :class="$style.slimInput"
+                />
+              </v-flex>
+            </v-layout>
+          </v-flex>
+          <v-flex xs12>
+            <v-checkbox
+              v-model="colorToSlices"
+              hide-details
+              label="Apply color to slices"
+              :class="$style.slimInput"
+              @change="applyColorToSlices"
+            />
+          </v-flex>
+          <v-flex xs12>
+            <v-checkbox
+              v-model="opacityToSlices"
+              hide-details
+              label="Apply opacity to slices"
+              :class="$style.slimInput"
+              @change="applyOpacityToSlices"
+            />
+          </v-flex>
+        </template>
+        <v-flex xs12 v-if="available === 'geometry' && colorByName">
+          <v-layout row align-center>
+            <v-flex xs2>
+              <v-icon
+                :class="$style.click"
+                v-on:click.stop="interpolateScalarsBeforeMapping = !interpolateScalarsBeforeMapping"
+              >
+                {{ interpolateScalarsBeforeMapping ? 'mdi-checkbox-marked' :
+                'mdi-checkbox-blank-outline' }}
+              </v-icon>
+            </v-flex>
+            <v-flex xs10>
+              <span class="body-2">Interpolate scalar before mapping</span>
+            </v-flex>
+          </v-layout>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-card>
+</div>
