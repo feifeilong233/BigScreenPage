@@ -19,7 +19,7 @@ import {
   withDefaults,
   unref,
 } from 'vue';
-import { useEcharts } from '@/hooks/useEchart';
+import { useECharts } from '@/hooks/useEchart';
 interface propsType {
   elementName?: PropType<String>;
   stateData: any;
@@ -34,11 +34,11 @@ import { onMounted } from 'vue';
 const datas = ref('aaa');
 
 onMounted(() => {
-  let { setOptions, myEchart } = useEcharts(
+  let { setOptions, echarts } = useECharts(
     document.querySelector(`.${props.elementName}`),
   );
   setOptions(unref(props.stateData));
-  datas.value = myEchart;
+  datas.value = echarts;
 });
 // 更换数据 通过此功能实现动态更改数据
 const updataEchart = (data) => {

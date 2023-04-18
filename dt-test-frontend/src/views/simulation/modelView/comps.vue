@@ -7,7 +7,7 @@
           <div class="border1"></div>
           <div class="border1"></div>
           <div class="border1"></div>
-          <div>沥青路面数字孪生试验平台</div>
+          <div>基于DT的沥青路面性能试验平台</div>
           <div></div>
         </div>
       </div>

@@ -1,122 +1,24 @@
 <template>
   <page-header-wrapper>
-    <template #content>
-      <div class="page-header-content">
-        <div class="avatar">
-          <a-avatar size="large" :src="currentUser.avatar" />
-        </div>
-        <div class="content">
-          <div class="content-title">
-            {{ tf }}，{{ user.name }}
-          </div>
-          <div>前端工程师 | 蚂蚁金服 - 某某某事业群 - VUE平台</div>
-        </div>
-      </div>
-    </template>
-    <template #extraContent>
-      <div class="extra-content">
-        <div class="stat-item">
-          <a-statistic title="项目数" :value="56" />
-        </div>
-        <div class="stat-item">
-          <a-statistic title="团队内排名" :value="8" suffix="/ 24" />
-        </div>
-        <div class="stat-item">
-          <a-statistic title="项目访问" :value="2223" />
-        </div>
-      </div>
-    </template>
-    <div :style="{ minHeight: '400px' }">
-
-    </div>
+    <a-card :bordered="false">
+      <Bar height="78vh" :chartData="barDataSource"></Bar>
+    </a-card>
   </page-header-wrapper>
 </template>
 
-<script lang="ts">
-import {defineComponent, computed, reactive, ref, onMounted} from 'vue'
-import DataSet from '@antv/data-set'
-import store from '@/store';
-import { timeFix } from '@/utils/util'
+<script lang="ts" setup>
+import Bar from '@/components/chart/Bar.vue';
 
-import { getRoleList, getServiceList } from '@/api/manage'
-import {requestGet} from '@/api/service';
+const barDataSource: any[] = [];
+let dottedBase = +new Date();
 
-interface Project {
-  id: Number,
-  cover: String,
-  title: String,
-  description: String,
-  status: Number,
-  updatedAt: String
+for (let i = 0; i < 20; i++) {
+  let obj = { name: '', value: 0 };
+  const date = new Date((dottedBase += 1000 * 3600 * 24));
+  obj.name = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-');
+  obj.value = Math.random() * 200;
+  barDataSource.push(obj);
 }
-interface Activity {
-  id: Number,
-  user: {
-    nickname: String,
-    avatar: String
-},
-  project: {
-    name: String,
-    action: String,
-    event: String
-  },
-  time: String
-}
-
-interface team {
-  id: Number,
-  name: String,
-  avatar: String
-}
-
-export default defineComponent({
-  name: 'Workplace',
-  components: {
-  },
-  setup(){
-  const tf = timeFix()
-  const userInfo = computed(() => {
-    return store.getters.userInfo
-  })
-
-  const avatar = store.state.user.info.avatar
-  const user = store.state.user.info
-
-  const projects = reactive<Project[]>([])
-  const loading = ref(true)
-  const activities = reactive<Activity[]>([])
-  const teams = ref(<team[]>[])
-
-  const nickname = computed(() => store.state.user.nickname)
-
-  const currentUser = () => {
-    return {
-      name: nickname,
-      avatar: '/avatar.jpg'
-    }
-  }
-
-
-  onMounted(
-    () =>{
-    },
-  )
-
-  return{
-    tf,
-    avatar,
-    user,
-    projects,
-    loading,
-    activities,
-    nickname,
-    currentUser,
-    userInfo
-  }
-}
-})
-
-
 </script>
 
 <style lang="less" scoped>

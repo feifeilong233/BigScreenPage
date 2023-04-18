@@ -13,9 +13,9 @@ import type { Ref } from 'vue';
 import { EChartsOption } from 'echarts/types/dist/shared';
 import { UseaddEventListener } from '@/hooks/useAddEventListener';
 import { useDebounceFn } from './useDebounceFn';
-export function useEcharts(
+export function useECharts(
   elRef: Ref<HTMLDivElement>,
-  theme: 'light' | 'dark',
+  theme?: 'light' | 'dark',
 ) {
   let chartInstance: echarts.ECharts | null = null;
   let myEchart = ref();
@@ -62,6 +62,6 @@ export function useEcharts(
 
   return {
     setOptions,
-    myEchart,
+    echarts,
   };
 }

@@ -25,7 +25,7 @@ export default {
     locale: true
   },
   multiTab: false,
-  title: 'DT试验平台',
+  title: '沥青路面试验平台',
   pwa: false,
   iconfontUrl: '',
   production: process.env.NODE_ENV === 'production' && process.env.VUE_APP_PREVIEW !== 'true',

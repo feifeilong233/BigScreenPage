@@ -9,7 +9,7 @@
           <div class="header">
             <a href="/">
               <img src="/public/logo.svg" class="logo" alt="logo" />
-              <span class="title">DT试验平台</span>
+              <span class="title">沥青路面试验平台</span>
             </a>
           </div>
           <div class="desc">{{ $t('layouts.userLayout.title') }}</div>
