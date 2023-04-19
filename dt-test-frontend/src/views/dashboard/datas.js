@@ -12,9 +12,12 @@ var thisYearData = {
 
 var timeLineData = [1];
 
+let myDataSet = [];
 await queryRoadFlatnessByPname('STR1').then((response) => {
-  thisYearData[timeLineData[0]] = response.data.data;
-  myData = response.data.data
+  myDataSet = response.data.data;
+  thisYearData[timeLineData[0]] = myDataSet.filter(obj => obj.type == 1);
+  myData = myDataSet
+      .filter(obj => obj.type == 1)
       .map((obj) => obj.name)
       .slice(0, 8);
 })
@@ -194,7 +197,7 @@ export const baroption = {
           type: 'pictorialBar',
           xAxisIndex: 2,
           yAxisIndex: 2,
-          symbol: 'rect',
+          symbol: 'roundRect',
           barWidth: 5,
           itemStyle: {
             normal: {
@@ -204,7 +207,7 @@ export const baroption = {
             },
           },
           symbolRepeat: true,
-          symbolSize: 10,
+          symbolSize: [3, 12],
           data: thisYearData[timeLineData[0]],
           animationEasing: 'elasticOut',
           animationDelay: function (dataIndex, params) {

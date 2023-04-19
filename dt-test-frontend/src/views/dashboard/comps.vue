@@ -1,6 +1,6 @@
 <template>
   <div class="echartsdoms flex flex-col px-5">
-    <div class="echartsdoms_header flex justify-center w-full h-5vh">
+    <div class="echartsdoms_header flex justify-center w-full h-3vh">
       <div class="bigtitle w-full">
         <div class="xline"></div>
         <div class="titlbox">
@@ -35,83 +35,15 @@
             </div>
           </div>
         </div>
-        <div class="box2 enter-x-l w-full h-20vh grid grid-cols-2 gap-2">
-          <div class="flex justify-center items-center">
-            <div class="bords w-1/3">
-              <div>
-                <EchartTemp
-                  elementName="pie1"
-                  :stateData="pieOpsionts('#fb7185', '#fda4af', 20)"
-                  title="false"
-                ></EchartTemp>
-              </div>
-            </div>
-            <div class="dtext flex flex-col justify-center space-y-1">
-              <span class="txt1">
-                总数：
-                <a>90%</a>
-              </span>
-              <span class="txt1">增长：1</span>
-            </div>
-          </div>
-          <div class="flex justify-center items-center">
-            <div class="bords w-1/3">
-              <div>
-                <EchartTemp
-                  elementName="pie2"
-                  :stateData="pieOpsionts('#fed7aa', '#fdba74', 40)"
-                  title="false"
-                ></EchartTemp>
-              </div>
-            </div>
-            <div class="dtext flex flex-col justify-center space-y-1">
-              <span class="txt1">
-                总数：
-                <a>90%</a>
-              </span>
-              <span class="txt1">增长：1</span>
-            </div>
-          </div>
-          <div class="flex justify-center items-center">
-            <div class="bords w-1/3">
-              <div>
-                <EchartTemp
-                  elementName="pie3"
-                  :stateData="pieOpsionts('#a7f3d0', '#6ee7b7', 20)"
-                  title="false"
-                ></EchartTemp>
-              </div>
-            </div>
-            <div class="dtext flex flex-col justify-center space-y-1">
-              <span class="txt1">
-                总数：
-                <a>90%</a>
-              </span>
-              <span class="txt1">增长：1</span>
-            </div>
-          </div>
-          <div class="flex justify-center items-center">
-            <div class="bords w-1/3">
-              <div>
-                <EchartTemp
-                  elementName="pie4"
-                  :stateData="pieOpsionts('#bae6fd', '#7dd3fc', 20)"
-                  title="false"
-                ></EchartTemp>
-              </div>
-            </div>
-            <div class="dtext flex flex-col justify-center space-y-1">
-              <span class="txt1">
-                总数：
-                <a>90%</a>
-              </span>
-              <span class="txt1">增长：1</span>
-            </div>
+        <div @click="viewRoadDetail(2)" role="button" class="box2 enter-x-l w-full">
+          <div class="title1">行车道激光表面纹理深度（mm）</div>
+          <div class="h-30vh">
+
           </div>
         </div>
-        <div class="box3 enter-x-l h-45vh">
-          <div class="title1"></div>
-          <div class="h-40vh">
+        <div @click="viewRoadDetail(2)" role="button" class="box3 enter-x-l h-35vh">
+          <div class="title1">行车道国际平整度指数（m/km）</div>
+          <div class="h-30vh">
             <EchartTemp
               elementName="enter4"
               :stateData="baroption"
@@ -121,7 +53,7 @@
         </div>
       </div>
       <div class="chartsdoms_cons_rights space-y-2 w-22vw">
-        <div @click="viewRoadDetail" role="button" class="box1 enter-x-r w-22vw">
+        <div @click="viewRoadDetail(3)" role="button" class="box1 enter-x-r w-22vw">
           <div class="title1">路面结构与材料</div>
           <div class="h-25vh">
             <EchartTemp
@@ -143,7 +75,7 @@
         </div>
         <div class="box1 enter-x-r w-22vw">
           <div class="title1">测试指数</div>
-          <div class="h-20vh">
+          <div class="h-25vh">
             <EchartTemp
               elementName="ApOption"
               :stateData="ApOption"
@@ -173,8 +105,8 @@ const router = useRouter();
 const EchartTemp = defineAsyncComponent(
   () => import('@/components/echartTemp.vue'),
 );
-const viewRoadDetail = () => {
-  router.push({ path: '/chart/workplace' })
+const viewRoadDetail = (type) => {
+  router.push({ path: '/chart/workplace', query: {type: type} })
 };
 </script>
 

@@ -14,8 +14,14 @@ public class RoadFlatness {
     /**
      * 主键id
      */
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id", type = IdType.AUTO)
     private String id;
+
+    /**
+     * 类型
+     */
+    @TableField("type")
+    private Integer type;
 
     /**
      * 周期名称

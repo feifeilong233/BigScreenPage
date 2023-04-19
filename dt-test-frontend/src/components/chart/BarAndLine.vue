@@ -1,5 +1,7 @@
 <template>
-  <div ref="chartRef" :style="{ height, width }"></div>
+  <a-card :title="title" :loading="loading">
+    <div ref="chartRef" :style="{ height, width }"></div>
+  </a-card>
 </template>
 <script lang="ts">
   import { defineComponent, PropType, ref, Ref, reactive, watchEffect } from 'vue';
@@ -24,6 +26,8 @@
         type: String as PropType<string>,
         default: 'calc(100vh - 78px)',
       },
+      title: String,
+      loading: Boolean
     },
     setup(props) {
       const chartRef = ref<HTMLDivElement | null>(null);
@@ -60,6 +64,7 @@
       });
 
       function initCharts() {
+        debugger
         if (props.option) {
           Object.assign(option, props.option);
         }
@@ -84,3 +89,9 @@
     },
   });
 </script>
+
+<style lang="less" scoped>
+/deep/ .ant-card-body {
+  padding: 0;
+}
+</style>

@@ -34,7 +34,6 @@
 
 <script lang="ts">
 import {defineComponent, computed, reactive, ref, onMounted} from 'vue'
-import DataSet from '@antv/data-set'
 import store from '@/store';
 import { timeFix } from '@/utils/util'
 
