@@ -6,7 +6,7 @@
       <RoadStructurePie title="STR3" class="md:w-1/3 w-full"/>
     </div>
     <div v-if="type == 2">
-      <BarAndLine title="平整度检测数据" :chartData="barLineData" height="50vh"></BarAndLine>
+      <BarAndLine title="平整度检测数据" :chartData="barLineData" :loading="loading1" height="50vh"></BarAndLine>
     </div>
   </page-header-wrapper>
 </template>
@@ -21,12 +21,14 @@ import {queryRoadFlatnessByPname} from "@/api/common/chart";
 
 const route = useRoute();
 const type = ref(0);
+const loading1 = ref(true);
 type.value = route.query.type;
-let barLineData: any[] = [];
+const barLineData = ref([]);
 
 onMounted(() => {
   queryRoadFlatnessByPname('STR1').then((response) => {
-    barLineData = response.data.data
+    loading1.value = false;
+    barLineData.value = response.data.data
         .filter(obj => obj.type == 1 || obj.type == 3)
         .map((item) => {
           return {

@@ -38,7 +38,11 @@
         <div @click="viewRoadDetail(2)" role="button" class="box2 enter-x-l w-full">
           <div class="title1">行车道激光表面纹理深度（mm）</div>
           <div class="h-30vh">
-
+            <EchartTemp
+                elementName="pie"
+                :stateData="PieBarOptions"
+                title="false"
+            ></EchartTemp>
           </div>
         </div>
         <div @click="viewRoadDetail(2)" role="button" class="box3 enter-x-l h-35vh">
@@ -98,6 +102,7 @@ import {
   lineOptions,
   ApOption,
   WaterOptions,
+  PieBarOptions
 } from './datas';
 import {useRouter} from "vue-router";
 

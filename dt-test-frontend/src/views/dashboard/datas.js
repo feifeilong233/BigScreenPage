@@ -13,9 +13,11 @@ var thisYearData = {
 var timeLineData = [1];
 
 let myDataSet = [];
+let antiSkid = [];
 await queryRoadFlatnessByPname('STR1').then((response) => {
   myDataSet = response.data.data;
   thisYearData[timeLineData[0]] = myDataSet.filter(obj => obj.type == 1);
+  antiSkid = myDataSet.filter(obj => obj.type == 2);
   myData = myDataSet
       .filter(obj => obj.type == 1)
       .map((obj) => obj.name)
@@ -864,4 +866,54 @@ export const WaterOptions = {
       },
     },
   ],
+};
+
+export const PieBarOptions = {
+  polar: {
+    radius: [30, '80%']
+  },
+  angleAxis: {
+    max: 1,
+    startAngle: 75,
+    axisLine: {
+      lineStyle: {
+        color: '#c9dcf5'
+      }
+    }
+  },
+  radiusAxis: {
+    type: 'category',
+    data: myData.slice(0,6),
+    axisLine: {
+      lineStyle: {
+        color: '#c9dcf5'
+      }
+    }
+  },
+  tooltip: {},
+  series: {
+    type: 'bar',
+    data: antiSkid,
+    coordinateSystem: 'polar',
+    itemStyle: {
+      color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+        { offset: 0, color: '#83bff6' },
+        { offset: 0.5, color: '#188df0' },
+        { offset: 1, color: '#188df0' }
+      ])
+    },
+    emphasis: {
+      itemStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: '#2378f7' },
+          { offset: 0.7, color: '#2378f7' },
+          { offset: 1, color: '#83bff6' }
+        ])
+      }
+    },
+    label: {
+      show: true,
+      position: 'middle',
+    }
+  }
 };
