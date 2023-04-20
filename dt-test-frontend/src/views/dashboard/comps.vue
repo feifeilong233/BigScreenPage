@@ -94,10 +94,9 @@
 
 <script lang="ts" setup>
 import 'virtual:windi.css';
-import {defineAsyncComponent, ref, onUnmounted, watch} from 'vue';
+import {defineAsyncComponent} from 'vue';
 import {
   baroption,
-  pieOpsionts,
   CriOption,
   lineOptions,
   ApOption,
@@ -114,15 +113,6 @@ const EchartTemp = defineAsyncComponent(
 const viewRoadDetail = (type) => {
   router.push({ path: '/chart/workplace', query: {type: type} })
 };
-
-// const roadAxle = ref(22903081);
-// const timer = setInterval(() => {
-//   roadAxle.value++;
-// }, 2100);
-
-// onUnmounted(() => {
-//   clearInterval(timer);
-// });
 </script>
 
 <style lang="less" scoped>

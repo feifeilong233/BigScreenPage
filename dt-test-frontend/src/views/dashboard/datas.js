@@ -16,34 +16,13 @@ var timeLineData = [1];
 let myDataSet = [];
 let antiSkid = [];
 await queryRoadFlatnessByPname('STR1').then((response) => {
-  myDataSet = response.data.data;
-  thisYearData[timeLineData[0]] = myDataSet.filter(obj => obj.type == 1).slice(-8);
-  antiSkid = myDataSet.filter(obj => obj.type == 2).slice(-6);
+  myDataSet = response.data.data.filter(obj => obj.type == 1).map((obj) => obj.name);
+  thisYearData[timeLineData[0]] = response.data.data.filter(obj => obj.type == 1).slice(-8);
+  antiSkid = response.data.data.filter(obj => obj.type == 2).slice(-6);
 })
 
-const myData = ref(myDataSet.slice(0, 8).filter(obj => obj.type == 1).map((obj) => obj.name));
-let startIndex = 0;
-// 定义定时器函数
-function updateMyData() {
-  startIndex += 1;
-  myData.value = myDataSet.slice(startIndex, startIndex + 8).filter(obj => obj.type == 1).map((obj) => obj.name);
-  baroption.value.baseOption.yAxis[1].data = myData.value.map(function (value) {
-    return {
-      value: value,
-      textStyle: {
-        align: 'center',
-        fontSize: 11,
-      },
-    };
-  });
-  baroption.value.baseOption.yAxis[0].data = myData.value;
-  baroption.value.baseOption.yAxis[2].data = myData.value;
-}
-
-// 定义定时器
-setInterval(() => {
-  updateMyData();
-}, 2000);
+const myData = ref(myDataSet.slice(-8));
+const myData1 = ref(myDataSet.slice(-6));
 
 var background = '#0e2147'; //背景
 
@@ -907,7 +886,7 @@ export const PieBarOptions = {
   },
   radiusAxis: {
     type: 'category',
-    data: myData.value.slice(-6),
+    data: myData1.value,
     axisLine: {
       lineStyle: {
         color: '#c9dcf5'

@@ -42,15 +42,15 @@ onMounted(() => {
   datas.value = myEchart;
 });
 // 更换数据 通过此功能实现动态更改数据
-watch(
-    () => props.stateData,
-    (newVal, oldVal) => {
-      updataEchart(newVal);
-    },
-    {
-      deep: true
-    }
-);
+// watch(
+//     () => props.stateData,
+//     (newVal, oldVal) => {
+//       updataEchart(newVal);
+//     },
+//     {
+//       deep: true
+//     }
+// );
 const updataEchart = (data) => {
   if (!data || data == {}) {
     throw console.error('data is empty');
