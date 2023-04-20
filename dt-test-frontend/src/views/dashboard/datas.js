@@ -1,7 +1,8 @@
 import echarts from '@/lib/echarts';
+import { ref, unref } from 'vue';
 import 'echarts-liquidfill/src/liquidFill.js';
 import {queryRoadFlatnessByPname, queryRoadStructureByParentName} from "@/api/common/chart";
-var myData = [];
+
 var lineData = [2.1, 2.1, 2.1, 2.1, 2.1, 2.1, 2.1, 2.1];
 var lastYearData = {
   1: [20, 62, 34, 55, 65, 33],
@@ -16,17 +17,37 @@ let myDataSet = [];
 let antiSkid = [];
 await queryRoadFlatnessByPname('STR1').then((response) => {
   myDataSet = response.data.data;
-  thisYearData[timeLineData[0]] = myDataSet.filter(obj => obj.type == 1);
-  antiSkid = myDataSet.filter(obj => obj.type == 2);
-  myData = myDataSet
-      .filter(obj => obj.type == 1)
-      .map((obj) => obj.name)
-      .slice(0, 8);
+  thisYearData[timeLineData[0]] = myDataSet.filter(obj => obj.type == 1).slice(-8);
+  antiSkid = myDataSet.filter(obj => obj.type == 2).slice(-6);
 })
+
+const myData = ref(myDataSet.slice(0, 8).filter(obj => obj.type == 1).map((obj) => obj.name));
+let startIndex = 0;
+// 定义定时器函数
+function updateMyData() {
+  startIndex += 1;
+  myData.value = myDataSet.slice(startIndex, startIndex + 8).filter(obj => obj.type == 1).map((obj) => obj.name);
+  baroption.value.baseOption.yAxis[1].data = myData.value.map(function (value) {
+    return {
+      value: value,
+      textStyle: {
+        align: 'center',
+        fontSize: 11,
+      },
+    };
+  });
+  baroption.value.baseOption.yAxis[0].data = myData.value;
+  baroption.value.baseOption.yAxis[2].data = myData.value;
+}
+
+// 定义定时器
+setInterval(() => {
+  updateMyData();
+}, 2000);
 
 var background = '#0e2147'; //背景
 
-export const baroption = {
+export let baroption = ref({
   baseOption: {
     timeline: {
       show: false,
@@ -110,7 +131,7 @@ export const baroption = {
         axisLabel: {
           show: false,
         },
-        data: myData,
+        data: myData.value,
       },
       {
         gridIndex: 1,
@@ -130,7 +151,7 @@ export const baroption = {
             fontSize: 20,
           },
         },
-        data: myData.map(function (value) {
+        data: myData.value.map(function (value) {
           return {
             value: value,
             textStyle: {
@@ -154,7 +175,7 @@ export const baroption = {
         axisLabel: {
           show: false,
         },
-        data: myData,
+        data: myData.value,
       },
     ],
     series: [],
@@ -181,7 +202,6 @@ export const baroption = {
             normal: {
               show: true,
               formatter: (series) => {
-                console.log(thisYearData[timeLineData[0]][series.dataIndex].value);
                 return thisYearData[timeLineData[0]][series.dataIndex].value;
               },
               position: 'right',
@@ -219,7 +239,7 @@ export const baroption = {
       ],
     },
   ],
-};
+});
 
 export const pieOpsionts = (
   color = '#ffb137',
@@ -407,8 +427,9 @@ export const CriOption = {
     {
       name: 'Access From',
       type: 'pie',
-      radius: ['30%', '55%'],
+      radius: ['10%', '50%'],
       avoidLabelOverlap: false,
+      roseType: 'radius',
       label: {
         show: false,
         position: 'center',
@@ -416,13 +437,16 @@ export const CriOption = {
       labelLine: {
         show: false,
       },
+      itemStyle: {
+        borderRadius: 5
+      },
       data: data1.reverse(),
     },
     {
       name: '',
       type: 'pie',
       clockWise: false,
-      radius: [50, 58],
+      radius: ['55%', '63%'],
       hoverAnimation: false,
       itemStyle: {
         normal: {
@@ -814,12 +838,12 @@ export const ApOption = {
   ],
 };
 
-var value = 0.4;
+var value = 0.21;
 var wdata = [value, value, value];
 export const WaterOptions = {
   title: [
     {
-      text: (value * 100).toFixed(0) + '%',
+      text: value.toFixed(1) + '℃',
       left: '50%',
       top: '35%',
       textAlign: 'center',
@@ -842,7 +866,7 @@ export const WaterOptions = {
       radius: '78%',
       center: ['50%', '50%'],
       color: ['#ffb137', '#ffb137', '#ffb137'], //水波
-      data: [0.5, 0.5, 0.5], // data个数代表波浪数
+      data: wdata, // data个数代表波浪数
       label: {
         normal: {
           show: false,
@@ -883,7 +907,7 @@ export const PieBarOptions = {
   },
   radiusAxis: {
     type: 'category',
-    data: myData.slice(0,6),
+    data: myData.value.slice(-6),
     axisLine: {
       lineStyle: {
         color: '#c9dcf5'

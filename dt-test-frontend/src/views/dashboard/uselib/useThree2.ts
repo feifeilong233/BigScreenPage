@@ -4,6 +4,8 @@ import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
 import {ref} from "vue";
 import {SkyboxUtils} from '@/lib/threeUtils.ts';
 
+export const roadAxle = ref(41442589);
+
 function Render3DMode(idNames = 'map') {
     let scene2, camera2, controls2;
     let idName = ref(idNames);
@@ -73,6 +75,7 @@ function Render3DMode(idNames = 'map') {
                     num = 0;
                     dir2 = 2;
                     jud = 1;
+                    roadAxle.value += 1;
                 }
             }
         } else {
@@ -92,6 +95,7 @@ function Render3DMode(idNames = 'map') {
                     num = 0;
                     dir2 = 1;
                     jud = 1;
+                    roadAxle.value += 1;
                 }
             }
         }

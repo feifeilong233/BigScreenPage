@@ -62,6 +62,7 @@ export function useECharts(
 
   return {
     setOptions,
-    echarts,
+    myEchart,
+    echarts
   };
 }

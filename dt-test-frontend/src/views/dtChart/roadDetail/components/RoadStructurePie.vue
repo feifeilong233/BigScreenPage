@@ -61,6 +61,11 @@ watch(
             animationDelay: function () {
               return Math.random() * 400;
             },
+            itemStyle: {
+              // borderRadius: 10,
+              borderColor: '#fff',
+              borderWidth: 2,
+            },
           },
           {
             name: props.title,

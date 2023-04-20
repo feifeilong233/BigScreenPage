@@ -15,7 +15,7 @@
     <div class="echartsdoms_cons w-full flex justify-between">
       <div class="chartsdoms_cons_lefts space-y-2 w-22vw">
         <div class="box1 enter-x-l w-22vw">
-          <div class="title1">测试指数</div>
+          <div class="title1">周期温度与累计轴次</div>
           <div class="h-20vh flex items-center">
             <div class="w-1/2 h-full">
               <EchartTemp
@@ -25,12 +25,12 @@
               ></EchartTemp>
             </div>
             <div class="titltest">
-              <div>使用数量</div>
-              <div>912345</div>
+              <div>累计轴载次数</div>
+              <div>{{ roadAxle }}</div>
               <div>
                 目前已经运行
-                <a class="text-blue-300">82</a>
-                天
+                <a>N94</a>
+                周期
               </div>
             </div>
           </div>
@@ -94,7 +94,7 @@
 
 <script lang="ts" setup>
 import 'virtual:windi.css';
-import { defineAsyncComponent, ref } from 'vue';
+import {defineAsyncComponent, ref, onUnmounted, watch} from 'vue';
 import {
   baroption,
   pieOpsionts,
@@ -105,6 +105,7 @@ import {
   PieBarOptions
 } from './datas';
 import {useRouter} from "vue-router";
+import { roadAxle } from './uselib/useThree2';
 
 const router = useRouter();
 const EchartTemp = defineAsyncComponent(
@@ -113,6 +114,15 @@ const EchartTemp = defineAsyncComponent(
 const viewRoadDetail = (type) => {
   router.push({ path: '/chart/workplace', query: {type: type} })
 };
+
+// const roadAxle = ref(22903081);
+// const timer = setInterval(() => {
+//   roadAxle.value++;
+// }, 2100);
+
+// onUnmounted(() => {
+//   clearInterval(timer);
+// });
 </script>
 
 <style lang="less" scoped>
