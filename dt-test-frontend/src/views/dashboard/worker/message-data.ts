@@ -7,6 +7,8 @@ export type CanvasSize = {
 export enum WorkerFunName {
     main = 'main',
     updateSize = 'updateSize',
+    updateCamera = 'updateCamera',
+    createCamera = 'createCamera'
 }
 
 //定义 MessageEvent data 的数据结构

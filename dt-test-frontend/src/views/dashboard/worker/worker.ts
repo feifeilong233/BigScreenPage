@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { CanvasSize, MessageData, WorkerFunName } from './message-data'
+import {CanvasSize, MessageData, WorkerFunName} from './message-data'
 import {ref} from "vue";
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 
@@ -15,9 +15,28 @@ const main = (canvas: OffscreenCanvas) => {
     renderer2 = new THREE.WebGLRenderer({ canvas });
     renderer2.setClearColor(0x5588ff, 1);
     scene2 = new THREE.Scene();
-    camera2 = new THREE.PerspectiveCamera(85, 16 / 9, 0.1, 1000000);
-    camera2.position.set(0, 20, 80);
-    camera2.lookAt(scene2.position);
+
+    // 初始化相机
+    const initCamera = () => {
+        camera2 = new THREE.PerspectiveCamera(85, 16 / 9, 0.1, 1000000)
+        camera2.position.set(0, 20, 80);
+        camera2.lookAt(scene2.position);
+
+        dispatchCreateCamera({
+            args: [85, 16 / 9, 0.1, 1000000],
+            position: [0, 20, 80],
+            lookAt: [scene2.position.x, scene2.position.y, scene2.position.z]
+        })
+    }
+
+    function dispatchCreateCamera(data) {
+        self.postMessage({
+            type: WorkerFunName.createCamera,
+            data: data
+        })
+    }
+
+    initCamera();
 
     //灯光效果
     const point2 = new THREE.PointLight(0xffffff);
@@ -26,17 +45,90 @@ const main = (canvas: OffscreenCanvas) => {
     const ambient2 = new THREE.AmbientLight(0xffffff);
     scene2.add(ambient2);
 
+    //天空盒
+    const textureLoader = new THREE.ImageBitmapLoader()
+    textureLoader.setOptions( { imageOrientation: 'flipY' } );
+    textureLoader.load('https://threejsfundamentals.org/threejs/resources/images/equirectangularmaps/tears_of_steel_bridge_2k.jpg', (imageBitmap) => {
+        const texture = new THREE.CanvasTexture(imageBitmap);
+        const crt = new THREE.WebGLCubeRenderTarget(texture.image.height)
+        crt.fromEquirectangularTexture(renderer2, texture)
+        scene2.background = crt.texture
+    })
+
     // 渲染内容
     const render = () => {
         renderer2.render(scene2, camera2);
     };
 
+    // 压路机动画
+    let dir2 = 1;
+    let jud = 1;
+    let num = 0;
+
+    const animate2 = () => {
+        render();
+        const car2 = scene2.children[2].children[0].children[1].children;
+        car2[0].position.x = 0;
+        car2[1].position.x = 0;
+        car2[2].position.x = 0;
+        car2[3].position.x = -10;
+        car2[4].position.x = 0;
+        if (dir2 == 1) {
+            if (jud == 1) {
+                scene2.children[2].children[0].children[1].position.x += 2;
+                if (scene2.children[2].children[0].children[1].position.x >= 160) {
+                    scene2.children[2].children[0].children[1].position.x = 160;
+                    scene2.children[2].children[0].children[1].position.y = 0;
+                    jud = -1;
+                }
+            } else {
+                num += 1;
+                if (num < 157) {
+                    scene2.children[2].children[0].children[1].rotation.z += 0.02;
+                } else {
+                    scene2.children[2].children[0].children[1].rotation.z = Math.PI;
+                    num = 0;
+                    dir2 = 2;
+                    jud = 1;
+                    roadAxle.value += 1;
+                }
+            }
+        } else {
+            if (jud == 1) {
+                scene2.children[2].children[0].children[1].position.x -= 2;
+                if (scene2.children[2].children[0].children[1].position.x < -160) {
+                    scene2.children[2].children[0].children[1].position.x = -160;
+                    scene2.children[2].children[0].children[1].position.y = 0;
+                    jud = -1;
+                }
+            } else {
+                num += 1;
+                if (num < 157) {
+                    scene2.children[2].children[0].children[1].rotation.z += 0.02;
+                } else {
+                    scene2.children[2].children[0].children[1].rotation.z = 0;
+                    num = 0;
+                    dir2 = 1;
+                    jud = 1;
+                    roadAxle.value += 1;
+                }
+            }
+        }
+        requestAnimationFrame(animate2);
+    }
+
     //添加gltf
     const loader2 = new GLTFLoader();
     loader2.load('/road_gltf_5/New_road_5.gltf',(gltf) => {
         scene2.add(gltf.scene);
-        render();
+        animate2();
     });
+}
+
+const updateCamera = (data) => {
+    const { position, lookAt } = data;
+    camera2.position.set(...position)
+    camera2.lookAt(new THREE.Vector3(...lookAt));
 }
 
 //定义用来接收画布尺寸更新的函数
@@ -48,6 +140,9 @@ const updateSize = (newSize: CanvasSize) => {
 
 const handleMessage = ((eve: MessageEvent<MessageData>) => {
     switch (eve.data.type) {
+        case WorkerFunName.updateCamera:
+            updateCamera(eve.data.params)
+            break
         case WorkerFunName.main:
             main(eve.data.params)
             break
