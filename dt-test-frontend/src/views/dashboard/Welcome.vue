@@ -4,7 +4,8 @@
     <div class="echartbox">
       <Comps></Comps>
     </div>
-    <div id="map"></div>
+<!--    <div id="map"></div>-->
+    <canvas ref="canvasRef" class="three-frame"></canvas>
   </div>
 </template>
 
@@ -12,11 +13,15 @@
 import Comps from './comps.vue';
 // 圆盘地盘 地盘动画
 import Render3DMode from './uselib/useThree2';
+import Render3DModel from './worker/useThree';
 import {onMounted} from '@vue/runtime-core';
 import {getGeoJsonall} from '@/lib/getGeoJson';
+import {ref} from "vue";
 
+const canvasRef = ref(null)
 onMounted(() => {
-  Render3DMode('map');
+  // Render3DMode('map');
+  Render3DModel(canvasRef);
 });
 
 // let {initMaps, setMapDom, setmapborder} = Render3DMode('three-frame');
@@ -34,6 +39,11 @@ onMounted(() => {
 
 <style lang="less" scoped>
 #map {
+  width: 100%;
+  height: 100vh;
+}
+
+.three-frame {
   width: 100%;
   height: 100vh;
 }

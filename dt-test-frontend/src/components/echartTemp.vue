@@ -51,6 +51,9 @@ onMounted(() => {
 //       deep: true
 //     }
 // );
+setInterval(() => {
+  updataEchart(props.stateData);
+}, 2100);
 const updataEchart = (data) => {
   if (!data || data == {}) {
     throw console.error('data is empty');
