@@ -19,3 +19,9 @@ springboot2.6.x+vue3-antdesign-vite架构，实现了系统管理模块、权限
 - socket长连接实时监控
 - worker&OffscreenCanvas渲染优化
 - 集成开源项目Paravie Glance
+
+#### todo
+首页echarts滚动更新
+首页echarts补完
+仿真分析界面 steps
+内置Paraview

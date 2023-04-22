@@ -48,7 +48,7 @@ const main = (canvas: OffscreenCanvas) => {
     //天空盒
     const textureLoader = new THREE.ImageBitmapLoader()
     textureLoader.setOptions( { imageOrientation: 'flipY' } );
-    textureLoader.load('https://threejsfundamentals.org/threejs/resources/images/equirectangularmaps/tears_of_steel_bridge_2k.jpg', (imageBitmap) => {
+    textureLoader.load('/images/sky_3.jpg', (imageBitmap) => {
         const texture = new THREE.CanvasTexture(imageBitmap);
         const crt = new THREE.WebGLCubeRenderTarget(texture.image.height)
         crt.fromEquirectangularTexture(renderer2, texture)
