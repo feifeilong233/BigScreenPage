@@ -78,7 +78,7 @@
           </div>
         </div>
         <div class="box1 enter-x-r w-22vw">
-          <div class="title1">测试指数</div>
+          <div class="title1">行车道平均车辙深度（0.1mm）</div>
           <div class="h-25vh">
             <EchartTemp
               elementName="ApOption"

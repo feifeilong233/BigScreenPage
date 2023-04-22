@@ -3,48 +3,70 @@ import {onUnmounted, ref, unref} from 'vue';
 import 'echarts-liquidfill/src/liquidFill.js';
 import {queryRoadFlatnessByPname, queryRoadStructureByParentName} from "@/api/common/chart";
 
-var lineData = [2.1, 2.1, 2.1, 2.1, 2.1, 2.1, 2.1, 2.1];
-var lastYearData = {
-    1: [20, 62, 34, 55, 65, 33],
-};
+var lineData = [2.1, 2.1, 2.1, 2.1, 2.1, 2.1, 2.1, 2.1]; //平整度
 var thisYearData = {
     1: [],
-};
+}; //平整度
 
-var timeLineData = [1];
+var timeLineData = [1]; //平整度
 
-let myDataSet = [];
-let antiSkid = [];
-let roadFlatness = []
+let myDataSet = []; //各图表的x轴name数组
+let antiSkid = []; //抗滑性能
+let antiSkidData = [];
+let roadFlatness = []; //平整度
+let roadRuts = [], //车辙
+    roadRutsData = [];
+
 await queryRoadFlatnessByPname('STR1').then((response) => {
     myDataSet = response.data.data.filter(obj => obj.type == 1).map((obj) => obj.name);
     roadFlatness = response.data.data.filter(obj => obj.type == 1);
     thisYearData[timeLineData[0]] = roadFlatness.slice(0,8);
-    antiSkid = response.data.data.filter(obj => obj.type == 2).slice(-6);
+    antiSkid = response.data.data.filter(obj => obj.type == 2);
+    antiSkidData = antiSkid.slice(0,6);
+    roadRuts = response.data.data.filter(obj => obj.type == 6);
+    roadRutsData = roadRuts.slice(0,6);
 })
 
-let myData = myDataSet.slice(0, 8);
-let myData1 = myDataSet.slice(-6);
+let myData8 = myDataSet.slice(0, 8); //适用于x轴为8个值的图
+let myData6 = myDataSet.slice(0, 6); //适用于x轴为6个值的图
 
-let startIndex = 0;
+let startIndex = 1;
+let startIndex1 = 1;
 export const roadAxle = ref(41442589);
 
 function updateMyData() {
     roadAxle.value += 1
     const endIndex = Math.min(startIndex + 8, myDataSet.length);
+    const endIndex1 = Math.min(startIndex1 + 6, myDataSet.length);
     let result = myDataSet.slice(startIndex, endIndex);
+    let result1 = myDataSet.slice(startIndex1, endIndex1);
     let resultData = roadFlatness.slice(startIndex, endIndex)
+    let resultData1 = antiSkid.slice(startIndex1, endIndex1);
+    let roadRutsResult = roadRuts.slice(startIndex1, endIndex1);
     while (result.length < 8) {
         result = result.concat(myDataSet.slice(0, 8 - result.length));
+    }
+    while (result1.length < 6) {
+        result1 = result1.concat(myDataSet.slice(0, 6 - result.length));
     }
     while (resultData.length < 8) {
         resultData = resultData.concat(roadFlatness.slice(0, 8 - resultData.length))
     }
-    myData = result;
+    while (resultData1.length < 6) {
+        resultData1 = resultData1.concat(antiSkid.slice(0, 6 - result.length));
+    }
+    while (resultData1.length < 6) {
+        roadRutsResult = roadRutsResult.concat(roadRuts.slice(0, 6 - result.length));
+    }
+    myData8 = result;
+    myData6 = result1;
     thisYearData[timeLineData[0]] = resultData;
+    antiSkidData = resultData1;
+    roadRutsData = roadRutsResult;
     startIndex = (startIndex + 1) % myDataSet.length;
+    startIndex1 = (startIndex1 + 1) % myDataSet.length;
 
-    baroption.value.baseOption.yAxis[1].data = myData.map(function (value) {
+    baroption.value.baseOption.yAxis[1].data = myData8.map(function (value) {
         return {
             value: value,
             textStyle: {
@@ -53,13 +75,19 @@ function updateMyData() {
             },
         };
     });
-    baroption.value.baseOption.yAxis[2].data = myData;
+    baroption.value.baseOption.yAxis[2].data = myData8;
     baroption.value.options[0].series[1].data = thisYearData[timeLineData[0]];
+
+    PieBarOptions.value.radiusAxis.data = myData6;
+    PieBarOptions.value.series.data = antiSkidData;
+
+    ApOption.value.xAxis.data = myData6;
+    ApOption.value.series[0].data = roadRutsData;
 }
 
 let times = setInterval(() => {
     updateMyData();
-}, 4200);
+}, 2100);
 
 onUnmounted(() => {
     clearInterval(times);
@@ -151,7 +179,7 @@ export let baroption = ref({
                 axisLabel: {
                     show: false,
                 },
-                data: myData,
+                data: myData8,
             },
             {
                 gridIndex: 1,
@@ -171,7 +199,7 @@ export let baroption = ref({
                         fontSize: 20,
                     },
                 },
-                data: myData.map(function (value) {
+                data: myData8.map(function (value) {
                     return {
                         value: value,
                         textStyle: {
@@ -195,7 +223,7 @@ export let baroption = ref({
                 axisLabel: {
                     show: false,
                 },
-                data: myData,
+                data: myData8,
             },
         ],
         series: [],
@@ -780,7 +808,7 @@ let colorList = [
     'rgba(215,56,126,0.6)',
     'rgba(2,173,186,0.6)',
 ];
-export const ApOption = {
+export const ApOption = ref({
     title: '',
     grid: {
         top: '4%',
@@ -792,7 +820,7 @@ export const ApOption = {
         boundaryGap: true,
         type: 'category',
         show: true,
-        data: ['3月', '4月', '5月', '6月', '7月', '8月'],
+        data: myData6,
         axisLabel: {
             textStyle: {
                 color: '#c9dcf5',
@@ -844,7 +872,7 @@ export const ApOption = {
                     opacity: 1,
                 },
             },
-            data: barData,
+            data: roadRutsData,
             label: {
                 show: true,
                 position: 'top',
@@ -856,7 +884,7 @@ export const ApOption = {
             },
         },
     ],
-};
+});
 
 var value = 0.21;
 var wdata = [value, value, value];
@@ -912,7 +940,7 @@ export const WaterOptions = {
     ],
 };
 
-export const PieBarOptions = {
+export const PieBarOptions = ref({
     polar: {
         radius: [30, '80%']
     },
@@ -927,7 +955,7 @@ export const PieBarOptions = {
     },
     radiusAxis: {
         type: 'category',
-        data: myData1,
+        data: myData6,
         axisLine: {
             lineStyle: {
                 color: '#c9dcf5'
@@ -937,7 +965,7 @@ export const PieBarOptions = {
     tooltip: {},
     series: {
         type: 'bar',
-        data: antiSkid,
+        data: antiSkidData,
         coordinateSystem: 'polar',
         itemStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
@@ -960,4 +988,4 @@ export const PieBarOptions = {
             position: 'middle',
         }
     }
-};
+});
