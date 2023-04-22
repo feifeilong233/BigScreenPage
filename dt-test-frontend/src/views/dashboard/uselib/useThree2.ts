@@ -75,7 +75,6 @@ function Render3DMode(idNames = 'map') {
                     num = 0;
                     dir2 = 2;
                     jud = 1;
-                    roadAxle.value += 1;
                 }
             }
         } else {

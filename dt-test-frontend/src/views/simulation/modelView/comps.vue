@@ -46,9 +46,6 @@
                 <a-select-option value="sky_2">
                   场景2
                 </a-select-option>
-                <a-select-option value="sky_3">
-                  场景3
-                </a-select-option>
               </a-select>
               <a-button @click="handleSubmit" style="margin-left: 66px">保存</a-button>
               <a-button ghost type="primary">进入分析</a-button>
@@ -70,7 +67,7 @@
 import 'virtual:windi.css';
 import {ref} from 'vue';
 import {onMounted, onBeforeUnmount} from '@vue/runtime-core';
-import Render3DEcharts from './useEchart.ts'
+import Render3DEcharts from './useEchart'
 
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
@@ -78,11 +75,12 @@ import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
 import {CreateLabel} from "@/views/dashboard/lib/spritetext";
 import border1 from "@/assets/bgs.png";
 import {findDictionaryList} from "@/api/system/dictionary";
-import {SkyboxUtils} from '@/lib/threeUtils.ts';
+import {SkyboxUtils} from '@/lib/threeUtils';
 import {useRoute} from "vue-router";
 import {getTdemoById, updateBatch} from "@/api/common/tdemo";
 import {message} from "ant-design-vue";
 
+let {init3DEcharts, initEchartsDOM} = Render3DEcharts('container3D');
 let roadValue = ref([]);
 let skyBox = ref('sky_2');
 /*roadValue.value = [
@@ -113,6 +111,7 @@ let skyBox = ref('sky_2');
 ]*/
 
 onMounted(() => {
+  initEchartsDOM();
   initMode();
   initData();
 });
@@ -263,8 +262,7 @@ const renderEcharts = () => {
     const value = item.order_by * 100;
     dataset.push([0.5, 0.5, value]);
   });
-  console.log("dataset====",dataset);
-  Render3DEcharts('container3D', dataset.reverse());
+  init3DEcharts(dataset.reverse());
 }
 
 // 文字标签

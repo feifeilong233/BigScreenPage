@@ -90,7 +90,6 @@ const main = (canvas: OffscreenCanvas) => {
                     num = 0;
                     dir2 = 2;
                     jud = 1;
-                    roadAxle.value += 1;
                 }
             }
         } else {

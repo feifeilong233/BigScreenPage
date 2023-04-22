@@ -101,10 +101,10 @@ import {
   lineOptions,
   ApOption,
   WaterOptions,
-  PieBarOptions
+  PieBarOptions,
+  roadAxle
 } from './datas';
 import {useRouter} from "vue-router";
-import { roadAxle } from './uselib/useThree2';
 
 const router = useRouter();
 const EchartTemp = defineAsyncComponent(
