@@ -35,7 +35,7 @@
             </div>
           </div>
         </div>
-        <div @click="viewRoadDetail(2)" role="button" class="box2 enter-x-l w-full">
+        <div @click="viewRoadDetail(1)" role="button" class="box2 enter-x-l w-full">
           <div class="title1">行车道激光表面纹理深度（mm）</div>
           <div class="h-30vh">
             <EchartTemp
@@ -45,7 +45,7 @@
             ></EchartTemp>
           </div>
         </div>
-        <div @click="viewRoadDetail(2)" role="button" class="box3 enter-x-l h-35vh">
+        <div @click="viewRoadDetail(1)" role="button" class="box3 enter-x-l h-35vh">
           <div class="title1">行车道国际平整度指数（m/km）</div>
           <div class="h-30vh">
             <EchartTemp
@@ -57,7 +57,7 @@
         </div>
       </div>
       <div class="chartsdoms_cons_rights space-y-2 w-22vw">
-        <div @click="viewRoadDetail(3)" role="button" class="box1 enter-x-r w-22vw">
+        <div @click="viewRoadDetail(2)" role="button" class="box1 enter-x-r w-22vw">
           <div class="title1">路面结构与材料</div>
           <div class="h-25vh">
             <EchartTemp
@@ -77,7 +77,7 @@
             ></EchartTemp>
           </div>
         </div>
-        <div class="box1 enter-x-r w-22vw">
+        <div @click="viewRoadDetail(3)" role="button" class="box1 enter-x-r w-22vw">
           <div class="title1">行车道平均车辙深度（0.1mm）</div>
           <div class="h-25vh">
             <EchartTemp

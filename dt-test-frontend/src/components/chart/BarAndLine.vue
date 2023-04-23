@@ -6,9 +6,10 @@
 <script lang="ts">
   import { defineComponent, PropType, ref, Ref, reactive, watchEffect } from 'vue';
   import { useECharts } from '@/hooks/useEChart';
+  import {getCode} from "./typeEnum";
 
   export default defineComponent({
-    name: 'barAndLine',
+    name: 'BarAndLine',
     props: {
       chartData: {
         type: Array,
@@ -30,28 +31,6 @@
       loading: Boolean
     },
     setup(props) {
-      const typeEnum = [
-        {
-          type: 1,
-          name: '行车道国际平整度指数(m/km)'
-        },
-        {
-          type: 2,
-          name: '行车道激光表面纹理深度(mm)'
-        },
-        {
-          type: 3,
-          name: '平均温度(℃)'
-        },
-        {
-          type: 4,
-          name: '轴载次数lg(Ne)'
-        }
-      ]
-      const getCode = (type) => {
-        const item = typeEnum.find((item) => item.type == type);
-        return item ? item.name : type;
-      };
       const chartRef = ref<HTMLDivElement | null>(null);
       const { setOptions, echarts } = useECharts(chartRef as Ref<HTMLDivElement>);
       const option = reactive({
