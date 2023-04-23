@@ -198,7 +198,7 @@ type CheckedType = boolean | string | number;
           locale: true
         },
         multiTab: false,
-        title: '沥青路面试验平台',
+        title: 'Web3D路面性能试验平台',
         pwa: false,
         iconfontUrl: '',
         production: process.env.NODE_ENV === 'production' && process.env.VUE_APP_PREVIEW !== 'true'

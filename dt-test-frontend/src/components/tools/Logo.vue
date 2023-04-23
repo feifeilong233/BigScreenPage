@@ -19,7 +19,7 @@ export default defineComponent({
   props: {
     title: {
       type: String,
-      default: '沥青路面试验平台',
+      default: 'Web3D路面性能试验平台',
       required: false,
     },
     showTitle: {

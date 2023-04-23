@@ -87,7 +87,7 @@ function updateMyData() {
 
 let times = setInterval(() => {
     updateMyData();
-}, 2100);
+}, 4200);
 
 onUnmounted(() => {
     clearInterval(times);

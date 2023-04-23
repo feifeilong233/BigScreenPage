@@ -23,7 +23,7 @@ export default {
 
   'layouts.usermenu.dialog.title': '信息',
   'layouts.usermenu.dialog.content': '您确定要注销吗？',
-  'layouts.userLayout.title': '基于数字孪生的沥青路面性能试验平台',
+  'layouts.userLayout.title': '基于Web3D的沥青路面性能试验平台',
   ...components,
   ...global,
   ...menu,
