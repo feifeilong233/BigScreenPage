@@ -27,3 +27,4 @@ springboot2.6.x+vue3-antdesign-vite架构，实现了系统管理模块、权限
 - 首页echarts补完
 - 仿真分析界面 steps
 - 内置Paraview
+- 论文换图
