@@ -59,11 +59,29 @@ export default defineComponent({
       },
       xAxis: {
         type: 'category',
+        splitLine: {
+          show: true,
+          lineStyle: {
+            width: 1,
+            type: 'solid',
+            color: 'rgba(226,226,226,0.5)',
+          },
+        },
         data: [],
       },
-      yAxis: {
-        type: 'value',
-      },
+      yAxis: [
+        {
+          type: 'value',
+        },
+        {
+          type: 'value',
+        },
+        {
+          type: 'value',
+          min: 7.3,
+          show: false,
+        },
+      ],
       series: [],
     });
 
@@ -81,9 +99,9 @@ export default defineComponent({
       let xAxisData = Array.from(new Set(props.chartData.map((item) => item.name)));
       let seriesData = [];
       typeArr.forEach((type) => {
-        let obj = {name: getCode(type), type: props.type};
-        if(props.area) {
-          Object.assign(obj, {smooth: true, areaStyle: {}})
+        let obj = {name: getCode(type), type: props.type, yAxisIndex: type == 7 || type == 6 ? 1 : type === 4 ? 2 : 0, smooth: type === 7 || type === 3};
+        if (props.area && type !== 7) {
+          Object.assign(obj, {smooth: true, areaStyle: {}});
         }
         let chartArr = props.chartData.filter((item) => type === item.type);
         //data数据

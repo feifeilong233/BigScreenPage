@@ -11,6 +11,7 @@
     </div>
     <div v-if="type == 3">
       <LineMulti :chartData="LineMultiData" title="车辙检测数据" :loading="loading" height="50vh"></LineMulti>
+      <LineMulti :chartData="AreaData" title="FWD弯沉检测数据" :loading="loading" height="50vh" area></LineMulti>
     </div>
   </page-header-wrapper>
 </template>
@@ -30,6 +31,7 @@ type.value = route.query.type;
 const barLineData1 = ref([]);
 const barLineData2 = ref([]);
 const LineMultiData = ref([]);
+const AreaData = ref([]);
 
 onMounted(() => {
   queryRoadFlatnessByPname('STR1').then((response) => {
@@ -51,6 +53,7 @@ onMounted(() => {
           };
         });
     LineMultiData.value = response.data.data.filter(obj => obj.type == 3 || obj.type == 4 || obj.type == 6)
+    AreaData.value = response.data.data.filter(obj => obj.type == 7 || obj.type == 8 || obj.type == 9)
   });
 })
 </script>

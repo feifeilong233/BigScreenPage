@@ -67,8 +67,8 @@
             ></EchartTemp>
           </div>
         </div>
-        <div class="box1 enter-x-r w-22vw">
-          <div class="title1">测试指数</div>
+        <div @click="viewRoadDetail(3)" role="button" class="box1 enter-x-r w-22vw">
+          <div class="title1">中心点弯沉（0.1mm）</div>
           <div class="h-30vh">
             <EchartTemp
               elementName="lineOptions"

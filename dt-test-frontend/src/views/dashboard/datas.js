@@ -11,23 +11,38 @@ var thisYearData = {
 var timeLineData = [1]; //平整度
 
 let myDataSet = []; //各图表的x轴name数组
+let myDataX = [];
 let antiSkid = []; //抗滑性能
 let antiSkidData = [];
 let roadFlatness = []; //平整度
 let roadRuts = [], //车辙
     roadRutsData = [];
+let FWDDataSet = [],
+    TRoad = [],
+    TAtmo = [],
+    FWDData = [],
+    TRoadData = [],
+    TAtmoData = [];
 
 await queryRoadFlatnessByPname('STR1').then((response) => {
     myDataSet = response.data.data.filter(obj => obj.type == 1).map((obj) => obj.name);
+    myDataX = response.data.data.filter(obj => obj.type == 7).map((obj) => obj.name);
     roadFlatness = response.data.data.filter(obj => obj.type == 1);
     thisYearData[timeLineData[0]] = roadFlatness.slice(0,8);
     antiSkid = response.data.data.filter(obj => obj.type == 2);
     antiSkidData = antiSkid.slice(0,6);
     roadRuts = response.data.data.filter(obj => obj.type == 6);
     roadRutsData = roadRuts.slice(0,6);
+    FWDDataSet = response.data.data.filter(obj => obj.type == 7);
+    TRoad = response.data.data.filter(obj => obj.type == 8);
+    TAtmo = response.data.data.filter(obj => obj.type == 9);
+    FWDData = FWDDataSet.slice(0,8);
+    TRoadData = TRoad.slice(0,8);
+    TAtmoData = TAtmo.slice(0,8);
 })
 
 let myData8 = myDataSet.slice(0, 8); //适用于x轴为8个值的图
+let myDataX8 = myDataX.slice(0, 8); //适用于x轴为8个值的图
 let myData6 = myDataSet.slice(0, 6); //适用于x轴为6个值的图
 
 let startIndex = 1;
@@ -38,16 +53,25 @@ function updateMyData() {
     roadAxle.value += 1
     const endIndex = Math.min(startIndex + 8, myDataSet.length);
     const endIndex1 = Math.min(startIndex1 + 6, myDataSet.length);
+
     let result = myDataSet.slice(startIndex, endIndex);
     let result1 = myDataSet.slice(startIndex1, endIndex1);
+    let resultX = myDataX.slice(startIndex, endIndex);
     let resultData = roadFlatness.slice(startIndex, endIndex)
     let resultData1 = antiSkid.slice(startIndex1, endIndex1);
     let roadRutsResult = roadRuts.slice(startIndex1, endIndex1);
+    let FWDResult = FWDDataSet.slice(startIndex, endIndex)
+    let TRoadResult = TRoad.slice(startIndex, endIndex)
+    let TAtmoResult = TAtmo.slice(startIndex, endIndex)
+
     while (result.length < 8) {
         result = result.concat(myDataSet.slice(0, 8 - result.length));
     }
     while (result1.length < 6) {
         result1 = result1.concat(myDataSet.slice(0, 6 - result.length));
+    }
+    while (resultX.length < 8) {
+        resultX = resultX.concat(myDataX.slice(0, 8 - resultX.length));
     }
     while (resultData.length < 8) {
         resultData = resultData.concat(roadFlatness.slice(0, 8 - resultData.length))
@@ -55,14 +79,30 @@ function updateMyData() {
     while (resultData1.length < 6) {
         resultData1 = resultData1.concat(antiSkid.slice(0, 6 - result.length));
     }
-    while (resultData1.length < 6) {
+    while (roadRutsResult.length < 6) {
         roadRutsResult = roadRutsResult.concat(roadRuts.slice(0, 6 - result.length));
     }
+    while (FWDResult.length < 8) {
+        FWDResult = FWDResult.concat(FWDDataSet.slice(0, 8 - FWDResult.length));
+    }
+    while (TRoadResult.length < 8) {
+        TRoadResult = TRoadResult.concat(TRoad.slice(0, 8 - TRoadResult.length));
+    }
+    while (TAtmoResult.length < 8) {
+        TAtmoResult = TAtmoResult.concat(TAtmo.slice(0, 8 - TAtmoResult.length));
+    }
+
     myData8 = result;
     myData6 = result1;
+    myDataX8 = resultX;
+
     thisYearData[timeLineData[0]] = resultData;
     antiSkidData = resultData1;
     roadRutsData = roadRutsResult;
+    FWDData = FWDResult;
+    TRoadData = TRoadResult;
+    TAtmoData = TAtmoResult;
+
     startIndex = (startIndex + 1) % myDataSet.length;
     startIndex1 = (startIndex1 + 1) % myDataSet.length;
 
@@ -83,6 +123,11 @@ function updateMyData() {
 
     ApOption.value.xAxis.data = myData6;
     ApOption.value.series[0].data = roadRutsData;
+
+    lineOptions.value.xAxis.data = myDataX8;
+    lineOptions.value.series[2].data = FWDData;
+    lineOptions.value.series[0].data = TRoadData;
+    lineOptions.value.series[1].data = TAtmoData;
 }
 
 let times = setInterval(() => {
@@ -529,10 +574,11 @@ export const CriOption = {
     ],
 };
 
-export const lineOptions = {
+export const lineOptions = ref({
     tooltip: {
         trigger: 'axis',
         axisPointer: {
+            animation: false,
             lineStyle: {
                 color: '#ffb137',
             },
@@ -543,7 +589,7 @@ export const lineOptions = {
         itemWidth: 14,
         itemHeight: 5,
         itemGap: 13,
-        data: ['移动', '电信', '联通'],
+        data: ['T路表', 'T大气', 'FWD弯沉盆'],
         right: '4%',
         textStyle: {
             fontSize: 11,
@@ -584,37 +630,69 @@ export const lineOptions = {
                 color: '#c9dcf5',
             },
         },
-        data: ['1月', '1月', '1月', '1月', '1月', '1月', '1月', '1月'],
+        data: myDataX8,
     },
-    yAxis: {
-        type: 'value',
-        axisTick: {
-            show: false,
-        },
-        axisLine: {
-            show: true,
-            lineStyle: {
-                color: '#6b7580',
+    yAxis: [
+        {
+            type: 'value',
+            name: 'T',
+            position: 'left',
+            axisTick: {
+                show: false,
+            },
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: '#6b7580',
+                },
+            },
+            axisLabel: {
+                show: true,
+                margin: 10,
+                textStyle: {
+                    fontSize: 10,
+                    color: '#c9dcf5',
+                },
+            },
+            splitLine: {
+                show: false,
+                lineStyle: {
+                    color: '#c9dcf5',
+                },
             },
         },
-        axisLabel: {
-            show: true,
-            margin: 10,
-            textStyle: {
-                fontSize: 10,
-                color: '#c9dcf5',
+        {
+            type: 'value',
+            name: 'FWD',
+            position: 'right',
+            axisTick: {
+                show: false,
             },
-        },
-        splitLine: {
-            show: false,
-            lineStyle: {
-                color: '#c9dcf5',
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: '#6b7580',
+                },
             },
-        },
-    },
+            axisLabel: {
+                show: true,
+                margin: 10,
+                textStyle: {
+                    fontSize: 10,
+                    color: '#c9dcf5',
+                },
+            },
+            splitLine: {
+                show: false,
+                lineStyle: {
+                    color: '#c9dcf5',
+                },
+            },
+        }
+    ],
     series: [
         {
-            name: '移动',
+            name: 'T路表',
             type: 'line',
             smooth: true,
             symbol: 'circle',
@@ -655,10 +733,11 @@ export const lineOptions = {
                     borderWidth: 12,
                 },
             },
-            data: [220, 182, 191, 134, 150, 120, 110, 125, 145, 122, 165, 122],
+            data: TRoadData,
+            yAxisIndex: 0
         },
         {
-            name: '电信',
+            name: 'T大气',
             type: 'line',
             smooth: true,
             symbol: 'circle',
@@ -699,10 +778,11 @@ export const lineOptions = {
                     borderWidth: 12,
                 },
             },
-            data: [120, 110, 125, 105, 122, 105, 122, 120, 152, 111, 134, 150],
+            data: TAtmoData,
+            yAxisIndex: 0
         },
         {
-            name: '联通',
+            name: 'FWD弯沉盆',
             type: 'line',
             smooth: true,
             symbol: 'circle',
@@ -743,10 +823,11 @@ export const lineOptions = {
                     borderWidth: 12,
                 },
             },
-            data: [220, 182, 125, 145, 122, 191, 134, 150, 120, 110, 165, 122],
+            data: FWDData,
+            yAxisIndex: 1
         },
     ],
-};
+});
 
 let dataas = [
     {

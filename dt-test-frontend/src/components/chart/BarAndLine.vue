@@ -93,6 +93,12 @@
           obj['yAxisIndex'] = j;
           seriesData.push(obj);
           j++;
+          if(type === 2) {
+            option.yAxis[0].min = 0.75;
+          }
+          else if(type === 4) {
+            option.yAxis[1].min = 7.3;
+          }
         });
         option.series = seriesData;
         option.xAxis.data = xAxisData;

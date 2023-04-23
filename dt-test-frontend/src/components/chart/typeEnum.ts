@@ -22,6 +22,18 @@ export const typeEnum = [
     {
         type: 6,
         name: '行车道平均车辙深度（0.1mm）'
+    },
+    {
+        type: 7,
+        name: '中心点弯沉（0.1mm）'
+    },
+    {
+        type: 8,
+        name: 'T路表（℃）'
+    },
+    {
+        type: 9,
+        name: 'T大气（℃）'
     }
 ];
 
