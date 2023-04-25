@@ -16,7 +16,7 @@ springboot2.6.x+vue3-antdesign-vite架构，实现了系统管理模块、权限
 
 #### feat
 - KoTime后端性能分析
-  
+
 
 - socket长连接实时监控
 - worker&OffscreenCanvas渲染优化
@@ -25,6 +25,9 @@ springboot2.6.x+vue3-antdesign-vite架构，实现了系统管理模块、权限
 #### todo
 - 首页echarts滚动更新
 - 首页echarts补完
-- 仿真分析界面 steps
 - 内置Paraview
 - 论文换图
+
+
+- 仿真分析界面 steps
+- 多语言支持
