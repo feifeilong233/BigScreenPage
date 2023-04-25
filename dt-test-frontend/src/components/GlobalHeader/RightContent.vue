@@ -13,9 +13,9 @@
       <unlock-outlined v-if="!isLocked" />
     </a-tooltip>
   </div>
-  <!--  <div :style="{ display: 'flex', margin: '0 8px', fontSize: '20px', cursor: 'pointer' }" :class="wrpCls">-->
-  <!--    <select-lang :class="prefixCls" />-->
-  <!--  </div>-->
+    <div :style="{ display: 'flex', margin: '0 8px', fontSize: '20px', cursor: 'pointer' }" :class="wrpCls">
+      <select-lang :class="prefixCls" />
+    </div>
 </template>
 
 <script lang="ts">
