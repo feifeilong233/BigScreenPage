@@ -47,8 +47,8 @@
                   场景2
                 </a-select-option>
               </a-select>
-              <a-button @click="handleSubmit" style="margin-left: 66px">保存</a-button>
-              <a-button ghost type="primary">进入分析</a-button>
+              <a-button @click="handleSubmit" style="margin-left: 66px" type="primary">保存</a-button>
+              <a-button ghost @click="viewEmulation" type="primary">进入分析</a-button>
             </a-space>
           </a-card>
         </div>
@@ -76,7 +76,7 @@ import {CreateLabel} from "@/views/dashboard/lib/spritetext";
 import border1 from "@/assets/bgs.png";
 import {findDictionaryList} from "@/api/system/dictionary";
 import {SkyboxUtils} from '@/lib/threeUtils';
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {getTdemoById, updateBatch} from "@/api/common/tdemo";
 import {message} from "ant-design-vue";
 
@@ -143,6 +143,11 @@ const handleSubmit = () => {
   }).then((res) => {
     message.info("修改成功");
   });
+}
+
+const router = useRouter();
+const viewEmulation = () => {
+  router.push({path: '/simulation/emulation', query: {id: route.query.id}})
 }
 
 let scene, camera, controls;
