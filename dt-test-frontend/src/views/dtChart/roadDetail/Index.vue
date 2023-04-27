@@ -1,15 +1,15 @@
 <template>
   <page-header-wrapper>
-    <div v-if="type === 2 || type === undefined" class="md:flex enter-y">
+    <div v-if="type == 2 || type == undefined" class="md:flex enter-y">
       <RoadStructurePie title="STR1" class="md:w-1/3 w-full"/>
       <RoadStructurePie title="STR2" class="md:w-1/3 !md:mx-4 !md:my-0 !my-4 w-full"/>
       <RoadStructurePie title="STR3" class="md:w-1/3 w-full"/>
     </div>
-    <div v-if="type === 1 || type === undefined">
+    <div v-if="type == 1 || type == undefined">
       <BarAndLine title="平整度检测数据" :chartData="barLineData1" :loading="loading" height="50vh"></BarAndLine>
       <BarAndLine title="抗滑性能检测数据" :chartData="barLineData2" :loading="loading" height="50vh"></BarAndLine>
     </div>
-    <div v-if="type === 3 || type === undefined">
+    <div v-if="type == 3 || type == undefined">
       <LineMulti :chartData="LineMultiData" title="车辙检测数据" :loading="loading" height="50vh"></LineMulti>
       <LineMulti :chartData="AreaData" title="FWD弯沉检测数据" :loading="loading" height="50vh" area></LineMulti>
     </div>

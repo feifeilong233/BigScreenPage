@@ -45,7 +45,7 @@
             <a-form-item>
               <a-space>
                 <a-button type="primary" html-type="submit" :loading="canEdit">提交作业</a-button>
-                <a-button type="primary" :disabled="current !== 3" ghost>查看结果</a-button>
+                <a-button type="primary" @click="viewParaview" :disabled="current !== 3" ghost>查看结果</a-button>
               </a-space>
             </a-form-item>
           </a-form>
@@ -57,7 +57,7 @@
 
 <script lang="ts" setup>
 import {computed, ref} from "vue";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {getTdemoById} from "@/api/common/tdemo";
 import {findDictionaryList} from "@/api/system/dictionary";
 import {onMounted} from "@vue/runtime-core";
@@ -92,6 +92,11 @@ const handleSubmit = () => {
       canEdit.value = false;
     }
   }, 100);
+}
+
+const router = useRouter();
+const viewParaview = () => {
+  router.push({path: '/example/iframe'})
 }
 
 const columns = [
