@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
 import {ref} from "vue";
-import {SkyboxUtils} from '@/lib/threeUtils.ts';
+import {SkyboxUtils} from '@/lib/threeUtils';
 
 export const roadAxle = ref(41442589);
 
@@ -53,11 +53,13 @@ function Render3DMode(idNames = 'map') {
     const animate2 = () => {
         render();
         const car2 = scene2.children[2].children[0].children[1].children;
-        car2[0].position.x = 0;
-        car2[1].position.x = 0;
-        car2[2].position.x = 0;
-        car2[3].position.x = -10;
-        car2[4].position.x = 0;
+        {
+            car2[0].position.x = 0;
+            car2[1].position.x = 0;
+            car2[2].position.x = 0;
+            car2[3].position.x = -10;
+            car2[4].position.x = 0;
+        }
         if (dir2 == 1) {
             if (jud == 1) {
                 scene2.children[2].children[0].children[1].position.x += 2;
