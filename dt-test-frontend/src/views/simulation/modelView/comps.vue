@@ -83,32 +83,6 @@ import {message} from "ant-design-vue";
 let {init3DEcharts, initEchartsDOM} = Render3DEcharts('container3D');
 let roadValue = ref([]);
 let skyBox = ref('sky_2');
-/*roadValue.value = [
-  {
-    code: 'AC13',
-    order_by: 0.05,
-  },
-  {
-    code: 'AC20',
-    order_by: 0.07,
-  },
-  {
-    code: 'AC25',
-    order_by: 0.03,
-  },
-  {
-    code: 'CS',
-    order_by: 0.27,
-  },
-  {
-    code: 'GB',
-    order_by: 0.31,
-  },
-  {
-    code: 'CBG25',
-    order_by: 0.33,
-  },
-]*/
 
 onMounted(() => {
   initEchartsDOM();

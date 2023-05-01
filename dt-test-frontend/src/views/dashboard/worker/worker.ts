@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import {CanvasSize, MessageData, WorkerFunName} from './message-data'
 import {ref} from "vue";
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
+import {SkyboxUtils} from "@/lib/threeUtils";
 
 let renderer2: THREE.WebGLRenderer
 let camera2: THREE.PerspectiveCamera
@@ -46,14 +47,19 @@ const main = (canvas: OffscreenCanvas) => {
     scene2.add(ambient2);
 
     //天空盒
-    const textureLoader = new THREE.ImageBitmapLoader()
-    textureLoader.setOptions( { imageOrientation: 'flipY' } );
-    textureLoader.load('/images/sky_3.jpg', (imageBitmap) => {
-        const texture = new THREE.CanvasTexture(imageBitmap);
-        const crt = new THREE.WebGLCubeRenderTarget(texture.image.height)
+    // const textureLoader = new THREE.ImageBitmapLoader()
+    // textureLoader.setOptions( { imageOrientation: 'flipY' } );
+    // textureLoader.load('/images/sky_3.jpg', (imageBitmap) => {
+    //     const texture = new THREE.CanvasTexture(imageBitmap);
+    //     const crt = new THREE.WebGLCubeRenderTarget(texture.image.height)
+    //     crt.fromEquirectangularTexture(renderer2, texture)
+    //     scene2.background = crt.texture
+    // })
+    SkyboxUtils.createSkyFromTextures2("sky_3.jpg").then(texture => {
+        const crt = new THREE.WebGLCubeRenderTarget(texture.image.height);
         crt.fromEquirectangularTexture(renderer2, texture)
         scene2.background = crt.texture
-    })
+    });
 
     // 渲染内容
     const render = () => {

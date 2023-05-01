@@ -32,7 +32,7 @@ spring:
           username: root
           password: mazi926*
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://frp.feifeilong.work:3306/dt_test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8&allowPublicKeyRetrieval=true
+          url: jdbc:mysql://localhost:3306/dt_test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8&allowPublicKeyRetrieval=true
 #        slave:
 #          username: root
 #          password: Root@123

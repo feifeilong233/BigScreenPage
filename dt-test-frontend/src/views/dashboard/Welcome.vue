@@ -1,7 +1,7 @@
 <template>
   <div class="doms">
     <div class="echartbox">
-<!--      <Comps></Comps>-->
+      <Comps></Comps>
     </div>
 <!--    <div id="map"></div>-->
     <canvas ref="canvasRef" class="three-frame"></canvas>
