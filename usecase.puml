@@ -1,17 +1,9 @@
 @startuml
-actor 用户 as 用户
-
-用户 -> 认证中心: 登录请求
-认证中心 --> 认证中心: 鉴权
-认证中心 --> 用户: 验证失败
-认证中心 --> 缓存: 验证成功，token存入缓存，设置失效时间
-认证中心 --> 用户: 验证成功，返回token信息
-用户 -> 认证中心: 访问请求，携带token信息
-认证中心 --> 缓存: 获取token
-认证中心 -> 认证中心: 验证token有效性
-认证中心 --> 用户: 验证成功
-用户 -> 业务模块: 请求数据，携带token信息
-业务模块 -> 认证中心: 验证token有效性
-认证中心 --> 业务模块: 验证成功
-业务模块 --> 用户: 返回数据
+WebWorker -> 主线程: 传递创建Camera使用的参数
+主线程 -> 主线程: 创建一个一样的Camera对象
+主线程 -> 主线程: 创建OrbitControls控制器
+主线程 -> Camera代理: 对代理的Camera做操作
+Camera代理 -> WebWorker: 通过.postMessage方法传递修改的参数
+WebWorker -> WebWorker: 将修改同步到自己的Camera对象中
+WebWorker -> WebWorker: 使用修改后的Camera对象进行渲染
 @enduml
